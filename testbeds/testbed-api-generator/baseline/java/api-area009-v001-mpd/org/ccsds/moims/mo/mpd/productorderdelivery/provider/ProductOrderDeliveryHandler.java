@@ -11,5 +11,5 @@ public interface ProductOrderDeliveryHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDeliverySkeleton skeleton);
+    void setSkeleton(ProductOrderDeliverySkeleton skeleton);
 }

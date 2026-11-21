@@ -8,7 +8,7 @@ public class ErrorTestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo ERRORTEST_SERVICE = new org.ccsds.moims.mo.malprototype.errortest.ErrorTestServiceInfo();
+    public static final ErrorTestServiceInfo ERRORTEST_SERVICE = new ErrorTestServiceInfo();
 
     private ErrorTestHelper() {
         // Utility class; not meant to be instantiated.

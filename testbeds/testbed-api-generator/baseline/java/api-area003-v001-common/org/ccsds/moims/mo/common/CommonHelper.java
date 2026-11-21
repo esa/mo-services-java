@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.common;
 
+import org.ccsds.moims.mo.common.configuration.ConfigurationHelper;
+import org.ccsds.moims.mo.common.directory.DirectoryHelper;
+import org.ccsds.moims.mo.common.login.LoginHelper;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for Common area.
  */
@@ -13,12 +24,12 @@ public class CommonHelper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort COMMON_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_COMMON_AREA_NUMBER);
+    public static final UShort COMMON_AREA_NUMBER = new UShort(_COMMON_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier COMMON_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Common");
+    public static final Identifier COMMON_AREA_NAME = new Identifier("Common");
 
     /**
      * Area version literal.
@@ -28,25 +39,25 @@ public class CommonHelper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet COMMON_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_COMMON_AREA_VERSION);
+    public static final UOctet COMMON_AREA_VERSION = new UOctet(_COMMON_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] COMMON_AREA_ELEMENTS = {};
+    public static final Element[] COMMON_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] COMMON_AREA_SERVICES = {
-        org.ccsds.moims.mo.common.directory.DirectoryHelper.DIRECTORY_SERVICE,
-        org.ccsds.moims.mo.common.login.LoginHelper.LOGIN_SERVICE,
-        org.ccsds.moims.mo.common.configuration.ConfigurationHelper.CONFIGURATION_SERVICE,};
+    public static final ServiceInfo[] COMMON_AREA_SERVICES = {
+        DirectoryHelper.DIRECTORY_SERVICE,
+        LoginHelper.LOGIN_SERVICE,
+        ConfigurationHelper.CONFIGURATION_SERVICE,};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea COMMON_AREA = new org.ccsds.moims.mo.mal.MALArea(COMMON_AREA_NUMBER, COMMON_AREA_NAME, COMMON_AREA_VERSION, COMMON_AREA_ELEMENTS, COMMON_AREA_SERVICES, new CommonElementFactory());
+    public static final MALArea COMMON_AREA = new MALArea(COMMON_AREA_NUMBER, COMMON_AREA_NAME, COMMON_AREA_VERSION, COMMON_AREA_ELEMENTS, COMMON_AREA_SERVICES, new CommonElementFactory());
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -55,7 +66,7 @@ public class CommonHelper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
         }

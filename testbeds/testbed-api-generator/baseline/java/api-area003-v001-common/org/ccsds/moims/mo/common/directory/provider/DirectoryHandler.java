@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.common.directory.provider;
 
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.common.directory.body.PublishProviderResponse;
+import org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList;
+import org.ccsds.moims.mo.common.directory.structures.PublishDetails;
+import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.FileList;
+
 /**
  * Interface that providers of the Directory service must implement to handle
  * the operations of that service.
@@ -25,11 +35,11 @@ If the version field is the wildcard '0' then all area versions shall be matched
 If the requiredCapabilitySets field is NULL or an empty list then all service capability sets shall be matched.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException Invalid domain filter value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Invalid domain filter value.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList lookupProvider(org.ccsds.moims.mo.common.directory.structures.ServiceFilter filter,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ProviderSummaryList lookupProvider(ServiceFilter filter,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation publishProvider.
      * 
@@ -42,11 +52,11 @@ If the supportedLevels list is empty or the priorityLevels field is '0' for each
 If an error is being returned then no changes shall be made.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Submitted values are invalid.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.common.directory.body.PublishProviderResponse publishProvider(org.ccsds.moims.mo.common.directory.structures.PublishDetails newProviderDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    PublishProviderResponse publishProvider(PublishDetails newProviderDetails,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation withdrawProvider.
      * 
@@ -56,12 +66,12 @@ If the supplied identifier does not match an existing ServiceProvider COM object
 If an error is being returned then no changes shall be made.
 The matched provider shall be removed from the directory service.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Provider to withdraw was not found.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Provider to withdraw was not found.
+     * @throws InvalidException Submitted values are invalid.
+     * @throws MALException if there is an implementation exception
      */
     void withdrawProvider(Long providerObjId,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Implements the operation getServiceXML.
      * 
@@ -70,16 +80,16 @@ If the supplied instance identifier is '0' an INVALID error shall be returned.
 If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Provider was not found.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Submitted values are invalid.
+     * @throws UnknownException Provider was not found.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.FileList getServiceXML(Long providerObjId,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    FileList getServiceXML(Long providerObjId,
+            MALInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.common.directory.provider.DirectorySkeleton skeleton);
+    void setSkeleton(DirectorySkeleton skeleton);
 }

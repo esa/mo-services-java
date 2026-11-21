@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.group.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * The GroupDetails structure holds the object type, domain, and set of object
  * instance identifiers for a set of objects from another service.
  */
-public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class GroupDetails implements Composite {
 
     private static final long serialVersionUID = 1125934283358209L;
     /**
@@ -14,7 +24,7 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Description of the group.
@@ -24,18 +34,18 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The object type of the objects referenced by this group.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectType objectType;
+    private ObjectType objectType;
 
     /**
      * The domain of the objects being referenced by this group.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The list of object instance identifiers of the objects being referenced
      * by this group.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList instanceIds;
+    private LongList instanceIds;
 
     /**
      * Default constructor for GroupDetails.
@@ -53,9 +63,9 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
      * @param instanceIds The list of object instance identifiers of the objects being referenced by this group.
      */
     public GroupDetails(String description,
-            org.ccsds.moims.mo.com.structures.ObjectType objectType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList instanceIds) {
+            ObjectType objectType,
+            IdentifierList domain,
+            LongList instanceIds) {
         this.description = description;
         this.objectType = objectType;
         this.domain = domain;
@@ -63,8 +73,8 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.group.structures.GroupDetails();
+    public Element createElement() {
+        return new GroupDetails();
     }
 
     /**
@@ -81,7 +91,7 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field objectType
      */
-    public org.ccsds.moims.mo.com.structures.ObjectType getObjectType() {
+    public ObjectType getObjectType() {
         return objectType;
     }
 
@@ -90,7 +100,7 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -99,7 +109,7 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field instanceIds
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getInstanceIds() {
+    public LongList getInstanceIds() {
         return instanceIds;
     }
 
@@ -171,18 +181,18 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (objectType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'objectType' cannot be null!");
+            throw new MALException("The field 'objectType' cannot be null!");
         }
         if (domain == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'domain' cannot be null!");
+            throw new MALException("The field 'domain' cannot be null!");
         }
         if (instanceIds == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'instanceIds' cannot be null!");
+            throw new MALException("The field 'instanceIds' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(objectType);
@@ -191,16 +201,16 @@ public final class GroupDetails implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
-        objectType = (org.ccsds.moims.mo.com.structures.ObjectType) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectType());
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        instanceIds = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
+        objectType = (ObjectType) decoder.decodeElement(new ObjectType());
+        domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
+        instanceIds = (LongList) decoder.decodeElement(new LongList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

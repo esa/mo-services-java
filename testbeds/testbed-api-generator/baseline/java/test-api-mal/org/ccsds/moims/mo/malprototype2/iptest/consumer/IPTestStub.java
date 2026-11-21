@@ -1,5 +1,23 @@
 package org.ccsds.moims.mo.malprototype2.iptest.consumer;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.malprototype.structures.Auto;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo;
+
 /**
  * Consumer stub for IPTest service.
  */
@@ -8,7 +26,7 @@ public class IPTestStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +34,7 @@ public class IPTestStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public IPTestStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public IPTestStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +44,7 @@ public class IPTestStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -35,20 +53,20 @@ public class IPTestStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the entities identified in the registration do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the entities identified in the registration do not exist.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorRegister(Subscription subscription,
+            IPTestAdapter adapter) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.register(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.register(IPTestServiceInfo.MONITOR_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -58,15 +76,15 @@ public class IPTestStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorRegister(Subscription subscription,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRegister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRegister(IPTestServiceInfo.MONITOR_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -74,19 +92,19 @@ public class IPTestStub {
      * Deregister method for the monitor PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the entities identified in the registration do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the entities identified in the registration do not exist.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorDeregister(IdentifierList identifierList) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.deregister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR_OP, identifierList);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.deregister(IPTestServiceInfo.MONITOR_OP, identifierList);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -96,15 +114,15 @@ public class IPTestStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorDeregister(IdentifierList identifierList,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncDeregister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR_OP, identifierList, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncDeregister(IPTestServiceInfo.MONITOR_OP, identifierList, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -113,20 +131,20 @@ public class IPTestStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the entities identified in the registration do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the entities identified in the registration do not exist.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitor2Register(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitor2Register(Subscription subscription,
+            IPTestAdapter adapter) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.register(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR2_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.register(IPTestServiceInfo.MONITOR2_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -136,15 +154,15 @@ public class IPTestStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitor2Register(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitor2Register(Subscription subscription,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRegister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR2_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRegister(IPTestServiceInfo.MONITOR2_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -152,19 +170,19 @@ public class IPTestStub {
      * Deregister method for the monitor2 PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the entities identified in the registration do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the entities identified in the registration do not exist.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitor2Deregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitor2Deregister(IdentifierList identifierList) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.deregister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR2_OP, identifierList);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.deregister(IPTestServiceInfo.MONITOR2_OP, identifierList);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -174,15 +192,15 @@ public class IPTestStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitor2Deregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitor2Deregister(IdentifierList identifierList,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncDeregister(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.MONITOR2_OP, identifierList, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncDeregister(IPTestServiceInfo.MONITOR2_OP, identifierList, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -194,14 +212,14 @@ public class IPTestStub {
      * (see 4.1.10). The header of the Publish error message is checked (see 4.1.4).
      * 
      * @param input The input field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void publishUpdates(org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void publishUpdates(TestPublishUpdate input) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHUPDATES_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(IPTestServiceInfo.PUBLISHUPDATES_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -211,15 +229,15 @@ public class IPTestStub {
      * @param input The input field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncPublishUpdates(org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate input,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncPublishUpdates(TestPublishUpdate input,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHUPDATES_OP, adapter, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(IPTestServiceInfo.PUBLISHUPDATES_OP, adapter, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -230,17 +248,17 @@ public class IPTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continuePublishUpdates(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continuePublishUpdates(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHUPDATES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(IPTestServiceInfo.PUBLISHUPDATES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -253,14 +271,14 @@ public class IPTestStub {
      * (see 4.1.7).
      * 
      * @param input The input field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void publishRegister(org.ccsds.moims.mo.malprototype.structures.TestPublishRegister input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void publishRegister(TestPublishRegister input) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHREGISTER_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(IPTestServiceInfo.PUBLISHREGISTER_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -270,15 +288,15 @@ public class IPTestStub {
      * @param input The input field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncPublishRegister(org.ccsds.moims.mo.malprototype.structures.TestPublishRegister input,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncPublishRegister(TestPublishRegister input,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHREGISTER_OP, adapter, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(IPTestServiceInfo.PUBLISHREGISTER_OP, adapter, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -289,17 +307,17 @@ public class IPTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continuePublishRegister(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continuePublishRegister(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHREGISTER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(IPTestServiceInfo.PUBLISHREGISTER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -312,14 +330,14 @@ public class IPTestStub {
      * error message (see 4.1.9).
      * 
      * @param input The input field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void publishDeregister(org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void publishDeregister(TestPublishDeregister input) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHDEREGISTER_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(IPTestServiceInfo.PUBLISHDEREGISTER_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -329,15 +347,15 @@ public class IPTestStub {
      * @param input The input field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncPublishDeregister(org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister input,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncPublishDeregister(TestPublishDeregister input,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHDEREGISTER_OP, adapter, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(IPTestServiceInfo.PUBLISHDEREGISTER_OP, adapter, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -348,31 +366,31 @@ public class IPTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continuePublishDeregister(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continuePublishDeregister(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.PUBLISHDEREGISTER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(IPTestServiceInfo.PUBLISHDEREGISTER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
     /**
      * 
      * @param input The input field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void testMultipleNotify(org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void testMultipleNotify(TestPublishUpdate input) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -382,15 +400,15 @@ public class IPTestStub {
      * @param input The input field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncTestMultipleNotify(org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate input,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncTestMultipleNotify(TestPublishUpdate input,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, adapter, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, adapter, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -401,31 +419,31 @@ public class IPTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueTestMultipleNotify(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueTestMultipleNotify(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(IPTestServiceInfo.TESTMULTIPLENOTIFY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
     /**
      * 
      * @param input The input field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void testObjectRefSubmit(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void testObjectRefSubmit(ObjectRef<Auto> input) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -435,15 +453,15 @@ public class IPTestStub {
      * @param input The input field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncTestObjectRefSubmit(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncTestObjectRefSubmit(ObjectRef<Auto> input,
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, adapter, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, adapter, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -454,17 +472,17 @@ public class IPTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueTestObjectRefSubmit(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueTestObjectRefSubmit(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            IPTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(IPTestServiceInfo.TESTOBJECTREFSUBMIT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -472,14 +490,14 @@ public class IPTestStub {
      * 
      * @param input The input field.
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage testObjectRefSend(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage testObjectRefSend(ObjectRef<Auto> input) throws MALStandardError, MALException {
         try {
-            return consumer.send(org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.TESTOBJECTREFSEND_OP, input);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.send(IPTestServiceInfo.TESTOBJECTREFSEND_OP, input);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

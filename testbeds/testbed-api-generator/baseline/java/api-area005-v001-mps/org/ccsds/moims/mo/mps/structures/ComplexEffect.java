@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E5: In the simple effect, the value of the impacted planning resource is
  * set to the specified value at a single point in time. With the complex
  * effect, the value of the impacted planning resource can be evolved over
  * a specified time period in accordance with a defined RelativeResourceProfile.
  */
-public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effect {
+public final class ComplexEffect extends Effect {
 
     private static final long serialVersionUID = 1407374900330546L;
     /**
@@ -16,46 +23,46 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the start of the effect period relates. Default is the start of
      * the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the end of the effect period relates. Default is the end of the
      * planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * Offset from startRef that specifies the start of the effect period.  A
      * positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * Offset from endRef that specifies the end of the effect period.  A positive
      * offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * Operation to be performed on the planning resource.  One of: SET, INCREASE,
      * DECREASE. Increase and decrease are only applicable to numeric data types.
      */
-    private org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator;
+    private EffectOperationEnum operator;
 
     /**
      * Resource profile specifying an evolving value to which the value of the
      * planning resource is to be set if the Effect operator is SET; or to be
      * increased/decreased by if it is INCREASE or DECREASE (see 4.5.4.4).
      */
-    private org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile;
+    private RelativeResourceProfile valueProfile;
 
     /**
      * Default constructor for ComplexEffect.
@@ -75,13 +82,13 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * @param operator Operation to be performed on the planning resource.  One of: SET, INCREASE, DECREASE. Increase and decrease are only applicable to numeric data types.
      * @param valueProfile Resource profile specifying an evolving value to which the value of the planning resource is to be set if the Effect operator is SET; or to be increased/decreased by if it is INCREASE or DECREASE (see 4.5.4.4).
      */
-    public ComplexEffect(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator,
-            org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile) {
+    public ComplexEffect(ObjectRef<Resource> resourceRef,
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            EffectOperationEnum operator,
+            RelativeResourceProfile valueProfile) {
         super(resourceRef);
         this.startRef = startRef;
         this.endRef = endRef;
@@ -98,9 +105,9 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * @param operator Operation to be performed on the planning resource.  One of: SET, INCREASE, DECREASE. Increase and decrease are only applicable to numeric data types.
      * @param valueProfile Resource profile specifying an evolving value to which the value of the planning resource is to be set if the Effect operator is SET; or to be increased/decreased by if it is INCREASE or DECREASE (see 4.5.4.4).
      */
-    public ComplexEffect(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator,
-            org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile) {
+    public ComplexEffect(ObjectRef<Resource> resourceRef,
+            EffectOperationEnum operator,
+            RelativeResourceProfile valueProfile) {
         super(resourceRef);
         this.startRef = null;
         this.endRef = null;
@@ -111,8 +118,8 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ComplexEffect();
+    public Element createElement() {
+        return new ComplexEffect();
     }
 
     /**
@@ -120,7 +127,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -129,7 +136,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -138,7 +145,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -147,7 +154,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -156,7 +163,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.mps.structures.EffectOperationEnum getOperator() {
+    public EffectOperationEnum getOperator() {
         return operator;
     }
 
@@ -165,7 +172,7 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
      * 
      * @return The field valueProfile
      */
-    public org.ccsds.moims.mo.mps.structures.RelativeResourceProfile getValueProfile() {
+    public RelativeResourceProfile getValueProfile() {
         return valueProfile;
     }
 
@@ -263,13 +270,13 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (operator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'operator' cannot be null!");
+            throw new MALException("The field 'operator' cannot be null!");
         }
         if (valueProfile == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'valueProfile' cannot be null!");
+            throw new MALException("The field 'valueProfile' cannot be null!");
         }
         encoder.encodeNullableElement(startRef);
         encoder.encodeNullableElement(endRef);
@@ -280,19 +287,19 @@ public final class ComplexEffect extends org.ccsds.moims.mo.mps.structures.Effec
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        operator = (org.ccsds.moims.mo.mps.structures.EffectOperationEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.EffectOperationEnum.SET);
-        valueProfile = (org.ccsds.moims.mo.mps.structures.RelativeResourceProfile) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.RelativeResourceProfile());
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
+        operator = (EffectOperationEnum) decoder.decodeElement(EffectOperationEnum.SET);
+        valueProfile = (RelativeResourceProfile) decoder.decodeElement(new RelativeResourceProfile());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -238,7 +239,7 @@ public class MALReceiver implements MALMessageListener {
         } catch (MALInteractionException ex) {
             // try to determine address info if null
             if (address == null) {
-                address = lookupAddress(callingEndpoint, msg);
+                address = lookupReturnAddress(callingEndpoint, msg);
             }
 
             final UOctet rspnInteractionStage = msg.getHeader().calculateReturnStage();
@@ -255,7 +256,7 @@ public class MALReceiver implements MALMessageListener {
         } catch (MALException ex) {
             // try to determine address info if null
             if (address == null) {
-                address = lookupAddress(callingEndpoint, msg);
+                address = lookupReturnAddress(callingEndpoint, msg);
             }
 
             final UOctet rspnInteractionStage = msg.getHeader().calculateReturnStage();
@@ -654,6 +655,35 @@ public class MALReceiver implements MALMessageListener {
                     MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
                     new DestinationUnknownException("Broker unknown at this address"));
         }
+    }
+
+    /**
+     * Looks up the address to return an error from, for a message that was
+     * refused before it was handled, such as by the access control. A message
+     * to a broker is looked up as when it is handled: broker endpoints are
+     * registered without a service.
+     *
+     * @param callingEndpoint The endpoint that received the message.
+     * @param msg The message.
+     * @return The address, or null if none is found.
+     */
+    private Address lookupReturnAddress(final MALEndpoint callingEndpoint, final MALMessage msg) {
+        final MALMessageHeader header = msg.getHeader();
+        if (header.getInteractionType() != null
+                && header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
+                && header.getInteractionStage() != null) {
+            switch (header.getInteractionStage().getValue()) {
+                case MALPubSubOperation._REGISTER_STAGE:
+                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+                case MALPubSubOperation._PUBLISH_STAGE:
+                case MALPubSubOperation._DEREGISTER_STAGE:
+                case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE:
+                    return lookupAddress(callingEndpoint, null);
+                default:
+                    break;
+            }
+        }
+        return lookupAddress(callingEndpoint, msg);
     }
 
     private Address lookupAddress(final MALEndpoint callingEndpoint, final MALMessage msg) {

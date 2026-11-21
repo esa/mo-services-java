@@ -1,9 +1,19 @@
 package org.ccsds.moims.mo.comprototype.activitytest.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+
 /**
  * Consumer adapter for ActivityTest service.
  */
-public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class ActivityTestAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a SUBMIT acknowledgement is received from a provider
@@ -12,8 +22,8 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void resetTestAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +34,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void resetTestErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -36,8 +46,8 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void closeAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void closeAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -48,9 +58,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void closeErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void closeErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -60,8 +70,8 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testSubmitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void testSubmitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -72,9 +82,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testSubmitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void testSubmitErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -85,9 +95,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param out1 The out1 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList out1,
-            java.util.Map qosProperties) {
+    public void requestResponseReceived(MALMessageHeader msgHeader,
+            StringList out1,
+            Map qosProperties) {
     }
 
     /**
@@ -98,9 +108,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void requestErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -111,9 +121,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param ack1 The ack1 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void invokeAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList ack1,
-            java.util.Map qosProperties) {
+    public void invokeAckReceived(MALMessageHeader msgHeader,
+            StringList ack1,
+            Map qosProperties) {
     }
 
     /**
@@ -124,9 +134,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param out1 The out1 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void invokeResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList out1,
-            java.util.Map qosProperties) {
+    public void invokeResponseReceived(MALMessageHeader msgHeader,
+            StringList out1,
+            Map qosProperties) {
     }
 
     /**
@@ -137,9 +147,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void invokeAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void invokeAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -150,9 +160,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void invokeResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void invokeResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -163,9 +173,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param ack1 The ack1 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList ack1,
-            java.util.Map qosProperties) {
+    public void progressAckReceived(MALMessageHeader msgHeader,
+            StringList ack1,
+            Map qosProperties) {
     }
 
     /**
@@ -176,9 +186,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param out1 The out1 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList out1,
-            java.util.Map qosProperties) {
+    public void progressUpdateReceived(MALMessageHeader msgHeader,
+            StringList out1,
+            Map qosProperties) {
     }
 
     /**
@@ -189,9 +199,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param out2 The out2 field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.StringList out2,
-            java.util.Map qosProperties) {
+    public void progressResponseReceived(MALMessageHeader msgHeader,
+            StringList out2,
+            Map qosProperties) {
     }
 
     /**
@@ -202,9 +212,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void progressAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -215,9 +225,9 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void progressUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -228,207 +238,207 @@ public abstract class ActivityTestAdapter extends org.ccsds.moims.mo.mal.consume
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void progressResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void progressResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._RESETTEST_OP_NUMBER:
+          case ActivityTestServiceInfo._RESETTEST_OP_NUMBER:
             resetTestAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._CLOSE_OP_NUMBER:
+          case ActivityTestServiceInfo._CLOSE_OP_NUMBER:
             closeAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._TESTSUBMIT_OP_NUMBER:
+          case ActivityTestServiceInfo._TESTSUBMIT_OP_NUMBER:
             testSubmitAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._RESETTEST_OP_NUMBER:
+          case ActivityTestServiceInfo._RESETTEST_OP_NUMBER:
             resetTestErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._CLOSE_OP_NUMBER:
+          case ActivityTestServiceInfo._CLOSE_OP_NUMBER:
             closeErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._TESTSUBMIT_OP_NUMBER:
+          case ActivityTestServiceInfo._TESTSUBMIT_OP_NUMBER:
             testSubmitErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._REQUEST_OP_NUMBER:
+          case ActivityTestServiceInfo._REQUEST_OP_NUMBER:
             requestResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._REQUEST_OP_NUMBER:
+          case ActivityTestServiceInfo._REQUEST_OP_NUMBER:
             requestErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void invokeAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void invokeAckReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._INVOKE_OP_NUMBER:
+          case ActivityTestServiceInfo._INVOKE_OP_NUMBER:
             invokeAckReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void invokeAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void invokeAckErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._INVOKE_OP_NUMBER:
+          case ActivityTestServiceInfo._INVOKE_OP_NUMBER:
             invokeAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void invokeResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void invokeResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._INVOKE_OP_NUMBER:
+          case ActivityTestServiceInfo._INVOKE_OP_NUMBER:
             invokeResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void invokeResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void invokeResponseErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._INVOKE_OP_NUMBER:
+          case ActivityTestServiceInfo._INVOKE_OP_NUMBER:
             invokeResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressAckReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.StringList()), qosProperties);
+                (StringList) body.getBodyElement(0, new StringList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
+          case ActivityTestServiceInfo._PROGRESS_OP_NUMBER:
             progressResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

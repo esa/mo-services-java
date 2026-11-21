@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for IPTestTransitionType.
  */
-public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class IPTestTransitionType extends Enumeration {
 
     private static final long serialVersionUID = 28147497687842819L;
     /**
@@ -13,7 +17,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for ACK.
@@ -23,7 +27,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value ACK.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType ACK = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.ACK_VALUE);
+    public static final IPTestTransitionType ACK = new IPTestTransitionType(IPTestTransitionType.ACK_VALUE);
 
     /**
      * Enumeration value for RESPONSE.
@@ -33,7 +37,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value RESPONSE.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType RESPONSE = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.RESPONSE_VALUE);
+    public static final IPTestTransitionType RESPONSE = new IPTestTransitionType(IPTestTransitionType.RESPONSE_VALUE);
 
     /**
      * Enumeration value for ACK_ERROR.
@@ -43,7 +47,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value ACK_ERROR.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType ACK_ERROR = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.ACK_ERROR_VALUE);
+    public static final IPTestTransitionType ACK_ERROR = new IPTestTransitionType(IPTestTransitionType.ACK_ERROR_VALUE);
 
     /**
      * Enumeration value for RESPONSE_ERROR.
@@ -53,7 +57,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value RESPONSE_ERROR.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType RESPONSE_ERROR = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.RESPONSE_ERROR_VALUE);
+    public static final IPTestTransitionType RESPONSE_ERROR = new IPTestTransitionType(IPTestTransitionType.RESPONSE_ERROR_VALUE);
 
     /**
      * Enumeration value for UPDATE.
@@ -63,7 +67,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value UPDATE.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType UPDATE = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.UPDATE_VALUE);
+    public static final IPTestTransitionType UPDATE = new IPTestTransitionType(IPTestTransitionType.UPDATE_VALUE);
 
     /**
      * Enumeration value for UPDATE_ERROR.
@@ -73,12 +77,12 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     /**
      * Enumeration singleton for value UPDATE_ERROR.
      */
-    public static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType UPDATE_ERROR = new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.UPDATE_ERROR_VALUE);
+    public static final IPTestTransitionType UPDATE_ERROR = new IPTestTransitionType(IPTestTransitionType.UPDATE_ERROR_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType[] _ENUMERATIONS = {
+    private static final IPTestTransitionType[] _ENUMERATIONS = {
         ACK, RESPONSE, ACK_ERROR, RESPONSE_ERROR, UPDATE, UPDATE_ERROR};
 
     /**
@@ -124,7 +128,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType fromString(String s) {
+    public static IPTestTransitionType fromString(String s) {
         switch (s) {
             case "ACK":
                 return IPTestTransitionType.ACK;
@@ -144,7 +148,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case ACK_VALUE:
                 return IPTestTransitionType.ACK;
@@ -164,7 +168,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -174,7 +178,7 @@ public final class IPTestTransitionType extends org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

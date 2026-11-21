@@ -1,5 +1,28 @@
 package org.ccsds.moims.mo.mps.planexecutioncontrol.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mps.ActivateFailedException;
+import org.ccsds.moims.mo.mps.ActivateSubplanFailedException;
+import org.ccsds.moims.mo.mps.DeactivateFailedException;
+import org.ccsds.moims.mo.mps.DeactivateSubplanFailedException;
+import org.ccsds.moims.mo.mps.InvalidException;
+import org.ccsds.moims.mo.mps.RevokeFailedException;
+import org.ccsds.moims.mo.mps.SubmitFailedException;
+import org.ccsds.moims.mo.mps.UnsupportedException;
+import org.ccsds.moims.mo.mps.structures.ActivitySuspensionStatusList;
+import org.ccsds.moims.mo.mps.structures.ActivityUpdateList;
+import org.ccsds.moims.mo.mps.structures.Plan;
+import org.ccsds.moims.mo.mps.structures.PlanActivationStatusList;
+import org.ccsds.moims.mo.mps.structures.PlanUpdateList;
+import org.ccsds.moims.mo.mps.structures.SubPlanActivationStatusList;
+import org.ccsds.moims.mo.mps.structures.SubPlanUpdateList;
+
 /**
  * Interface that providers of the PlanExecutionControl service must implement
  * to handle the operations of that service.
@@ -11,47 +34,47 @@ public interface PlanExecutionControlHandler {
      * 
      * @param plan The plan field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.SubmitFailedException The submitPlan operation failed as the submitted plan was already terminated.
-     * @throws org.ccsds.moims.mo.mps.UnsupportedException An optional data structure used in the message is not supported by the service provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws SubmitFailedException The submitPlan operation failed as the submitted plan was already terminated.
+     * @throws UnsupportedException An optional data structure used in the message is not supported by the service provider.
+     * @throws MALException if there is an implementation exception
      */
-    void submitPlan(org.ccsds.moims.mo.mps.structures.Plan plan,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.SubmitFailedException, org.ccsds.moims.mo.mps.UnsupportedException, org.ccsds.moims.mo.mal.MALException;
+    void submitPlan(Plan plan,
+            MALInteraction interaction) throws InvalidException, SubmitFailedException, UnsupportedException, MALException;
     /**
      * Implements the operation revokePlan.
      * 
      * @param planRef The planRef field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.RevokeFailedException The revokePlan operation failed to revoke the referenced Plan, for example because it has already started executing.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws RevokeFailedException The revokePlan operation failed to revoke the referenced Plan, for example because it has already started executing.
+     * @throws MALException if there is an implementation exception
      */
-    void revokePlan(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.RevokeFailedException, org.ccsds.moims.mo.mal.MALException;
+    void revokePlan(ObjectRef<Plan> planRef,
+            MALInteraction interaction) throws InvalidException, RevokeFailedException, MALException;
     /**
      * Implements the operation getPlanStatus.
      * 
      * @param planRefs The planRefs field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.PlanUpdateList getPlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    PlanUpdateList getPlanStatus(ObjectRefList planRefs,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation activatePlan.
      * 
      * @param planRefs The planRefs field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.ActivateFailedException The activatePlan operation failed as the activation was outside the validity period of the Plan, or the start of the planPeriod had already passed.  
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws ActivateFailedException The activatePlan operation failed as the activation was outside the validity period of the Plan, or the start of the planPeriod had already passed.  
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.PlanActivationStatusList activatePlan(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.ActivateFailedException, org.ccsds.moims.mo.mal.MALException;
+    PlanActivationStatusList activatePlan(ObjectRefList planRefs,
+            MALInteraction interaction) throws InvalidException, ActivateFailedException, MALException;
     /**
      * Implements the operation deactivatePlan.
      * 
@@ -59,25 +82,25 @@ public interface PlanExecutionControlHandler {
      * @param deactivationMode The deactivationMode field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.DeactivateFailedException The deactivatePlan operation failed.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws DeactivateFailedException The deactivatePlan operation failed.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.PlanActivationStatusList deactivatePlan(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.structures.Identifier deactivationMode,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.DeactivateFailedException, org.ccsds.moims.mo.mal.MALException;
+    PlanActivationStatusList deactivatePlan(ObjectRefList planRefs,
+            Identifier deactivationMode,
+            MALInteraction interaction) throws InvalidException, DeactivateFailedException, MALException;
     /**
      * Implements the operation activateSubPlan.
      * 
      * @param subPlanIDs The subPlanIDs field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.ActivateSubplanFailedException The activateSubPlan operation failed.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws ActivateSubplanFailedException The activateSubPlan operation failed.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.SubPlanActivationStatusList activateSubPlan(org.ccsds.moims.mo.mal.structures.IdentifierList subPlanIDs,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.ActivateSubplanFailedException, org.ccsds.moims.mo.mal.MALException;
+    SubPlanActivationStatusList activateSubPlan(IdentifierList subPlanIDs,
+            MALInteraction interaction) throws InvalidException, ActivateSubplanFailedException, MALException;
     /**
      * Implements the operation deactivateSubPlan.
      * 
@@ -85,24 +108,24 @@ public interface PlanExecutionControlHandler {
      * @param deactivationMode The deactivationMode field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mps.DeactivateSubplanFailedException The deactivateSubPlan operation failed.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws DeactivateSubplanFailedException The deactivateSubPlan operation failed.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.SubPlanActivationStatusList deactivateSubPlan(org.ccsds.moims.mo.mal.structures.IdentifierList subPlanIDs,
+    SubPlanActivationStatusList deactivateSubPlan(IdentifierList subPlanIDs,
             String deactivationMode,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.DeactivateSubplanFailedException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws InvalidException, DeactivateSubplanFailedException, MALException;
     /**
      * Implements the operation getSubPlanStatus.
      * 
      * @param subPlanIDs The subPlanIDs field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.SubPlanUpdateList getSubPlanStatus(org.ccsds.moims.mo.mal.structures.IdentifierList subPlanIDs,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    SubPlanUpdateList getSubPlanStatus(IdentifierList subPlanIDs,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation suspendActivity.
      * 
@@ -112,14 +135,14 @@ public interface PlanExecutionControlHandler {
      * @param suspensionMode The suspensionMode field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.ActivitySuspensionStatusList suspendActivity(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList activityRefs,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
+    ActivitySuspensionStatusList suspendActivity(ObjectRefList planRefs,
+            ObjectRefList activityRefs,
+            StringList tags,
             String suspensionMode,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation resumeActivity.
      * 
@@ -128,13 +151,13 @@ public interface PlanExecutionControlHandler {
      * @param tags The tags field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.ActivitySuspensionStatusList resumeActivity(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList activityRefs,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ActivitySuspensionStatusList resumeActivity(ObjectRefList planRefs,
+            ObjectRefList activityRefs,
+            StringList tags,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation getActivityStatus.
      * 
@@ -144,18 +167,18 @@ public interface PlanExecutionControlHandler {
      * @param tags The tags field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more fields in the message contain invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mps.structures.ActivityUpdateList getActivityStatus(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList activityRefs,
-            org.ccsds.moims.mo.mal.structures.IdentifierList subPlans,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ActivityUpdateList getActivityStatus(ObjectRefList planRefs,
+            ObjectRefList activityRefs,
+            IdentifierList subPlans,
+            StringList tags,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mps.planexecutioncontrol.provider.PlanExecutionControlSkeleton skeleton);
+    void setSkeleton(PlanExecutionControlSkeleton skeleton);
 }

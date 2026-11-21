@@ -1,9 +1,19 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The DeltaCheckDefinition defines a delta transition check.
  */
-public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetails {
+public final class DeltaCheckDefinition extends CheckDefinitionDetails {
 
     private static final long serialVersionUID = 1125917103489034L;
     /**
@@ -13,12 +23,12 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The value to compare the current value against.
      */
-    private org.ccsds.moims.mo.mc.check.structures.ReferenceValue checkReference;
+    private ReferenceValue checkReference;
 
     /**
      * If TRUE, then the safe (non violating) values lie outside the specified
@@ -37,14 +47,14 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * the entity being checked. Must be a Float if percentage threshold in the
      * range (-1.0 to 1.0 representing +-100%).
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute lowerThreshold;
+    private Attribute lowerThreshold;
 
     /**
      * The upper threshold of the delta value. Must be of the correct type for
      * the entity being checked. Must be a Float if percentage threshold in the
      * range (-1.0 to 1.0 representing +-100%).
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute upperThreshold;
+    private Attribute upperThreshold;
 
     /**
      * Default constructor for DeltaCheckDefinition.
@@ -70,17 +80,17 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * @param upperThreshold The upper threshold of the delta value. Must be of the correct type for the entity being checked. Must be a Float if percentage threshold in the range (-1.0 to 1.0 representing +-100%).
      */
     public DeltaCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
-            org.ccsds.moims.mo.mc.check.structures.ReferenceValue checkReference,
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
+            ReferenceValue checkReference,
             Boolean violateInRange,
             Boolean valueDelta,
-            org.ccsds.moims.mo.mal.structures.Attribute lowerThreshold,
-            org.ccsds.moims.mo.mal.structures.Attribute upperThreshold) {
+            Attribute lowerThreshold,
+            Attribute upperThreshold) {
         super(description,
             checkSeverity,
             maxReportingInterval,
@@ -110,13 +120,13 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * @param valueDelta If TRUE, then the thresholds contain value deltas. If FALSE, they contain percentage deltas.
      */
     public DeltaCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
-            org.ccsds.moims.mo.mc.check.structures.ReferenceValue checkReference,
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
+            ReferenceValue checkReference,
             Boolean violateInRange,
             Boolean valueDelta) {
         super(description,
@@ -134,8 +144,8 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.DeltaCheckDefinition();
+    public Element createElement() {
+        return new DeltaCheckDefinition();
     }
 
     /**
@@ -143,7 +153,7 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * 
      * @return The field checkReference
      */
-    public org.ccsds.moims.mo.mc.check.structures.ReferenceValue getCheckReference() {
+    public ReferenceValue getCheckReference() {
         return checkReference;
     }
 
@@ -170,7 +180,7 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * 
      * @return The field lowerThreshold
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getLowerThreshold() {
+    public Attribute getLowerThreshold() {
         return lowerThreshold;
     }
 
@@ -179,7 +189,7 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * 
      * @return The field upperThreshold
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getUpperThreshold() {
+    public Attribute getUpperThreshold() {
         return upperThreshold;
     }
 
@@ -266,16 +276,16 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (checkReference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkReference' cannot be null!");
+            throw new MALException("The field 'checkReference' cannot be null!");
         }
         if (violateInRange == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'violateInRange' cannot be null!");
+            throw new MALException("The field 'violateInRange' cannot be null!");
         }
         if (valueDelta == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'valueDelta' cannot be null!");
+            throw new MALException("The field 'valueDelta' cannot be null!");
         }
         encoder.encodeElement(checkReference);
         encoder.encodeBoolean(violateInRange);
@@ -285,18 +295,18 @@ public final class DeltaCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        checkReference = (org.ccsds.moims.mo.mc.check.structures.ReferenceValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.check.structures.ReferenceValue());
+        checkReference = (ReferenceValue) decoder.decodeElement(new ReferenceValue());
         violateInRange = decoder.decodeBoolean();
         valueDelta = decoder.decodeBoolean();
-        lowerThreshold = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
-        upperThreshold = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        lowerThreshold = (Attribute) decoder.decodeNullableAttribute();
+        upperThreshold = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for Severity.
  */
-public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class Severity extends Enumeration {
 
     private static final long serialVersionUID = 1125899923619846L;
     /**
@@ -13,7 +17,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for INFORMATIONAL.
@@ -23,7 +27,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value INFORMATIONAL.
      */
-    public static final org.ccsds.moims.mo.mc.structures.Severity INFORMATIONAL = new org.ccsds.moims.mo.mc.structures.Severity(org.ccsds.moims.mo.mc.structures.Severity.INFORMATIONAL_VALUE);
+    public static final Severity INFORMATIONAL = new Severity(Severity.INFORMATIONAL_VALUE);
 
     /**
      * Enumeration value for WARNING.
@@ -33,7 +37,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value WARNING.
      */
-    public static final org.ccsds.moims.mo.mc.structures.Severity WARNING = new org.ccsds.moims.mo.mc.structures.Severity(org.ccsds.moims.mo.mc.structures.Severity.WARNING_VALUE);
+    public static final Severity WARNING = new Severity(Severity.WARNING_VALUE);
 
     /**
      * Enumeration value for ALARM.
@@ -43,7 +47,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value ALARM.
      */
-    public static final org.ccsds.moims.mo.mc.structures.Severity ALARM = new org.ccsds.moims.mo.mc.structures.Severity(org.ccsds.moims.mo.mc.structures.Severity.ALARM_VALUE);
+    public static final Severity ALARM = new Severity(Severity.ALARM_VALUE);
 
     /**
      * Enumeration value for SEVERE.
@@ -53,7 +57,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value SEVERE.
      */
-    public static final org.ccsds.moims.mo.mc.structures.Severity SEVERE = new org.ccsds.moims.mo.mc.structures.Severity(org.ccsds.moims.mo.mc.structures.Severity.SEVERE_VALUE);
+    public static final Severity SEVERE = new Severity(Severity.SEVERE_VALUE);
 
     /**
      * Enumeration value for CRITICAL.
@@ -63,12 +67,12 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value CRITICAL.
      */
-    public static final org.ccsds.moims.mo.mc.structures.Severity CRITICAL = new org.ccsds.moims.mo.mc.structures.Severity(org.ccsds.moims.mo.mc.structures.Severity.CRITICAL_VALUE);
+    public static final Severity CRITICAL = new Severity(Severity.CRITICAL_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.structures.Severity[] _ENUMERATIONS = {
+    private static final Severity[] _ENUMERATIONS = {
         INFORMATIONAL, WARNING, ALARM, SEVERE, CRITICAL};
 
     /**
@@ -116,7 +120,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.structures.Severity fromString(String s) {
+    public static Severity fromString(String s) {
         switch (s) {
             case "INFORMATIONAL":
                 return Severity.INFORMATIONAL;
@@ -134,7 +138,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case INFORMATIONAL_VALUE:
                 return Severity.INFORMATIONAL;
@@ -152,7 +156,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -162,7 +166,7 @@ public final class Severity extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

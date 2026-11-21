@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mc.alert.consumer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+
 /**
  * Typed accessors for the Subscription Keys of the monitorAlert PubSub operation.
  */
@@ -8,17 +19,17 @@ public final class MonitorAlertSubscriptionKeys {
     /**
      * The key values as received in the UpdateHeader.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * The effective key names for the received key values.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList keyNames;
+    private IdentifierList keyNames;
 
     /**
      * The Subscription Key names defined by the operation, in order.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList CANONICAL_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(new org.ccsds.moims.mo.mal.structures.Identifier("alertKey"), new org.ccsds.moims.mo.mal.structures.Identifier("alertVersion"), new org.ccsds.moims.mo.mal.structures.Identifier("alertSeverity"))));
+    private static final IdentifierList CANONICAL_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(new Identifier("alertKey"), new Identifier("alertVersion"), new Identifier("alertSeverity"))));
 
     /**
      * Creates an instance from the received UpdateHeader and the subscription
@@ -27,8 +38,8 @@ public final class MonitorAlertSubscriptionKeys {
      * @param updateHeader The UpdateHeader received in the NOTIFY message
      * @param selectedKeys The selectedKeys of the subscription, or null if trimming was not enabled
      */
-    public MonitorAlertSubscriptionKeys(org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys) {
+    public MonitorAlertSubscriptionKeys(UpdateHeader updateHeader,
+            IdentifierList selectedKeys) {
         this.keyValues = (updateHeader == null) ? null : updateHeader.getKeyValues();
         this.keyNames = (selectedKeys != null) ? selectedKeys : CANONICAL_KEY_NAMES;
     }
@@ -38,8 +49,8 @@ public final class MonitorAlertSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getAlertKey() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("alertKey");
+    public Identifier getAlertKey() {
+        return (Identifier) valueByName("alertKey");
     }
 
     /**
@@ -48,8 +59,8 @@ public final class MonitorAlertSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getAlertVersion() {
-        return (org.ccsds.moims.mo.mal.structures.UInteger) valueByName("alertVersion");
+    public UInteger getAlertVersion() {
+        return (UInteger) valueByName("alertVersion");
     }
 
     /**
@@ -58,8 +69,8 @@ public final class MonitorAlertSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getAlertSeverity() {
-        return (org.ccsds.moims.mo.mal.structures.UOctet) valueByName("alertSeverity");
+    public UOctet getAlertSeverity() {
+        return (UOctet) valueByName("alertSeverity");
     }
 
     /**
@@ -70,7 +81,7 @@ public final class MonitorAlertSubscriptionKeys {
      * @param name The Subscription Key name
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getByName(String name) {
+    public Attribute getByName(String name) {
         return valueByName(name);
     }
 
@@ -78,7 +89,7 @@ public final class MonitorAlertSubscriptionKeys {
      * 
      * @param name The Subscription Key name
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute valueByName(String name) {
+    private Attribute valueByName(String name) {
         if (keyNames == null || keyValues == null) {
             return null;
         }
@@ -87,7 +98,7 @@ public final class MonitorAlertSubscriptionKeys {
                 if (i >= keyValues.size()) {
                     return null;
                 }
-                org.ccsds.moims.mo.mal.structures.NullableAttribute na = keyValues.get(i);
+                NullableAttribute na = keyValues.get(i);
                 return (na == null) ? null : na.getValue();
             }
         }

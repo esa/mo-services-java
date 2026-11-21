@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>15.0</version>
+        <version>15.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>transport-http</artifactId>
     <packaging>jar</packaging>
-    <version>15.0</version>
+    <version>15.1</version>
 
     <name>ESA MO Transport - HTTP</name>
     <description>A Java HTTP transport for CCSDS MAL</description>
@@ -80,22 +80,22 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.57.v20241219</version>
+            <version>9.4.58.v20250814</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.57.v20241219</version>
+            <version>9.4.58.v20250814</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-continuation</artifactId>
-            <version>9.4.57.v20241219</version>
+            <version>9.4.58.v20250814</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
-            <version>9.4.57.v20241219</version>
+            <version>9.4.58.v20250814</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

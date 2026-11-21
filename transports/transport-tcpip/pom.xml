@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>15.0</version>
+        <version>15.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transport-tcpip</artifactId>
-    <version>15.0</version>
+    <version>15.1</version>
     <packaging>jar</packaging>
 
     <name>ESA MO Transport - TCP/IP</name>
@@ -91,6 +91,11 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>encoding-binary</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
  

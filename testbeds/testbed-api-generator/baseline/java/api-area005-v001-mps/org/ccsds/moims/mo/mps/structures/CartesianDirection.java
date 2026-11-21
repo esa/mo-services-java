@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: Dimensionless unit vector.  Either a direction in the base frame or
  * in a secondary frame may be defined.
  */
-public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.Direction {
+public final class CartesianDirection extends Direction {
 
     private static final long serialVersionUID = 1407374900330510L;
     /**
@@ -14,7 +21,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Cartesian x coordinate defined in the given frame.
@@ -34,7 +41,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     /**
      * Reference frame within which the direction is expressed (see 4.4.2).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier frame;
+    private Identifier frame;
 
     /**
      * Default constructor for CartesianDirection.
@@ -54,7 +61,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     public CartesianDirection(Double x,
             Double y,
             Double z,
-            org.ccsds.moims.mo.mal.structures.Identifier frame) {
+            Identifier frame) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -62,8 +69,8 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.CartesianDirection();
+    public Element createElement() {
+        return new CartesianDirection();
     }
 
     /**
@@ -98,7 +105,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field frame
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFrame() {
+    public Identifier getFrame() {
         return frame;
     }
 
@@ -174,19 +181,19 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (x == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'x' cannot be null!");
+            throw new MALException("The field 'x' cannot be null!");
         }
         if (y == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'y' cannot be null!");
+            throw new MALException("The field 'y' cannot be null!");
         }
         if (z == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'z' cannot be null!");
+            throw new MALException("The field 'z' cannot be null!");
         }
         if (frame == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'frame' cannot be null!");
+            throw new MALException("The field 'frame' cannot be null!");
         }
         encoder.encodeDouble(x);
         encoder.encodeDouble(y);
@@ -195,7 +202,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         x = decoder.decodeDouble();
         y = decoder.decodeDouble();
@@ -205,7 +212,7 @@ public final class CartesianDirection extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

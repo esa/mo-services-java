@@ -1,5 +1,19 @@
 package org.ccsds.moims.mo.common.configuration.provider;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.com.structures.ObjectId;
+import org.ccsds.moims.mo.com.structures.ObjectIdList;
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.common.configuration.structures.ConfigurationType;
+import org.ccsds.moims.mo.common.structures.ServiceKey;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.File;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+
 /**
  * Interface that providers of the Configuration service must implement to
  * handle the operations of that service.
@@ -17,13 +31,13 @@ An UNKNOWN error shall be returned if the object instance identifier held in the
 An INVALID error shall be returned if the object instance identifier held in the configObjId field does not reference either a ProviderConfiguration or ServiceConfiguration object.
 If the object instance identifier held in the configObjId field does not reference a valid configuration for the service provider an INVALID error shall be returned. A valid configuration is one that is returned from the list operation for the matched service provider.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Requested configuration is unknown.
-     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is invalid.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Requested configuration is unknown.
+     * @throws InvalidException Requested configuration is invalid.
+     * @throws MALException if there is an implementation exception
      */
-    void activate(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.com.structures.ObjectId configObjId,
-            org.ccsds.moims.mo.common.configuration.provider.ActivateInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    void activate(ObjectKey serviceProvider,
+            ObjectId configObjId,
+            ActivateInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Implements the operation list.
      * 
@@ -36,13 +50,13 @@ Wildcard values of '0' are not accepted in the serviceKey fields, an INVALID err
 For other types of configuration the serviceKey field shall be ignored and may be set to NULL in the request.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is not a valid configuration object type or wildcard values were specified in the service key filter.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Requested configuration is not a valid configuration object type or wildcard values were specified in the service key filter.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.com.structures.ObjectIdList list(org.ccsds.moims.mo.common.configuration.structures.ConfigurationType configurationType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ObjectIdList list(ConfigurationType configurationType,
+            IdentifierList domain,
+            ServiceKey serviceKey,
+            MALInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation getCurrent.
      * 
@@ -53,13 +67,13 @@ An UNKNOWN error shall be returned if the combination of service provider and se
 No wildcards are supported, an INVALID error must be returned in this case.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException The request contained one or more wildcards.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Requested service provider and service key combination is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException The request contained one or more wildcards.
+     * @throws UnknownException Requested service provider and service key combination is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.com.structures.ObjectIdList getCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    ObjectIdList getCurrent(ObjectKey serviceProvider,
+            ServiceKey serviceKey,
+            MALInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Implements the operation exportXML.
      * 
@@ -71,14 +85,14 @@ An INVALID error shall be returned if the confObjId refers to either a hard-code
      * @param returnComplete The returnComplete Boolean shall be set to True if the returned XML is to be in the complete standardised format, otherwise it will be in the compact standardised format.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is not a valid configuration object type.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Requested object is unknown.
-     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Requested configuration is not a valid configuration object type.
+     * @throws UnknownException Requested object is unknown.
+     * @throws UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.File exportXML(org.ccsds.moims.mo.com.structures.ObjectId confObjId,
+    File exportXML(ObjectId confObjId,
             Boolean returnComplete,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws InvalidException, UnknownException, UnsupportedOperationException, MALException;
     /**
      * Implements the operation add.
      * 
@@ -89,14 +103,14 @@ If either the service provider or the configuration objects are unknown then an 
 If any of the supplied configuration objects are not provider or service configuration objects then an INVALID error shall be returned.
 If an error is raised then no new configurations shall be added as a result of this operation call.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
-     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied service or configuration object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
+     * @throws UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws UnknownException One of the supplied service or configuration object instance identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    void add(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void add(ObjectKey serviceProvider,
+            ObjectIdList configObjIds,
+            MALInteraction interaction) throws InvalidException, UnsupportedOperationException, UnknownException, MALException;
     /**
      * Implements the operation remove.
      * 
@@ -108,14 +122,14 @@ If any of the supplied configuration objects are not provider or service configu
 If an error is raised then no configurations shall be removed as a result of this operation call.
 Matched configuration objects shall not be removed from the COM archive only the list of configuration objects in the provider.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Either the service provider or one of the supplied configuration object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
-     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Either the service provider or one of the supplied configuration object instance identifiers is unknown.
+     * @throws InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
+     * @throws UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws MALException if there is an implementation exception
      */
-    void remove(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.MALException;
+    void remove(ObjectKey serviceProvider,
+            ObjectIdList configObjIds,
+            MALInteraction interaction) throws UnknownException, InvalidException, UnsupportedOperationException, MALException;
     /**
      * Implements the operation storeCurrent.
      * 
@@ -131,15 +145,15 @@ Once the relevant service provider has finished storing its configuration it sha
 If the request is for a hard-coded configuration then the relevant service provider must fail the store request by returning a NULL as a response.
      * @param autoAdd If the autoAdd field is set to TRUE then, once the stored event has been published, and if it indicates success, the configuration service provider shall add the new configuration to the list of available configurations for the selected service provider. In effect call the add operation.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException Not a valid Service or Provider object
-     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
-     * @throws org.ccsds.moims.mo.mal.UnknownException The service provider referenced is not known or the referenced service is not known by the provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException Not a valid Service or Provider object
+     * @throws UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws UnknownException The service provider referenced is not known or the referenced service is not known by the provider.
+     * @throws MALException if there is an implementation exception
      */
-    void storeCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
+    void storeCurrent(ObjectKey serviceProvider,
+            ServiceKey serviceKey,
             Boolean autoAdd,
-            org.ccsds.moims.mo.common.configuration.provider.StoreCurrentInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+            StoreCurrentInteraction interaction) throws InvalidException, UnsupportedOperationException, UnknownException, MALException;
     /**
      * Implements the operation importXML.
      * 
@@ -154,17 +168,17 @@ The newly generated Configuration object should be checked for consistency. An I
 If an error is raised then no objects shall be stored in the COM archive and operation shall end.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
-     * @throws org.ccsds.moims.mo.com.DuplicateException The supplied XML contains a duplicate object definition that is different to the one held in the COM Archive.
-     * @throws org.ccsds.moims.mo.com.InvalidException The supplied XML was not valid.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws DuplicateException The supplied XML contains a duplicate object definition that is different to the one held in the COM Archive.
+     * @throws InvalidException The supplied XML was not valid.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.com.structures.ObjectId importXML(org.ccsds.moims.mo.mal.structures.File xmlFile,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ObjectId importXML(File xmlFile,
+            MALInteraction interaction) throws UnsupportedOperationException, DuplicateException, InvalidException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.common.configuration.provider.ConfigurationSkeleton skeleton);
+    void setSkeleton(ConfigurationSkeleton skeleton);
 }

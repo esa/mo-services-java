@@ -1,23 +1,29 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E5: ResourceConstraint is an abstract type that represents a constraint
  * expressed in terms of the value of a given Resource.
  */
-public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public abstract class ResourceConstraint extends Constraint {
 
     /**
      * Identifies the planning resource that is constrained for the duration of
      * the planning activity.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef;
+    private ObjectRef<Resource> resourceRef;
 
     /**
      * Comparison operator, which may be one of: =, !=, _, _=, _, _=, contains,
      * icontains. The contains operator only applies to strings and may be case
      * sensitive or insensitive.
      */
-    private org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum comparator;
+    private ExpressionOperatorEnum comparator;
 
     /**
      * Default constructor for ResourceConstraint.
@@ -34,8 +40,8 @@ public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structur
      * @param comparator Comparison operator, which may be one of: =, !=, _, _=, _, _=, contains, icontains. The contains operator only applies to strings and may be case sensitive or insensitive.
      */
     public ResourceConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum comparator) {
+            ObjectRef<Resource> resourceRef,
+            ExpressionOperatorEnum comparator) {
         super(negate);
         this.resourceRef = resourceRef;
         this.comparator = comparator;
@@ -47,8 +53,8 @@ public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structur
      * @param resourceRef Identifies the planning resource that is constrained for the duration of the planning activity.
      * @param comparator Comparison operator, which may be one of: =, !=, _, _=, _, _=, contains, icontains. The contains operator only applies to strings and may be case sensitive or insensitive.
      */
-    public ResourceConstraint(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum comparator) {
+    public ResourceConstraint(ObjectRef<Resource> resourceRef,
+            ExpressionOperatorEnum comparator) {
         this.resourceRef = resourceRef;
         this.comparator = comparator;
     }
@@ -58,7 +64,7 @@ public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structur
      * 
      * @return The field resourceRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> getResourceRef() {
+    public ObjectRef<Resource> getResourceRef() {
         return resourceRef;
     }
 
@@ -67,7 +73,7 @@ public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structur
      * 
      * @return The field comparator
      */
-    public org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum getComparator() {
+    public ExpressionOperatorEnum getComparator() {
         return comparator;
     }
 
@@ -121,23 +127,23 @@ public abstract class ResourceConstraint extends org.ccsds.moims.mo.mps.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (resourceRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'resourceRef' cannot be null!");
+            throw new MALException("The field 'resourceRef' cannot be null!");
         }
         if (comparator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'comparator' cannot be null!");
+            throw new MALException("The field 'comparator' cannot be null!");
         }
         encoder.encodeElement(resourceRef);
         encoder.encodeElement(comparator);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        resourceRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource>());
-        comparator = (org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.EQUAL);
+        resourceRef = (ObjectRef<Resource>) decoder.decodeElement(new ObjectRef<Resource>());
+        comparator = (ExpressionOperatorEnum) decoder.decodeElement(ExpressionOperatorEnum.EQUAL);
         return this;
     }
 

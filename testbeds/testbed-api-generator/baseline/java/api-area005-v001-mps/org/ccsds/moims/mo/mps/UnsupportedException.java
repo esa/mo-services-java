@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The UnsupportedException exception. An optional data structure used in
  * the message is not supported by the service provider.
  */
-public final class UnsupportedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class UnsupportedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "UNSUPPORTED";
 

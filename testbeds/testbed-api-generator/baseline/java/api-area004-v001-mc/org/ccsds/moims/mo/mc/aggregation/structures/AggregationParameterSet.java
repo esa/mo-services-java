@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * The AggregationParameterSet structure holds the identifier and optional
  * filter for a parameter, or set of parameters, in an aggregation.
  */
-public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationParameterSet implements Composite {
 
     private static final long serialVersionUID = 1125925693423618L;
     /**
@@ -14,33 +24,33 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The domain of the parameters being referenced in this set of parameters,
      * NULL if the same domain as the aggregation.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The list of object instance identifiers of the ParameterIdentity objects
      * being included in the aggregation.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList parameters;
+    private LongList parameters;
 
     /**
      * The interval between samples of the parameters in the set. If &quot;0&quot;
      * then just a single sample of the parameters is required per aggregation
      * report.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration sampleInterval;
+    private Duration sampleInterval;
 
     /**
      * If the AggregationParameterSet contains a single parameter then this field
      * contains the filter to apply for filtered reports when filters are applied.
      * NULL if no filter required or this set contains more than one parameter.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter reportFilter;
+    private ThresholdFilter reportFilter;
 
     /**
      * Default constructor for AggregationParameterSet.
@@ -57,10 +67,10 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * @param sampleInterval The interval between samples of the parameters in the set. If '0' then just a single sample of the parameters is required per aggregation report.
      * @param reportFilter If the AggregationParameterSet contains a single parameter then this field contains the filter to apply for filtered reports when filters are applied. NULL if no filter required or this set contains more than one parameter.
      */
-    public AggregationParameterSet(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList parameters,
-            org.ccsds.moims.mo.mal.structures.Duration sampleInterval,
-            org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter reportFilter) {
+    public AggregationParameterSet(IdentifierList domain,
+            LongList parameters,
+            Duration sampleInterval,
+            ThresholdFilter reportFilter) {
         this.domain = domain;
         this.parameters = parameters;
         this.sampleInterval = sampleInterval;
@@ -73,8 +83,8 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * @param parameters The list of object instance identifiers of the ParameterIdentity objects being included in the aggregation.
      * @param sampleInterval The interval between samples of the parameters in the set. If '0' then just a single sample of the parameters is required per aggregation report.
      */
-    public AggregationParameterSet(org.ccsds.moims.mo.mal.structures.LongList parameters,
-            org.ccsds.moims.mo.mal.structures.Duration sampleInterval) {
+    public AggregationParameterSet(LongList parameters,
+            Duration sampleInterval) {
         this.domain = null;
         this.parameters = parameters;
         this.sampleInterval = sampleInterval;
@@ -82,8 +92,8 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSet();
+    public Element createElement() {
+        return new AggregationParameterSet();
     }
 
     /**
@@ -91,7 +101,7 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -100,7 +110,7 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field parameters
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getParameters() {
+    public LongList getParameters() {
         return parameters;
     }
 
@@ -109,7 +119,7 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field sampleInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getSampleInterval() {
+    public Duration getSampleInterval() {
         return sampleInterval;
     }
 
@@ -118,7 +128,7 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field reportFilter
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter getReportFilter() {
+    public ThresholdFilter getReportFilter() {
         return reportFilter;
     }
 
@@ -190,12 +200,12 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (parameters == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameters' cannot be null!");
+            throw new MALException("The field 'parameters' cannot be null!");
         }
         if (sampleInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sampleInterval' cannot be null!");
+            throw new MALException("The field 'sampleInterval' cannot be null!");
         }
         encoder.encodeNullableElement(domain);
         encoder.encodeElement(parameters);
@@ -204,16 +214,16 @@ public final class AggregationParameterSet implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        parameters = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        parameters = (LongList) decoder.decodeElement(new LongList());
         sampleInterval = decoder.decodeDuration();
-        reportFilter = (org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter());
+        reportFilter = (ThresholdFilter) decoder.decodeNullableElement(new ThresholdFilter());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

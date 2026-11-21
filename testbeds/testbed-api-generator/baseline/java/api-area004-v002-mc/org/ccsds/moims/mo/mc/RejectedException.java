@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The RejectedException exception. The operation has been rejected due to
  * policy or validation rules.
  */
-public final class RejectedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class RejectedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Rejected";
 

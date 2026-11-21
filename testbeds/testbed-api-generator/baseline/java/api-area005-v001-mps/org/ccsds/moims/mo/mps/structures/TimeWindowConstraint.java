@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E2: A time window within which the planning activity is to be planned.
  */
-public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class TimeWindowConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330529L;
     /**
@@ -13,7 +19,7 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The point in the duration of the activity that is constrained to be after
@@ -21,7 +27,7 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * activity (0), this can be any point up to the end of the activity (1).
      * Default is the start of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * The point in the duration of the activity that is constrained to be before
@@ -29,13 +35,13 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * (1), this can be any point up to the start of the activity (0). Default
      * is the end of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * The [set of] TimeWindows within which the activity must be placed on the
      * Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindowList timeWindows;
+    private TimeWindowList timeWindows;
 
     /**
      * Default constructor for TimeWindowConstraint.
@@ -53,9 +59,9 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * @param timeWindows The [set of] TimeWindows within which the activity must be placed on the Plan.
      */
     public TimeWindowConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mps.structures.TimeWindowList timeWindows) {
+            Slider startRef,
+            Slider endRef,
+            TimeWindowList timeWindows) {
         super(negate);
         this.startRef = startRef;
         this.endRef = endRef;
@@ -67,15 +73,15 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @param timeWindows The [set of] TimeWindows within which the activity must be placed on the Plan.
      */
-    public TimeWindowConstraint(org.ccsds.moims.mo.mps.structures.TimeWindowList timeWindows) {
+    public TimeWindowConstraint(TimeWindowList timeWindows) {
         this.startRef = null;
         this.endRef = null;
         this.timeWindows = timeWindows;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.TimeWindowConstraint();
+    public Element createElement() {
+        return new TimeWindowConstraint();
     }
 
     /**
@@ -83,7 +89,7 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -92,7 +98,7 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -101,7 +107,7 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field timeWindows
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindowList getTimeWindows() {
+    public TimeWindowList getTimeWindows() {
         return timeWindows;
     }
 
@@ -166,10 +172,10 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (timeWindows == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timeWindows' cannot be null!");
+            throw new MALException("The field 'timeWindows' cannot be null!");
         }
         encoder.encodeNullableElement(startRef);
         encoder.encodeNullableElement(endRef);
@@ -177,16 +183,16 @@ public final class TimeWindowConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        timeWindows = (org.ccsds.moims.mo.mps.structures.TimeWindowList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.TimeWindowList());
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        timeWindows = (TimeWindowList) decoder.decodeElement(new TimeWindowList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

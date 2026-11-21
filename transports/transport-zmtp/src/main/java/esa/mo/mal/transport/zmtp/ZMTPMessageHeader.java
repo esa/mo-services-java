@@ -489,4 +489,31 @@ public class ZMTPMessageHeader extends MALMessageHeader {
     public void setEncodingExtendedId(short encodingExtendedId) {
         this.encodingExtendedId = encodingExtendedId;
     }
+
+    /**
+     * Returns the identifier of the encoding of the message body. The two-bit
+     * field holds identifiers 0 to 2; the value 3 defers to the extended
+     * identifier.
+     *
+     * @return the body encoding identifier.
+     */
+    public int getBodyEncodingId() {
+        return encodingId < 3 ? encodingId : encodingExtendedId;
+    }
+
+    /**
+     * Sets the identifier of the encoding of the message body, in the two-bit
+     * field if it fits, otherwise as 3 followed by the extended identifier.
+     *
+     * @param id The body encoding identifier.
+     */
+    public void setBodyEncodingId(int id) {
+        if (id < 3) {
+            encodingId = (byte) id;
+            encodingExtendedId = 0;
+        } else {
+            encodingId = 3;
+            encodingExtendedId = (short) id;
+        }
+    }
 }

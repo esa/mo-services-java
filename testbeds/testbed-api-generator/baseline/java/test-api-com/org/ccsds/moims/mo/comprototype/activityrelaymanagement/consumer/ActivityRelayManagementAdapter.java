@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+
 /**
  * Consumer adapter for ActivityRelayManagement service.
  */
-public abstract class ActivityRelayManagementAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class ActivityRelayManagementAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a SUBMIT acknowledgement is received from a provider
@@ -12,8 +20,8 @@ public abstract class ActivityRelayManagementAdapter extends org.ccsds.moims.mo.
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void resetTestAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +32,9 @@ public abstract class ActivityRelayManagementAdapter extends org.ccsds.moims.mo.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void resetTestErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -36,8 +44,8 @@ public abstract class ActivityRelayManagementAdapter extends org.ccsds.moims.mo.
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void createRelayAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void createRelayAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -48,39 +56,39 @@ public abstract class ActivityRelayManagementAdapter extends org.ccsds.moims.mo.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void createRelayErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void createRelayErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo._RESETTEST_OP_NUMBER:
+          case ActivityRelayManagementServiceInfo._RESETTEST_OP_NUMBER:
             resetTestAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo._CREATERELAY_OP_NUMBER:
+          case ActivityRelayManagementServiceInfo._CREATERELAY_OP_NUMBER:
             createRelayAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo._RESETTEST_OP_NUMBER:
+          case ActivityRelayManagementServiceInfo._RESETTEST_OP_NUMBER:
             resetTestErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo._CREATERELAY_OP_NUMBER:
+          case ActivityRelayManagementServiceInfo._CREATERELAY_OP_NUMBER:
             createRelayErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

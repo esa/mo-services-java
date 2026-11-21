@@ -1,11 +1,24 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The ProductMetadata comprises the metadata of the product (without the
  * product body) and is used when returning a list of available products for
  * retrieval. A ProductMetadata is associated to a specific Product.
  */
-public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProductMetadata implements Composite {
 
     private static final long serialVersionUID = 2533274807173124L;
     /**
@@ -15,44 +28,44 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The product type definition.
      */
-    private org.ccsds.moims.mo.mpd.structures.ProductType productType;
+    private ProductType productType;
 
     /**
      * The reference to the Product.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product> productRef;
+    private ObjectRef<Product> productRef;
 
     /**
      * The time at which the product was generated.
      */
-    private org.ccsds.moims.mo.mal.structures.Time creationDate;
+    private Time creationDate;
 
     /**
      * The source that triggered the generation of the product.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier source;
+    private Identifier source;
 
     /**
      * An external URI for the products to be retrieved. For example, this can
      * be used for pulling a mission data product file via a HTTP URL link.
      */
-    private org.ccsds.moims.mo.mal.structures.URI externalURI;
+    private URI externalURI;
 
     /**
      * Period of time to which the source data used to generate the product relates.
      */
-    private org.ccsds.moims.mo.mpd.structures.TimeWindow contentDate;
+    private TimeWindow contentDate;
 
     /**
      * Named values for metadata attributes whose name and type correspond to
      * those defined in the referenced ProductType.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList attributes;
+    private NamedValueList attributes;
 
     /**
      * The textual description of this specific occurrence of the product.
@@ -62,14 +75,14 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
     /**
      * Additional optional metadata for files.
      */
-    private org.ccsds.moims.mo.mpd.structures.FileMetadata fileMetadata;
+    private FileMetadata fileMetadata;
 
     /**
      * An optional checksum of the product body. If this functionality is enabled,
      * then the checksum algorithm for the calculation shall be agreed as an out-of-band
      * agreement.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob checksum;
+    private Blob checksum;
 
     /**
      * Default constructor for ProductMetadata.
@@ -92,16 +105,16 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * @param fileMetadata Additional optional metadata for files.
      * @param checksum An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.
      */
-    public ProductMetadata(org.ccsds.moims.mo.mpd.structures.ProductType productType,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product> productRef,
-            org.ccsds.moims.mo.mal.structures.Time creationDate,
-            org.ccsds.moims.mo.mal.structures.Identifier source,
-            org.ccsds.moims.mo.mal.structures.URI externalURI,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow contentDate,
-            org.ccsds.moims.mo.mal.structures.NamedValueList attributes,
+    public ProductMetadata(ProductType productType,
+            ObjectRef<Product> productRef,
+            Time creationDate,
+            Identifier source,
+            URI externalURI,
+            TimeWindow contentDate,
+            NamedValueList attributes,
             String description,
-            org.ccsds.moims.mo.mpd.structures.FileMetadata fileMetadata,
-            org.ccsds.moims.mo.mal.structures.Blob checksum) {
+            FileMetadata fileMetadata,
+            Blob checksum) {
         this.productType = productType;
         this.productRef = productRef;
         this.creationDate = creationDate;
@@ -122,10 +135,10 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * @param creationDate The time at which the product was generated.
      * @param contentDate Period of time to which the source data used to generate the product relates.
      */
-    public ProductMetadata(org.ccsds.moims.mo.mpd.structures.ProductType productType,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product> productRef,
-            org.ccsds.moims.mo.mal.structures.Time creationDate,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow contentDate) {
+    public ProductMetadata(ProductType productType,
+            ObjectRef<Product> productRef,
+            Time creationDate,
+            TimeWindow contentDate) {
         this.productType = productType;
         this.productRef = productRef;
         this.creationDate = creationDate;
@@ -139,8 +152,8 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.ProductMetadata();
+    public Element createElement() {
+        return new ProductMetadata();
     }
 
     /**
@@ -148,7 +161,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field productType
      */
-    public org.ccsds.moims.mo.mpd.structures.ProductType getProductType() {
+    public ProductType getProductType() {
         return productType;
     }
 
@@ -157,7 +170,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field productRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product> getProductRef() {
+    public ObjectRef<Product> getProductRef() {
         return productRef;
     }
 
@@ -166,7 +179,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field creationDate
      */
-    public org.ccsds.moims.mo.mal.structures.Time getCreationDate() {
+    public Time getCreationDate() {
         return creationDate;
     }
 
@@ -175,7 +188,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSource() {
+    public Identifier getSource() {
         return source;
     }
 
@@ -184,7 +197,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field externalURI
      */
-    public org.ccsds.moims.mo.mal.structures.URI getExternalURI() {
+    public URI getExternalURI() {
         return externalURI;
     }
 
@@ -193,7 +206,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field contentDate
      */
-    public org.ccsds.moims.mo.mpd.structures.TimeWindow getContentDate() {
+    public TimeWindow getContentDate() {
         return contentDate;
     }
 
@@ -202,7 +215,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field attributes
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getAttributes() {
+    public NamedValueList getAttributes() {
         return attributes;
     }
 
@@ -220,7 +233,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field fileMetadata
      */
-    public org.ccsds.moims.mo.mpd.structures.FileMetadata getFileMetadata() {
+    public FileMetadata getFileMetadata() {
         return fileMetadata;
     }
 
@@ -229,7 +242,7 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field checksum
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getChecksum() {
+    public Blob getChecksum() {
         return checksum;
     }
 
@@ -367,18 +380,18 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (productType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'productType' cannot be null!");
+            throw new MALException("The field 'productType' cannot be null!");
         }
         if (productRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'productRef' cannot be null!");
+            throw new MALException("The field 'productRef' cannot be null!");
         }
         if (creationDate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'creationDate' cannot be null!");
+            throw new MALException("The field 'creationDate' cannot be null!");
         }
         if (contentDate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'contentDate' cannot be null!");
+            throw new MALException("The field 'contentDate' cannot be null!");
         }
         encoder.encodeElement(productType);
         encoder.encodeElement(productRef);
@@ -393,22 +406,22 @@ public final class ProductMetadata implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        productType = (org.ccsds.moims.mo.mpd.structures.ProductType) decoder.decodeElement(new org.ccsds.moims.mo.mpd.structures.ProductType());
-        productRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mpd.structures.Product>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        productType = (ProductType) decoder.decodeElement(new ProductType());
+        productRef = (ObjectRef<Product>) decoder.decodeElement(new ObjectRef<Product>());
         creationDate = decoder.decodeTime();
         source = decoder.decodeNullableIdentifier();
         externalURI = decoder.decodeNullableURI();
-        contentDate = (org.ccsds.moims.mo.mpd.structures.TimeWindow) decoder.decodeElement(new org.ccsds.moims.mo.mpd.structures.TimeWindow());
-        attributes = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+        contentDate = (TimeWindow) decoder.decodeElement(new TimeWindow());
+        attributes = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
         description = decoder.decodeNullableString();
-        fileMetadata = (org.ccsds.moims.mo.mpd.structures.FileMetadata) decoder.decodeNullableElement(new org.ccsds.moims.mo.mpd.structures.FileMetadata());
+        fileMetadata = (FileMetadata) decoder.decodeNullableElement(new FileMetadata());
         checksum = decoder.decodeNullableBlob();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

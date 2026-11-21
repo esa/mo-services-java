@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * This structure holds a specific time stamped value of the aggregation.
  * .
  */
-public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationValueDetails implements Composite {
 
     private static final long serialVersionUID = 1125925693423627L;
     /**
@@ -14,7 +22,7 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The AggregationIdentity object instance identifier.
@@ -30,12 +38,12 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
      * The timestamp of the value. Use for the calculation of the individual parameter
      * value timestamps.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The aggregation value.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue value;
+    private AggregationValue value;
 
     /**
      * Default constructor for AggregationValueDetails.
@@ -54,8 +62,8 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
      */
     public AggregationValueDetails(Long aggId,
             Long defId,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue value) {
+            Time timestamp,
+            AggregationValue value) {
         this.aggId = aggId;
         this.defId = defId;
         this.timestamp = timestamp;
@@ -63,8 +71,8 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationValueDetails();
+    public Element createElement() {
+        return new AggregationValueDetails();
     }
 
     /**
@@ -90,7 +98,7 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -99,7 +107,7 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue getValue() {
+    public AggregationValue getValue() {
         return value;
     }
 
@@ -171,18 +179,18 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (aggId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'aggId' cannot be null!");
+            throw new MALException("The field 'aggId' cannot be null!");
         }
         if (defId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'defId' cannot be null!");
+            throw new MALException("The field 'defId' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeLong(aggId);
         encoder.encodeLong(defId);
@@ -191,16 +199,16 @@ public final class AggregationValueDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         aggId = decoder.decodeLong();
         defId = decoder.decodeLong();
         timestamp = decoder.decodeTime();
-        value = (org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue());
+        value = (AggregationValue) decoder.decodeElement(new AggregationValue());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

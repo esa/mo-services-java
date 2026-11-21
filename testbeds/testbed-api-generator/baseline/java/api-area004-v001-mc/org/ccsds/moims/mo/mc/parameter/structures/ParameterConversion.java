@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mc.structures.ConditionalConversionList;
+
 /**
  * The ParameterConversion structure holds information about the conversions
  * to be applied to a parameter.
  */
-public final class ParameterConversion implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterConversion implements Composite {
 
     private static final long serialVersionUID = 1125908513554435L;
     /**
@@ -14,7 +22,7 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Holds the attribute short form part of the converted type of the parameter,
@@ -31,7 +39,7 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
      * The conversions to be applied. Only the first TRUE conversion should be
      * applied.
      */
-    private org.ccsds.moims.mo.mc.structures.ConditionalConversionList conditionalConversions;
+    private ConditionalConversionList conditionalConversions;
 
     /**
      * Default constructor for ParameterConversion.
@@ -49,7 +57,7 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
      */
     public ParameterConversion(Byte convertedType,
             String convertedUnit,
-            org.ccsds.moims.mo.mc.structures.ConditionalConversionList conditionalConversions) {
+            ConditionalConversionList conditionalConversions) {
         this.convertedType = convertedType;
         this.convertedUnit = convertedUnit;
         this.conditionalConversions = conditionalConversions;
@@ -62,15 +70,15 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
      * @param conditionalConversions The conversions to be applied. Only the first TRUE conversion should be applied.
      */
     public ParameterConversion(Byte convertedType,
-            org.ccsds.moims.mo.mc.structures.ConditionalConversionList conditionalConversions) {
+            ConditionalConversionList conditionalConversions) {
         this.convertedType = convertedType;
         this.convertedUnit = null;
         this.conditionalConversions = conditionalConversions;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion();
+    public Element createElement() {
+        return new ParameterConversion();
     }
 
     /**
@@ -96,7 +104,7 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field conditionalConversions
      */
-    public org.ccsds.moims.mo.mc.structures.ConditionalConversionList getConditionalConversions() {
+    public ConditionalConversionList getConditionalConversions() {
         return conditionalConversions;
     }
 
@@ -157,12 +165,12 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (convertedType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'convertedType' cannot be null!");
+            throw new MALException("The field 'convertedType' cannot be null!");
         }
         if (conditionalConversions == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'conditionalConversions' cannot be null!");
+            throw new MALException("The field 'conditionalConversions' cannot be null!");
         }
         encoder.encodeOctet(convertedType);
         encoder.encodeNullableString(convertedUnit);
@@ -170,15 +178,15 @@ public final class ParameterConversion implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         convertedType = decoder.decodeOctet();
         convertedUnit = decoder.decodeNullableString();
-        conditionalConversions = (org.ccsds.moims.mo.mc.structures.ConditionalConversionList) decoder.decodeElement(new org.ccsds.moims.mo.mc.structures.ConditionalConversionList());
+        conditionalConversions = (ConditionalConversionList) decoder.decodeElement(new ConditionalConversionList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,23 @@
 package org.ccsds.moims.mo.mc.action.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
+import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.action.ActionServiceInfo;
+import org.ccsds.moims.mo.mc.structures.ActionEvent;
+
 /**
  * Consumer adapter for Action service.
  */
-public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class ActionAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a SUBMIT acknowledgement is received from a provider
@@ -12,8 +26,8 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void executeAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void executeAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +38,9 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void executeErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void executeErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -36,8 +50,8 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorExecutionRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorExecutionRegisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -48,9 +62,9 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorExecutionRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorExecutionRegisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -60,8 +74,8 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorExecutionDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorExecutionDeregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -75,12 +89,12 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param progressEvent The progressEvent field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorExecutionNotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
-            org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+    public void monitorExecutionNotifyReceived(MALMessageHeader msgHeader,
+            Identifier subscriptionId,
+            UpdateHeader updateHeader,
             MonitorExecutionSubscriptionKeys keys,
-            org.ccsds.moims.mo.mc.structures.ActionEvent progressEvent,
-            java.util.Map qosProperties) {
+            ActionEvent progressEvent,
+            Map qosProperties) {
     }
 
     /**
@@ -91,77 +105,77 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorExecutionNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorExecutionNotifyErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._EXECUTE_OP_NUMBER:
+          case ActionServiceInfo._EXECUTE_OP_NUMBER:
             executeAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._EXECUTE_OP_NUMBER:
+          case ActionServiceInfo._EXECUTE_OP_NUMBER:
             executeErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
+          case ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
             monitorExecutionRegisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
+          case ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
             monitorExecutionRegisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void notifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
-        if ((org.ccsds.moims.mo.mc.MCHelper.MC_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (org.ccsds.moims.mo.mc.action.ActionServiceInfo.ACTION_SERVICE_NUMBER.equals(msgHeader.getService()))) {
+    public final void notifyReceived(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            IdentifierList selectedKeys,
+            Map qosProperties) throws MALException {
+        if ((MCHelper.MC_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (ActionServiceInfo.ACTION_SERVICE_NUMBER.equals(msgHeader.getService()))) {
           switch (msgHeader.getOperation().getValue()) {
-            case org.ccsds.moims.mo.mc.action.ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
+            case ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
               monitorExecutionNotifyReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Identifier) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Identifier()),
-                (org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()),
-                new MonitorExecutionSubscriptionKeys((org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()), selectedKeys),
-                (org.ccsds.moims.mo.mc.structures.ActionEvent) body.getBodyElement(2, null), qosProperties);
+                (Identifier) body.getBodyElement(0, new Identifier()),
+                (UpdateHeader) body.getBodyElement(1, new UpdateHeader()),
+                new MonitorExecutionSubscriptionKeys((UpdateHeader) body.getBodyElement(1, new UpdateHeader()), selectedKeys),
+                (ActionEvent) body.getBodyElement(2, null), qosProperties);
               break;
             default:
-              throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+              throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
           }
         }
         else {
@@ -170,27 +184,27 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
     }
 
     @Override
-    public final void notifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void notifyErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
+          case ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
             monitorExecutionNotifyErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void deregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void deregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
+          case ActionServiceInfo._MONITOREXECUTION_OP_NUMBER:
             monitorExecutionDeregisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
@@ -201,11 +215,11 @@ public abstract class ActionAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param body body The body of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
-     * @throws org.ccsds.moims.mo.mal.MALException if an error is detected processing the message.
+     * @throws MALException if an error is detected processing the message.
      */
-    public void notifyReceivedFromOtherService(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public void notifyReceivedFromOtherService(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            Map qosProperties) throws MALException {
     }
 
 }

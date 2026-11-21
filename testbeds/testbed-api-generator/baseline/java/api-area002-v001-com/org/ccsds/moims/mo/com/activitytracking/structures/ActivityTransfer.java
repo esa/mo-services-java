@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.com.activitytracking.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The structure holds details for a Release, Reception, or Forward event
  * of an activity.
  */
-public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActivityTransfer implements Composite {
 
     private static final long serialVersionUID = 562962855100417L;
     /**
@@ -14,7 +23,7 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The success result of this stage, TRUE if successful, FALSE otherwise.
@@ -28,13 +37,13 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
      * to be forwarded by this relay if Reception event. May be NULL if unknown
      * or cannot be calculated.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration estimateDuration;
+    private Duration estimateDuration;
 
     /**
      * This contains the URI of the next destination, either another relay or
      * the provider. It is protocol specific how this value is derived.
      */
-    private org.ccsds.moims.mo.mal.structures.URI nextDestination;
+    private URI nextDestination;
 
     /**
      * Default constructor for ActivityTransfer.
@@ -51,8 +60,8 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
      * @param nextDestination This contains the URI of the next destination, either another relay or the provider. It is protocol specific how this value is derived.
      */
     public ActivityTransfer(Boolean success,
-            org.ccsds.moims.mo.mal.structures.Duration estimateDuration,
-            org.ccsds.moims.mo.mal.structures.URI nextDestination) {
+            Duration estimateDuration,
+            URI nextDestination) {
         this.success = success;
         this.estimateDuration = estimateDuration;
         this.nextDestination = nextDestination;
@@ -70,8 +79,8 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer();
+    public Element createElement() {
+        return new ActivityTransfer();
     }
 
     /**
@@ -88,7 +97,7 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field estimateDuration
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getEstimateDuration() {
+    public Duration getEstimateDuration() {
         return estimateDuration;
     }
 
@@ -97,7 +106,7 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field nextDestination
      */
-    public org.ccsds.moims.mo.mal.structures.URI getNextDestination() {
+    public URI getNextDestination() {
         return nextDestination;
     }
 
@@ -158,9 +167,9 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (success == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'success' cannot be null!");
+            throw new MALException("The field 'success' cannot be null!");
         }
         encoder.encodeBoolean(success);
         encoder.encodeNullableDuration(estimateDuration);
@@ -168,7 +177,7 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         success = decoder.decodeBoolean();
         estimateDuration = decoder.decodeNullableDuration();
         nextDestination = decoder.decodeNullableURI();
@@ -176,7 +185,7 @@ public final class ActivityTransfer implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

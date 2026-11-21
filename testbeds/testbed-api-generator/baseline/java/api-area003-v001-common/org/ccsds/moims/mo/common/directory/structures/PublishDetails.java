@@ -1,10 +1,21 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FileList;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+
 /**
  * The PublishDetails structure holds all the required information to publish
  * new service provider details.
  */
-public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PublishDetails implements Composite {
 
     private static final long serialVersionUID = 844429241876486L;
     /**
@@ -14,44 +25,44 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The unique service provider id; allows multiple service providers of the
      * same service type to coexist in the directory service.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier providerId;
+    private Identifier providerId;
 
     /**
      * The domain of the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The type of session of the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.SessionType sessionType;
+    private SessionType sessionType;
 
     /**
      * If this is part of a replay session, this field holds the session name
      * of the source session. NULL otherwise.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sourceSessionName;
+    private Identifier sourceSessionName;
 
     /**
      * The network of the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier network;
+    private Identifier network;
 
     /**
      * The new service provider details.
      */
-    private org.ccsds.moims.mo.common.directory.structures.ProviderDetails providerDetails;
+    private ProviderDetails providerDetails;
 
     /**
      * The optional XML files to associate with this provider.
      */
-    private org.ccsds.moims.mo.mal.structures.FileList serviceXML;
+    private FileList serviceXML;
 
     /**
      * Default constructor for PublishDetails.
@@ -71,13 +82,13 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param providerDetails The new service provider details.
      * @param serviceXML The optional XML files to associate with this provider.
      */
-    public PublishDetails(org.ccsds.moims.mo.mal.structures.Identifier providerId,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sourceSessionName,
-            org.ccsds.moims.mo.mal.structures.Identifier network,
-            org.ccsds.moims.mo.common.directory.structures.ProviderDetails providerDetails,
-            org.ccsds.moims.mo.mal.structures.FileList serviceXML) {
+    public PublishDetails(Identifier providerId,
+            IdentifierList domain,
+            SessionType sessionType,
+            Identifier sourceSessionName,
+            Identifier network,
+            ProviderDetails providerDetails,
+            FileList serviceXML) {
         this.providerId = providerId;
         this.domain = domain;
         this.sessionType = sessionType;
@@ -96,11 +107,11 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param network The network of the provider.
      * @param providerDetails The new service provider details.
      */
-    public PublishDetails(org.ccsds.moims.mo.mal.structures.Identifier providerId,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier network,
-            org.ccsds.moims.mo.common.directory.structures.ProviderDetails providerDetails) {
+    public PublishDetails(Identifier providerId,
+            IdentifierList domain,
+            SessionType sessionType,
+            Identifier network,
+            ProviderDetails providerDetails) {
         this.providerId = providerId;
         this.domain = domain;
         this.sessionType = sessionType;
@@ -111,8 +122,8 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.PublishDetails();
+    public Element createElement() {
+        return new PublishDetails();
     }
 
     /**
@@ -120,7 +131,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field providerId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getProviderId() {
+    public Identifier getProviderId() {
         return providerId;
     }
 
@@ -129,7 +140,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -138,7 +149,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field sessionType
      */
-    public org.ccsds.moims.mo.mal.structures.SessionType getSessionType() {
+    public SessionType getSessionType() {
         return sessionType;
     }
 
@@ -147,7 +158,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field sourceSessionName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSourceSessionName() {
+    public Identifier getSourceSessionName() {
         return sourceSessionName;
     }
 
@@ -156,7 +167,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field network
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetwork() {
+    public Identifier getNetwork() {
         return network;
     }
 
@@ -165,7 +176,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field providerDetails
      */
-    public org.ccsds.moims.mo.common.directory.structures.ProviderDetails getProviderDetails() {
+    public ProviderDetails getProviderDetails() {
         return providerDetails;
     }
 
@@ -174,7 +185,7 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field serviceXML
      */
-    public org.ccsds.moims.mo.mal.structures.FileList getServiceXML() {
+    public FileList getServiceXML() {
         return serviceXML;
     }
 
@@ -279,21 +290,21 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (providerId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerId' cannot be null!");
+            throw new MALException("The field 'providerId' cannot be null!");
         }
         if (domain == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'domain' cannot be null!");
+            throw new MALException("The field 'domain' cannot be null!");
         }
         if (sessionType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sessionType' cannot be null!");
+            throw new MALException("The field 'sessionType' cannot be null!");
         }
         if (network == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'network' cannot be null!");
+            throw new MALException("The field 'network' cannot be null!");
         }
         if (providerDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerDetails' cannot be null!");
+            throw new MALException("The field 'providerDetails' cannot be null!");
         }
         encoder.encodeIdentifier(providerId);
         encoder.encodeElement(domain);
@@ -305,19 +316,19 @@ public final class PublishDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         providerId = decoder.decodeIdentifier();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        sessionType = (org.ccsds.moims.mo.mal.structures.SessionType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.SessionType.LIVE);
+        domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
+        sessionType = (SessionType) decoder.decodeElement(SessionType.LIVE);
         sourceSessionName = decoder.decodeNullableIdentifier();
         network = decoder.decodeIdentifier();
-        providerDetails = (org.ccsds.moims.mo.common.directory.structures.ProviderDetails) decoder.decodeElement(new org.ccsds.moims.mo.common.directory.structures.ProviderDetails());
-        serviceXML = (org.ccsds.moims.mo.mal.structures.FileList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.FileList());
+        providerDetails = (ProviderDetails) decoder.decodeElement(new ProviderDetails());
+        serviceXML = (FileList) decoder.decodeNullableElement(new FileList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

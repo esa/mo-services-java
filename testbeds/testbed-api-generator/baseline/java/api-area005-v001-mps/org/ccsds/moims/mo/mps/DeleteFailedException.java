@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DeleteFailedException exception. The deleteActivity or deleteEvent
  * operation failed to delete the requested object.
  */
-public final class DeleteFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DeleteFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "DELETE_FAILED";
 

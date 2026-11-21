@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The base structure for archive filters.
  */
-public abstract class QueryFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class QueryFilter implements Composite {
 
     /**
      * Default constructor for QueryFilter.
@@ -35,11 +41,11 @@ public abstract class QueryFilter implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         return this;
     }
 

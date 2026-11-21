@@ -32,6 +32,7 @@ public class HTTPHeaderAndBody {
     private final MALMessageHeader header;
     private final byte[] encodedPacketData;
     private final int statusCode;
+    private final int bodyEncodingId;
 
     /**
      * Constructor
@@ -39,11 +40,15 @@ public class HTTPHeaderAndBody {
      * @param header The message header.
      * @param encodedPacketData Encoded message body.
      * @param statusCode The status code.
+     * @param bodyEncodingId The body encoding identifier named by the HTTP
+     * headers.
      */
-    public HTTPHeaderAndBody(MALMessageHeader header, byte[] encodedPacketData, int statusCode) {
+    public HTTPHeaderAndBody(MALMessageHeader header, byte[] encodedPacketData, int statusCode,
+            int bodyEncodingId) {
         this.header = header;
         this.encodedPacketData = encodedPacketData;
         this.statusCode = statusCode;
+        this.bodyEncodingId = bodyEncodingId;
     }
 
     public MALMessageHeader getHeader() {
@@ -56,6 +61,10 @@ public class HTTPHeaderAndBody {
 
     public int getStatusCode() {
         return statusCode;
+    }
+
+    public int getBodyEncodingId() {
+        return bodyEncodingId;
     }
 
     @Override

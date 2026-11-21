@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.com.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ObjectDetails type is used to hold the extra information associated
  * with an object instance, namely the related and source links.
  */
-public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ObjectDetails implements Composite {
 
     private static final long serialVersionUID = 562949970198532L;
     /**
@@ -14,7 +21,7 @@ public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Contains the object instance identifier of a related object (e.g. the ActionDefinition
@@ -28,7 +35,7 @@ public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Co
      * An object which is at the origin of the object creation (e.g. the procedure
      * from which an action was triggered).
      */
-    private org.ccsds.moims.mo.com.structures.ObjectId source;
+    private ObjectId source;
 
     /**
      * Default constructor for ObjectDetails.
@@ -44,14 +51,14 @@ public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Co
      * @param source An object which is at the origin of the object creation (e.g. the procedure from which an action was triggered).
      */
     public ObjectDetails(Long related,
-            org.ccsds.moims.mo.com.structures.ObjectId source) {
+            ObjectId source) {
         this.related = related;
         this.source = source;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.structures.ObjectDetails();
+    public Element createElement() {
+        return new ObjectDetails();
     }
 
     /**
@@ -68,7 +75,7 @@ public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.com.structures.ObjectId getSource() {
+    public ObjectId getSource() {
         return source;
     }
 
@@ -118,20 +125,20 @@ public final class ObjectDetails implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableLong(related);
         encoder.encodeNullableElement(source);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         related = decoder.decodeNullableLong();
-        source = (org.ccsds.moims.mo.com.structures.ObjectId) decoder.decodeNullableElement(new org.ccsds.moims.mo.com.structures.ObjectId());
+        source = (ObjectId) decoder.decodeNullableElement(new ObjectId());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

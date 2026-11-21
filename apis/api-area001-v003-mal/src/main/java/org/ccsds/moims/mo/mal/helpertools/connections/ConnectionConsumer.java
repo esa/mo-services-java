@@ -220,11 +220,11 @@ public class ConnectionConsumer {
         Properties props = new Properties();
         props.putAll(System.getProperties());
 
-        tmConsumer = consumerMgr.createConsumer((String) null,
+        tmConsumer = consumerMgr.createConsumer(getLocalName(localNamePrefix),
                 uriP,
                 uriB,
                 malService,
-                new Blob("".getBytes()),
+                getAuthenticationId(authenticationId),
                 domain,
                 configuration.getNetwork(),
                 configuration.getSession(),
@@ -260,7 +260,7 @@ public class ConnectionConsumer {
         QoSLevel qosLevel = QoSLevel.BESTEFFORT;  // Worst case scenario
 
         for (QoSLevel entry : qosLevels) {  // Check if ASSURED is available
-            if (entry.equals(QoSLevel.BESTEFFORT)) {
+            if (entry.equals(QoSLevel.ASSURED)) {
                 qosLevel = entry;
             }
         }

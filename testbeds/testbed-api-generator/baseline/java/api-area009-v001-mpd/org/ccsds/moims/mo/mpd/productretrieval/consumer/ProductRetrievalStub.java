@@ -1,5 +1,25 @@
 package org.ccsds.moims.mo.mpd.productretrieval.consumer;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mpd.DeliveryFailedException;
+import org.ccsds.moims.mo.mpd.InvalidException;
+import org.ccsds.moims.mo.mpd.TooManyException;
+import org.ccsds.moims.mo.mpd.UnknownException;
+import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo;
+import org.ccsds.moims.mo.mpd.structures.ProductFilter;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
+import org.ccsds.moims.mo.mpd.structures.TimeWindow;
+
 /**
  * Consumer stub for ProductRetrieval service.
  */
@@ -8,7 +28,7 @@ public class ProductRetrievalStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +36,7 @@ public class ProductRetrievalStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public ProductRetrievalStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public ProductRetrievalStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +46,7 @@ public class ProductRetrievalStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -39,27 +59,27 @@ public class ProductRetrievalStub {
      * @param creationDate The time window used to filter products based on their creation date.
      * @param contentDate The time window used to filter products based on their content creation period.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mpd.InvalidException When a field in the message contains an invalid value.
-     * @throws org.ccsds.moims.mo.mpd.TooManyException When the list cannot be returned due to too many entries.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException When a field in the message contains an invalid value.
+     * @throws TooManyException When the list cannot be returned due to too many entries.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mpd.structures.ProductMetadataList listProducts(org.ccsds.moims.mo.mpd.structures.ProductFilter productFilter,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow creationDate,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow contentDate) throws org.ccsds.moims.mo.mpd.InvalidException, org.ccsds.moims.mo.mpd.TooManyException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public ProductMetadataList listProducts(ProductFilter productFilter,
+            TimeWindow creationDate,
+            TimeWindow contentDate) throws InvalidException, TooManyException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.LISTPRODUCTS_OP, productFilter, creationDate, contentDate);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mpd.structures.ProductMetadataList());
-            return (org.ccsds.moims.mo.mpd.structures.ProductMetadataList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mpd.InvalidException) {
-                throw (org.ccsds.moims.mo.mpd.InvalidException) error;
+            MALMessageBody body = consumer.request(ProductRetrievalServiceInfo.LISTPRODUCTS_OP, productFilter, creationDate, contentDate);
+            Object body0 = (Object) body.getBodyElement(0, new ProductMetadataList());
+            return (ProductMetadataList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mpd.TooManyException) {
-                throw (org.ccsds.moims.mo.mpd.TooManyException) error;
+            if (error instanceof TooManyException) {
+                throw (TooManyException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -71,17 +91,17 @@ public class ProductRetrievalStub {
      * @param contentDate The time window used to filter products based on their content creation period.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncListProducts(org.ccsds.moims.mo.mpd.structures.ProductFilter productFilter,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow creationDate,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow contentDate,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncListProducts(ProductFilter productFilter,
+            TimeWindow creationDate,
+            TimeWindow contentDate,
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.LISTPRODUCTS_OP, adapter, productFilter, creationDate, contentDate);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(ProductRetrievalServiceInfo.LISTPRODUCTS_OP, adapter, productFilter, creationDate, contentDate);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -92,17 +112,17 @@ public class ProductRetrievalStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueListProducts(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueListProducts(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.LISTPRODUCTS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(ProductRetrievalServiceInfo.LISTPRODUCTS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -112,20 +132,20 @@ public class ProductRetrievalStub {
      * 
      * @param productRefs The references to the products to be retrieved.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mpd.UnknownException When one or more of the productRefs was not found.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException When one or more of the productRefs was not found.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void getProducts(org.ccsds.moims.mo.mal.structures.ObjectRefList productRefs,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mpd.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void getProducts(ObjectRefList productRefs,
+            ProductRetrievalAdapter adapter) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.progress(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.GETPRODUCTS_OP, adapter, productRefs);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mpd.UnknownException) {
-                throw (org.ccsds.moims.mo.mpd.UnknownException) error;
+            consumer.progress(ProductRetrievalServiceInfo.GETPRODUCTS_OP, adapter, productRefs);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -135,15 +155,15 @@ public class ProductRetrievalStub {
      * @param productRefs The references to the products to be retrieved.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetProducts(org.ccsds.moims.mo.mal.structures.ObjectRefList productRefs,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncGetProducts(ObjectRefList productRefs,
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncProgress(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.GETPRODUCTS_OP, adapter, productRefs);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncProgress(ProductRetrievalServiceInfo.GETPRODUCTS_OP, adapter, productRefs);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -154,17 +174,17 @@ public class ProductRetrievalStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueGetProducts(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueGetProducts(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.GETPRODUCTS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(ProductRetrievalServiceInfo.GETPRODUCTS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -176,25 +196,25 @@ public class ProductRetrievalStub {
      * @param productRefs The references to the products to be delivered.
      * @param deliverTo The location's URI where the mission data product must be delivered.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mpd.UnknownException When one or more of the productRefs was not found.
-     * @throws org.ccsds.moims.mo.mpd.DeliveryFailedException When the provider is unable to reach the selected URI (e.g. unreachable target machine, wrong credentials, revoked access, etc).
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException When one or more of the productRefs was not found.
+     * @throws DeliveryFailedException When the provider is unable to reach the selected URI (e.g. unreachable target machine, wrong credentials, revoked access, etc).
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void deliverProductFiles(org.ccsds.moims.mo.mal.structures.ObjectRefList productRefs,
-            org.ccsds.moims.mo.mal.structures.URI deliverTo,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mpd.UnknownException, org.ccsds.moims.mo.mpd.DeliveryFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void deliverProductFiles(ObjectRefList productRefs,
+            URI deliverTo,
+            ProductRetrievalAdapter adapter) throws UnknownException, DeliveryFailedException, MALStandardError, MALException {
         try {
-            consumer.progress(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, adapter, productRefs, deliverTo);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mpd.UnknownException) {
-                throw (org.ccsds.moims.mo.mpd.UnknownException) error;
+            consumer.progress(ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, adapter, productRefs, deliverTo);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mpd.DeliveryFailedException) {
-                throw (org.ccsds.moims.mo.mpd.DeliveryFailedException) error;
+            if (error instanceof DeliveryFailedException) {
+                throw (DeliveryFailedException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -205,16 +225,16 @@ public class ProductRetrievalStub {
      * @param deliverTo The location's URI where the mission data product must be delivered.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeliverProductFiles(org.ccsds.moims.mo.mal.structures.ObjectRefList productRefs,
-            org.ccsds.moims.mo.mal.structures.URI deliverTo,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncDeliverProductFiles(ObjectRefList productRefs,
+            URI deliverTo,
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncProgress(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, adapter, productRefs, deliverTo);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncProgress(ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, adapter, productRefs, deliverTo);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -225,17 +245,17 @@ public class ProductRetrievalStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueDeliverProductFiles(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueDeliverProductFiles(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            ProductRetrievalAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(ProductRetrievalServiceInfo.DELIVERPRODUCTFILES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

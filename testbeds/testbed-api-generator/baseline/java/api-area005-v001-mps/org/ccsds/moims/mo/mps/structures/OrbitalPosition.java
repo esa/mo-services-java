@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: An OrbitalPosition represents a Position that is defined with respect
  * to some mission specific orbit.  The conventions used to derive the orbitNumber
  * and orbitAngle follow from a mission specific definition.
  */
-public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Position {
+public final class OrbitalPosition extends Position {
 
     private static final long serialVersionUID = 1407374900330507L;
     /**
@@ -15,7 +21,7 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Orbit number.  Depending on the relativeOrbit flag, the orbit number may
@@ -34,7 +40,7 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
      * Angle within orbit.  Whether this angle is the mean or true anomaly and
      * from which datum it is measured are mission specific.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle orbitAngle;
+    private Angle orbitAngle;
 
     /**
      * Default constructor for OrbitalPosition.
@@ -52,15 +58,15 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
      */
     public OrbitalPosition(Integer orbitNumber,
             Boolean relativeOrbit,
-            org.ccsds.moims.mo.mps.structures.Angle orbitAngle) {
+            Angle orbitAngle) {
         this.orbitNumber = orbitNumber;
         this.relativeOrbit = relativeOrbit;
         this.orbitAngle = orbitAngle;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.OrbitalPosition();
+    public Element createElement() {
+        return new OrbitalPosition();
     }
 
     /**
@@ -86,7 +92,7 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
      * 
      * @return The field orbitAngle
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getOrbitAngle() {
+    public Angle getOrbitAngle() {
         return orbitAngle;
     }
 
@@ -151,16 +157,16 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (orbitNumber == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitNumber' cannot be null!");
+            throw new MALException("The field 'orbitNumber' cannot be null!");
         }
         if (relativeOrbit == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'relativeOrbit' cannot be null!");
+            throw new MALException("The field 'relativeOrbit' cannot be null!");
         }
         if (orbitAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitAngle' cannot be null!");
+            throw new MALException("The field 'orbitAngle' cannot be null!");
         }
         encoder.encodeInteger(orbitNumber);
         encoder.encodeBoolean(relativeOrbit);
@@ -168,16 +174,16 @@ public final class OrbitalPosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         orbitNumber = decoder.decodeInteger();
         relativeOrbit = decoder.decodeBoolean();
-        orbitAngle = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Angle());
+        orbitAngle = (Angle) decoder.decodeElement(new Angle());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

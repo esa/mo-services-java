@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The ReferencedException exception. Operation specific.
  */
-public final class ReferencedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class ReferencedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "REFERENCED";
 

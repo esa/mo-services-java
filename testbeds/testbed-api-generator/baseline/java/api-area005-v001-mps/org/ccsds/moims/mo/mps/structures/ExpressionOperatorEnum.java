@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ExpressionOperatorEnum.
  */
-public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ExpressionOperatorEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330532L;
     /**
@@ -13,7 +17,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for EQUAL.
@@ -23,7 +27,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value EQUAL.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum EQUAL = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.EQUAL_VALUE);
+    public static final ExpressionOperatorEnum EQUAL = new ExpressionOperatorEnum(ExpressionOperatorEnum.EQUAL_VALUE);
 
     /**
      * Enumeration value for DIFFER.
@@ -33,7 +37,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value DIFFER.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum DIFFER = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.DIFFER_VALUE);
+    public static final ExpressionOperatorEnum DIFFER = new ExpressionOperatorEnum(ExpressionOperatorEnum.DIFFER_VALUE);
 
     /**
      * Enumeration value for GREATER.
@@ -43,7 +47,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value GREATER.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum GREATER = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.GREATER_VALUE);
+    public static final ExpressionOperatorEnum GREATER = new ExpressionOperatorEnum(ExpressionOperatorEnum.GREATER_VALUE);
 
     /**
      * Enumeration value for GREATER_OR_EQUAL.
@@ -53,7 +57,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value GREATER_OR_EQUAL.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum GREATER_OR_EQUAL = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.GREATER_OR_EQUAL_VALUE);
+    public static final ExpressionOperatorEnum GREATER_OR_EQUAL = new ExpressionOperatorEnum(ExpressionOperatorEnum.GREATER_OR_EQUAL_VALUE);
 
     /**
      * Enumeration value for LESS.
@@ -63,7 +67,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value LESS.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum LESS = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.LESS_VALUE);
+    public static final ExpressionOperatorEnum LESS = new ExpressionOperatorEnum(ExpressionOperatorEnum.LESS_VALUE);
 
     /**
      * Enumeration value for LESS_OR_EQUAL.
@@ -73,7 +77,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value LESS_OR_EQUAL.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum LESS_OR_EQUAL = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.LESS_OR_EQUAL_VALUE);
+    public static final ExpressionOperatorEnum LESS_OR_EQUAL = new ExpressionOperatorEnum(ExpressionOperatorEnum.LESS_OR_EQUAL_VALUE);
 
     /**
      * Enumeration value for CONTAINS.
@@ -83,7 +87,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value CONTAINS.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum CONTAINS = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.CONTAINS_VALUE);
+    public static final ExpressionOperatorEnum CONTAINS = new ExpressionOperatorEnum(ExpressionOperatorEnum.CONTAINS_VALUE);
 
     /**
      * Enumeration value for ICONTAINS.
@@ -93,12 +97,12 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value ICONTAINS.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum ICONTAINS = new org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum(org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum.ICONTAINS_VALUE);
+    public static final ExpressionOperatorEnum ICONTAINS = new ExpressionOperatorEnum(ExpressionOperatorEnum.ICONTAINS_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum[] _ENUMERATIONS = {
+    private static final ExpressionOperatorEnum[] _ENUMERATIONS = {
         EQUAL, DIFFER, GREATER, GREATER_OR_EQUAL, LESS, LESS_OR_EQUAL, CONTAINS,
         ICONTAINS};
 
@@ -151,7 +155,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum fromString(String s) {
+    public static ExpressionOperatorEnum fromString(String s) {
         switch (s) {
             case "EQUAL":
                 return ExpressionOperatorEnum.EQUAL;
@@ -175,7 +179,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case EQUAL_VALUE:
                 return ExpressionOperatorEnum.EQUAL;
@@ -199,7 +203,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -209,7 +213,7 @@ public final class ExpressionOperatorEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

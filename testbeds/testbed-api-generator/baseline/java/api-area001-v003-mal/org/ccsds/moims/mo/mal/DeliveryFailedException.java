@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The DeliveryFailedException exception. Confirmed communication error.
  */
-public final class DeliveryFailedException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class DeliveryFailedException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Delivery Failed";
 

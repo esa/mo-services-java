@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * The ActionInProgressEvent type is used for publishing an action execution
  * reaching a new execution stage.
  */
-public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structures.ActionEvent {
+public final class ActionInProgressEvent extends ActionEvent {
 
     private static final long serialVersionUID = 1125899940397070L;
     /**
@@ -14,17 +21,17 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The stageCount field.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger stageCount;
+    private UInteger stageCount;
 
     /**
      * The executionStage field.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger executionStage;
+    private UInteger executionStage;
 
     /**
      * Default constructor for ActionInProgressEvent.
@@ -43,8 +50,8 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
      */
     public ActionInProgressEvent(Boolean success,
             String comment,
-            org.ccsds.moims.mo.mal.structures.UInteger stageCount,
-            org.ccsds.moims.mo.mal.structures.UInteger executionStage) {
+            UInteger stageCount,
+            UInteger executionStage) {
         super(success,
             comment);
         this.stageCount = stageCount;
@@ -59,16 +66,16 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
      * @param executionStage The executionStage field.
      */
     public ActionInProgressEvent(Boolean success,
-            org.ccsds.moims.mo.mal.structures.UInteger stageCount,
-            org.ccsds.moims.mo.mal.structures.UInteger executionStage) {
+            UInteger stageCount,
+            UInteger executionStage) {
         super(success);
         this.stageCount = stageCount;
         this.executionStage = executionStage;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ActionInProgressEvent();
+    public Element createElement() {
+        return new ActionInProgressEvent();
     }
 
     /**
@@ -76,7 +83,7 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
      * 
      * @return The field stageCount
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getStageCount() {
+    public UInteger getStageCount() {
         return stageCount;
     }
 
@@ -85,7 +92,7 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
      * 
      * @return The field executionStage
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getExecutionStage() {
+    public UInteger getExecutionStage() {
         return executionStage;
     }
 
@@ -139,20 +146,20 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (stageCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageCount' cannot be null!");
+            throw new MALException("The field 'stageCount' cannot be null!");
         }
         if (executionStage == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'executionStage' cannot be null!");
+            throw new MALException("The field 'executionStage' cannot be null!");
         }
         encoder.encodeUInteger(stageCount);
         encoder.encodeUInteger(executionStage);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         stageCount = decoder.decodeUInteger();
         executionStage = decoder.decodeUInteger();
@@ -160,7 +167,7 @@ public final class ActionInProgressEvent extends org.ccsds.moims.mo.mc.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

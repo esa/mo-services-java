@@ -8,7 +8,7 @@ public class OrderManagementHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo ORDERMANAGEMENT_SERVICE = new org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo();
+    public static final OrderManagementServiceInfo ORDERMANAGEMENT_SERVICE = new OrderManagementServiceInfo();
 
     private OrderManagementHelper() {
         // Utility class; not meant to be instantiated.

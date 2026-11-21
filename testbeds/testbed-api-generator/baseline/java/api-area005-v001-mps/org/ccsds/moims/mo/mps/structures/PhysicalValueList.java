@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for PhysicalValue.
  */
-public final class PhysicalValueList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class PhysicalValueList extends HeterogeneousList {
 
     /**
      * Default constructor for PhysicalValueList.
@@ -13,7 +16,7 @@ public final class PhysicalValueList extends org.ccsds.moims.mo.mal.structures.H
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof PhysicalValue)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: PhysicalValue");
         }

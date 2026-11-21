@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * E1: A RequestDefinition is an MO object that contains the specification
  * of a re-usable planning request template.
  */
-public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class RequestDefinition extends MOObject {
 
     private static final long serialVersionUID = 1407374900330897L;
     /**
@@ -14,7 +22,7 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Description of the re-usable RequestDefinition.
@@ -25,7 +33,7 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
      * List of argument definitions.  Arguments may be referenced in ActivityDetails
      * and constraints.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgDefList argDefs;
+    private ArgDefList argDefs;
 
     /**
      * A flag that indicates whether the planning request is for a repetitive
@@ -39,7 +47,7 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
     /**
      * Set of activity details specifying requested activities.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities;
+    private ActivityDetailsList activities;
 
     /**
      * Default constructor for RequestDefinition.
@@ -57,11 +65,11 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
      * @param standingOrder A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the supplied activity details must be an ActivityNode with specification of the repetition criteria.  It should be noted that a one-off request can still include repetition.
      * @param activities Set of activity details specifying requested activities.
      */
-    public RequestDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public RequestDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgDefList argDefs,
+            ArgDefList argDefs,
             Boolean standingOrder,
-            org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities) {
+            ActivityDetailsList activities) {
         super(objectIdentity);
         this.description = description;
         this.argDefs = argDefs;
@@ -77,10 +85,10 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
      * @param standingOrder A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the supplied activity details must be an ActivityNode with specification of the repetition criteria.  It should be noted that a one-off request can still include repetition.
      * @param activities Set of activity details specifying requested activities.
      */
-    public RequestDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public RequestDefinition(ObjectIdentity objectIdentity,
             String description,
             Boolean standingOrder,
-            org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities) {
+            ActivityDetailsList activities) {
         super(objectIdentity);
         this.description = description;
         this.argDefs = null;
@@ -89,8 +97,8 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RequestDefinition();
+    public Element createElement() {
+        return new RequestDefinition();
     }
 
     /**
@@ -107,7 +115,7 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
      * 
      * @return The field argDefs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgDefList getArgDefs() {
+    public ArgDefList getArgDefs() {
         return argDefs;
     }
 
@@ -125,7 +133,7 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
      * 
      * @return The field activities
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityDetailsList getActivities() {
+    public ActivityDetailsList getActivities() {
         return activities;
     }
 
@@ -201,16 +209,16 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (standingOrder == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'standingOrder' cannot be null!");
+            throw new MALException("The field 'standingOrder' cannot be null!");
         }
         if (activities == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'activities' cannot be null!");
+            throw new MALException("The field 'activities' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeNullableElement(argDefs);
@@ -219,17 +227,17 @@ public final class RequestDefinition extends org.ccsds.moims.mo.mal.structures.M
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        argDefs = (org.ccsds.moims.mo.mps.structures.ArgDefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgDefList());
+        argDefs = (ArgDefList) decoder.decodeNullableElement(new ArgDefList());
         standingOrder = decoder.decodeBoolean();
-        activities = (org.ccsds.moims.mo.mps.structures.ActivityDetailsList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.ActivityDetailsList());
+        activities = (ActivityDetailsList) decoder.decodeElement(new ActivityDetailsList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

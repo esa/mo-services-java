@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.malprototype2;
 
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper;
+
 /**
  * Helper class for MALPrototype2 area.
  */
@@ -13,12 +22,12 @@ public class MALPrototype2Helper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort MALPROTOTYPE2_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MALPROTOTYPE2_AREA_NUMBER);
+    public static final UShort MALPROTOTYPE2_AREA_NUMBER = new UShort(_MALPROTOTYPE2_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier MALPROTOTYPE2_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("MALPrototype2");
+    public static final Identifier MALPROTOTYPE2_AREA_NAME = new Identifier("MALPrototype2");
 
     /**
      * Area version literal.
@@ -28,23 +37,23 @@ public class MALPrototype2Helper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet MALPROTOTYPE2_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_MALPROTOTYPE2_AREA_VERSION);
+    public static final UOctet MALPROTOTYPE2_AREA_VERSION = new UOctet(_MALPROTOTYPE2_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] MALPROTOTYPE2_AREA_ELEMENTS = {};
+    public static final Element[] MALPROTOTYPE2_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] MALPROTOTYPE2_AREA_SERVICES = {
-        org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,};
+    public static final ServiceInfo[] MALPROTOTYPE2_AREA_SERVICES = {
+        IPTestHelper.IPTEST_SERVICE,};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea MALPROTOTYPE2_AREA = new org.ccsds.moims.mo.mal.MALArea(MALPROTOTYPE2_AREA_NUMBER, MALPROTOTYPE2_AREA_NAME, MALPROTOTYPE2_AREA_VERSION, MALPROTOTYPE2_AREA_ELEMENTS, MALPROTOTYPE2_AREA_SERVICES, new MALPrototype2ElementFactory());
+    public static final MALArea MALPROTOTYPE2_AREA = new MALArea(MALPROTOTYPE2_AREA_NUMBER, MALPROTOTYPE2_AREA_NAME, MALPROTOTYPE2_AREA_VERSION, MALPROTOTYPE2_AREA_ELEMENTS, MALPROTOTYPE2_AREA_SERVICES, new MALPrototype2ElementFactory());
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -53,7 +62,7 @@ public class MALPrototype2Helper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
         }

@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.common.login.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The Profile structure contains details of the user who is logging on to
  * take a specified role.
  */
-public final class Profile implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class Profile implements Composite {
 
     private static final long serialVersionUID = 844433536843777L;
     /**
@@ -14,12 +22,12 @@ public final class Profile implements org.ccsds.moims.mo.mal.structures.Composit
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the user.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier username;
+    private Identifier username;
 
     /**
      * The optional object instance identifier of the role required by the user.
@@ -39,7 +47,7 @@ public final class Profile implements org.ccsds.moims.mo.mal.structures.Composit
      * @param username The name of the user.
      * @param role The optional object instance identifier of the role required by the user.
      */
-    public Profile(org.ccsds.moims.mo.mal.structures.Identifier username,
+    public Profile(Identifier username,
             Long role) {
         this.username = username;
         this.role = role;
@@ -50,14 +58,14 @@ public final class Profile implements org.ccsds.moims.mo.mal.structures.Composit
      * 
      * @param username The name of the user.
      */
-    public Profile(org.ccsds.moims.mo.mal.structures.Identifier username) {
+    public Profile(Identifier username) {
         this.username = username;
         this.role = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.login.structures.Profile();
+    public Element createElement() {
+        return new Profile();
     }
 
     /**
@@ -65,7 +73,7 @@ public final class Profile implements org.ccsds.moims.mo.mal.structures.Composit
      * 
      * @return The field username
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUsername() {
+    public Identifier getUsername() {
         return username;
     }
 
@@ -124,23 +132,23 @@ public final class Profile implements org.ccsds.moims.mo.mal.structures.Composit
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (username == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'username' cannot be null!");
+            throw new MALException("The field 'username' cannot be null!");
         }
         encoder.encodeIdentifier(username);
         encoder.encodeNullableLong(role);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         username = decoder.decodeIdentifier();
         role = decoder.decodeNullableLong();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

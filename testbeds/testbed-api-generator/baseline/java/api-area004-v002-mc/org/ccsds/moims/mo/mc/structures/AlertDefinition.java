@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * The AlertDefinition structure shall be used to provide the definition of
  * an alert including any argument definitions.
  */
-public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class AlertDefinition extends MOObject {
 
     private static final long serialVersionUID = 1125899940397086L;
     /**
@@ -14,7 +22,7 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description field.
@@ -24,12 +32,12 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     /**
      * The severity field.
      */
-    private org.ccsds.moims.mo.mc.structures.Severity severity;
+    private Severity severity;
 
     /**
      * The arguments field.
      */
-    private org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList arguments;
+    private ArgumentDefinitionList arguments;
 
     /**
      * Default constructor for AlertDefinition.
@@ -46,10 +54,10 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * @param severity The severity field.
      * @param arguments The arguments field.
      */
-    public AlertDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public AlertDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mc.structures.Severity severity,
-            org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList arguments) {
+            Severity severity,
+            ArgumentDefinitionList arguments) {
         super(objectIdentity);
         this.description = description;
         this.severity = severity;
@@ -63,9 +71,9 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * @param description The description field.
      * @param severity The severity field.
      */
-    public AlertDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public AlertDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mc.structures.Severity severity) {
+            Severity severity) {
         super(objectIdentity);
         this.description = description;
         this.severity = severity;
@@ -73,8 +81,8 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.AlertDefinition();
+    public Element createElement() {
+        return new AlertDefinition();
     }
 
     /**
@@ -91,7 +99,7 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field severity
      */
-    public org.ccsds.moims.mo.mc.structures.Severity getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
@@ -100,7 +108,7 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList getArguments() {
+    public ArgumentDefinitionList getArguments() {
         return arguments;
     }
 
@@ -165,13 +173,13 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (severity == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'severity' cannot be null!");
+            throw new MALException("The field 'severity' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(severity);
@@ -179,16 +187,16 @@ public final class AlertDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        severity = (org.ccsds.moims.mo.mc.structures.Severity) decoder.decodeElement(org.ccsds.moims.mo.mc.structures.Severity.INFORMATIONAL);
-        arguments = (org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList());
+        severity = (Severity) decoder.decodeElement(Severity.INFORMATIONAL);
+        arguments = (ArgumentDefinitionList) decoder.decodeNullableElement(new ArgumentDefinitionList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

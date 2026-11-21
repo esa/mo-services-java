@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mc.conversion.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.PairList;
+
 /**
  * The PolyConversionDetails structure holds only forward (raw to converted)
  * polynomial conversions. They are defined by a series of points for the
  * polynomial coefficients.
  */
-public final class PolyConversionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PolyConversionDetails implements Composite {
 
     private static final long serialVersionUID = 1125929988390915L;
     /**
@@ -15,14 +23,14 @@ public final class PolyConversionDetails implements org.ccsds.moims.mo.mal.struc
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The first attribute of a point is a MAL::Integer, being the degree of the
      * polynomial; the second attribute is either a MAL::Float or a MAL::Double,
      * being the coefficient of the term.
      */
-    private org.ccsds.moims.mo.mal.structures.PairList points;
+    private PairList points;
 
     /**
      * Default constructor for PolyConversionDetails.
@@ -36,13 +44,13 @@ public final class PolyConversionDetails implements org.ccsds.moims.mo.mal.struc
      * 
      * @param points The first attribute of a point is a MAL::Integer, being the degree of the polynomial; the second attribute is either a MAL::Float or a MAL::Double, being the coefficient of the term.
      */
-    public PolyConversionDetails(org.ccsds.moims.mo.mal.structures.PairList points) {
+    public PolyConversionDetails(PairList points) {
         this.points = points;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.conversion.structures.PolyConversionDetails();
+    public Element createElement() {
+        return new PolyConversionDetails();
     }
 
     /**
@@ -50,7 +58,7 @@ public final class PolyConversionDetails implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field points
      */
-    public org.ccsds.moims.mo.mal.structures.PairList getPoints() {
+    public PairList getPoints() {
         return points;
     }
 
@@ -89,21 +97,21 @@ public final class PolyConversionDetails implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (points == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'points' cannot be null!");
+            throw new MALException("The field 'points' cannot be null!");
         }
         encoder.encodeElement(points);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        points = (org.ccsds.moims.mo.mal.structures.PairList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.PairList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        points = (PairList) decoder.decodeElement(new PairList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

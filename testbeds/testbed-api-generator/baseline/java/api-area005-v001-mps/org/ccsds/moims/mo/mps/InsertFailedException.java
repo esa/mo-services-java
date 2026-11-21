@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The InsertFailedException exception. The insertActivity or insertEvent
  * operation failed to insert the requested object.
  */
-public final class InsertFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class InsertFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "INSERT_FAILED";
 

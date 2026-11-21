@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E5: A simple effect applies the defined operation on the specified planning
  * resource at the time relative to the planning activity defined by (timeRef
  * + timeOffset).
  */
-public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect {
+public final class SimpleEffect extends Effect {
 
     private static final long serialVersionUID = 1407374900330544L;
     /**
@@ -15,33 +23,33 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The point in the duration of the planning activity to which the time of
      * the Effect is relative. 0:  the start of the planning activity 1:  the
      * end of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider timeRef;
+    private Slider timeRef;
 
     /**
      * Offset from timeRef that specifies the time at which the Effect is to be
      * applied. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element timeOffset;
+    private Element timeOffset;
 
     /**
      * Operation to be performed on the planning resource.  One of: SET, INCREASE,
      * DECREASE. Increase and decrease are only applicable to numeric data types.
      */
-    private org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator;
+    private EffectOperationEnum operator;
 
     /**
      * The value that the planning resource is to be set to if the Effect operator
      * is SET; or to be increased or decreased by if it is INCREASE or DECREASE.
      * MAL Attribute type must match the dataType of the Resource definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Default constructor for SimpleEffect.
@@ -59,11 +67,11 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * @param operator Operation to be performed on the planning resource.  One of: SET, INCREASE, DECREASE. Increase and decrease are only applicable to numeric data types.
      * @param value The value that the planning resource is to be set to if the Effect operator is SET; or to be increased or decreased by if it is INCREASE or DECREASE. MAL Attribute type must match the dataType of the Resource definition.
      */
-    public SimpleEffect(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.Slider timeRef,
-            org.ccsds.moims.mo.mal.structures.Element timeOffset,
-            org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+    public SimpleEffect(ObjectRef<Resource> resourceRef,
+            Slider timeRef,
+            Element timeOffset,
+            EffectOperationEnum operator,
+            Attribute value) {
         super(resourceRef);
         this.timeRef = timeRef;
         this.timeOffset = timeOffset;
@@ -79,10 +87,10 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * @param operator Operation to be performed on the planning resource.  One of: SET, INCREASE, DECREASE. Increase and decrease are only applicable to numeric data types.
      * @param value The value that the planning resource is to be set to if the Effect operator is SET; or to be increased or decreased by if it is INCREASE or DECREASE. MAL Attribute type must match the dataType of the Resource definition.
      */
-    public SimpleEffect(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.Slider timeRef,
-            org.ccsds.moims.mo.mps.structures.EffectOperationEnum operator,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+    public SimpleEffect(ObjectRef<Resource> resourceRef,
+            Slider timeRef,
+            EffectOperationEnum operator,
+            Attribute value) {
         super(resourceRef);
         this.timeRef = timeRef;
         this.timeOffset = null;
@@ -91,8 +99,8 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SimpleEffect();
+    public Element createElement() {
+        return new SimpleEffect();
     }
 
     /**
@@ -100,7 +108,7 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * 
      * @return The field timeRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getTimeRef() {
+    public Slider getTimeRef() {
         return timeRef;
     }
 
@@ -109,7 +117,7 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * 
      * @return The field timeOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTimeOffset() {
+    public Element getTimeOffset() {
         return timeOffset;
     }
 
@@ -118,7 +126,7 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.mps.structures.EffectOperationEnum getOperator() {
+    public EffectOperationEnum getOperator() {
         return operator;
     }
 
@@ -127,7 +135,7 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -203,16 +211,16 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (timeRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timeRef' cannot be null!");
+            throw new MALException("The field 'timeRef' cannot be null!");
         }
         if (operator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'operator' cannot be null!");
+            throw new MALException("The field 'operator' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeElement(timeRef);
         encoder.encodeNullableAbstractElement(timeOffset);
@@ -221,17 +229,17 @@ public final class SimpleEffect extends org.ccsds.moims.mo.mps.structures.Effect
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        timeRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        timeOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        operator = (org.ccsds.moims.mo.mps.structures.EffectOperationEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.EffectOperationEnum.SET);
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeAttribute();
+        timeRef = (Slider) decoder.decodeElement(new Slider());
+        timeOffset = (Element) decoder.decodeNullableAbstractElement();
+        operator = (EffectOperationEnum) decoder.decodeElement(EffectOperationEnum.SET);
+        value = (Attribute) decoder.decodeAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

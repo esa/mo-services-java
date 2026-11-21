@@ -1,9 +1,14 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The ServiceId structure shall represent a specific service in MO.
  */
-public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ServiceId implements Composite {
 
     private static final long serialVersionUID = 281475027043313L;
     /**
@@ -13,23 +18,23 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The area of this service taken from the numeric Area identifier of the
      * service specification.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort keyArea;
+    private UShort keyArea;
 
     /**
      * The service taken from the numeric Service identifier of the service specification.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort keyService;
+    private UShort keyService;
 
     /**
      * The Area Version of the service.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet keyAreaVersion;
+    private UOctet keyAreaVersion;
 
     /**
      * Default constructor for ServiceId.
@@ -45,17 +50,17 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
      * @param keyService The service taken from the numeric Service identifier of the service specification.
      * @param keyAreaVersion The Area Version of the service.
      */
-    public ServiceId(org.ccsds.moims.mo.mal.structures.UShort keyArea,
-            org.ccsds.moims.mo.mal.structures.UShort keyService,
-            org.ccsds.moims.mo.mal.structures.UOctet keyAreaVersion) {
+    public ServiceId(UShort keyArea,
+            UShort keyService,
+            UOctet keyAreaVersion) {
         this.keyArea = keyArea;
         this.keyService = keyService;
         this.keyAreaVersion = keyAreaVersion;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.ServiceId();
+    public Element createElement() {
+        return new ServiceId();
     }
 
     /**
@@ -63,7 +68,7 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field keyArea
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getKeyArea() {
+    public UShort getKeyArea() {
         return keyArea;
     }
 
@@ -72,7 +77,7 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field keyService
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getKeyService() {
+    public UShort getKeyService() {
         return keyService;
     }
 
@@ -81,7 +86,7 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field keyAreaVersion
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getKeyAreaVersion() {
+    public UOctet getKeyAreaVersion() {
         return keyAreaVersion;
     }
 
@@ -142,15 +147,15 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (keyArea == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'keyArea' cannot be null!");
+            throw new MALException("The field 'keyArea' cannot be null!");
         }
         if (keyService == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'keyService' cannot be null!");
+            throw new MALException("The field 'keyService' cannot be null!");
         }
         if (keyAreaVersion == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'keyAreaVersion' cannot be null!");
+            throw new MALException("The field 'keyAreaVersion' cannot be null!");
         }
         encoder.encodeUShort(keyArea);
         encoder.encodeUShort(keyService);
@@ -158,7 +163,7 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         keyArea = decoder.decodeUShort();
         keyService = decoder.decodeUShort();
         keyAreaVersion = decoder.decodeUOctet();
@@ -166,7 +171,7 @@ public final class ServiceId implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

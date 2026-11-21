@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * A StringPattern is a concrete subtype of AttributeFilter that allows the
  * specification of a regular expression (or match pattern) to be searched
  * for in the value of a text type metadata attribute.
  */
-public final class StringPattern extends org.ccsds.moims.mo.mpd.structures.AttributeFilter {
+public final class StringPattern extends AttributeFilter {
 
     private static final long serialVersionUID = 2533274807173131L;
     /**
@@ -15,7 +22,7 @@ public final class StringPattern extends org.ccsds.moims.mo.mpd.structures.Attri
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The regular expression - a sequence of characters that specifies a match
@@ -38,7 +45,7 @@ public final class StringPattern extends org.ccsds.moims.mo.mpd.structures.Attri
      * @param include Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.
      * @param regex The regular expression - a sequence of characters that specifies a match pattern to be searched for in a text type metadata attribute (String, Identifier or URI).
      */
-    public StringPattern(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public StringPattern(Identifier name,
             Boolean include,
             String regex) {
         super(name,
@@ -47,8 +54,8 @@ public final class StringPattern extends org.ccsds.moims.mo.mpd.structures.Attri
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.StringPattern();
+    public Element createElement() {
+        return new StringPattern();
     }
 
     /**
@@ -99,23 +106,23 @@ public final class StringPattern extends org.ccsds.moims.mo.mpd.structures.Attri
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (regex == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'regex' cannot be null!");
+            throw new MALException("The field 'regex' cannot be null!");
         }
         encoder.encodeString(regex);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         regex = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

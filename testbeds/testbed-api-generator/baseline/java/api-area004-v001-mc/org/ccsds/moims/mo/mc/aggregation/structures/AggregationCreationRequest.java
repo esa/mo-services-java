@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The AggregationCreationRequest contains all the fields required when creating
  * a new aggregation in a provider.
  */
-public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationCreationRequest implements Composite {
 
     private static final long serialVersionUID = 1125925693423626L;
     /**
@@ -14,17 +22,17 @@ public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the aggregation. Must not be empty or the wildcard value.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The aggregation definition details.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails aggDefDetails;
+    private AggregationDefinitionDetails aggDefDetails;
 
     /**
      * Default constructor for AggregationCreationRequest.
@@ -39,15 +47,15 @@ public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.
      * @param name The name of the aggregation. Must not be empty or the wildcard value.
      * @param aggDefDetails The aggregation definition details.
      */
-    public AggregationCreationRequest(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails aggDefDetails) {
+    public AggregationCreationRequest(Identifier name,
+            AggregationDefinitionDetails aggDefDetails) {
         this.name = name;
         this.aggDefDetails = aggDefDetails;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationCreationRequest();
+    public Element createElement() {
+        return new AggregationCreationRequest();
     }
 
     /**
@@ -55,7 +63,7 @@ public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -64,7 +72,7 @@ public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.
      * 
      * @return The field aggDefDetails
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails getAggDefDetails() {
+    public AggregationDefinitionDetails getAggDefDetails() {
         return aggDefDetails;
     }
 
@@ -114,26 +122,26 @@ public final class AggregationCreationRequest implements org.ccsds.moims.mo.mal.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (aggDefDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'aggDefDetails' cannot be null!");
+            throw new MALException("The field 'aggDefDetails' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeElement(aggDefDetails);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        aggDefDetails = (org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails) decoder.decodeElement(new org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails());
+        aggDefDetails = (AggregationDefinitionDetails) decoder.decodeElement(new AggregationDefinitionDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

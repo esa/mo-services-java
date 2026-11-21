@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The StatisticCreationRequest structure holds the link details for a specific
  * parameter and function association.
  */
-public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StatisticCreationRequest implements Composite {
 
     private static final long serialVersionUID = 1125921398456324L;
     /**
@@ -14,7 +22,7 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the statistical function to be used.
@@ -24,12 +32,12 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
     /**
      * The object key of the ParameterIdentity object being referenced.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey parameterId;
+    private ObjectKey parameterId;
 
     /**
      * The collection, reporting, and sampling intervals.
      */
-    private org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails linkDetails;
+    private StatisticLinkDetails linkDetails;
 
     /**
      * Default constructor for StatisticCreationRequest.
@@ -46,16 +54,16 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
      * @param linkDetails The collection, reporting, and sampling intervals.
      */
     public StatisticCreationRequest(Long statFuncInstId,
-            org.ccsds.moims.mo.com.structures.ObjectKey parameterId,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails linkDetails) {
+            ObjectKey parameterId,
+            StatisticLinkDetails linkDetails) {
         this.statFuncInstId = statFuncInstId;
         this.parameterId = parameterId;
         this.linkDetails = linkDetails;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest();
+    public Element createElement() {
+        return new StatisticCreationRequest();
     }
 
     /**
@@ -72,7 +80,7 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field parameterId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getParameterId() {
+    public ObjectKey getParameterId() {
         return parameterId;
     }
 
@@ -81,7 +89,7 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field linkDetails
      */
-    public org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails getLinkDetails() {
+    public StatisticLinkDetails getLinkDetails() {
         return linkDetails;
     }
 
@@ -142,15 +150,15 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (statFuncInstId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'statFuncInstId' cannot be null!");
+            throw new MALException("The field 'statFuncInstId' cannot be null!");
         }
         if (parameterId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterId' cannot be null!");
+            throw new MALException("The field 'parameterId' cannot be null!");
         }
         if (linkDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'linkDetails' cannot be null!");
+            throw new MALException("The field 'linkDetails' cannot be null!");
         }
         encoder.encodeLong(statFuncInstId);
         encoder.encodeElement(parameterId);
@@ -158,15 +166,15 @@ public final class StatisticCreationRequest implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         statFuncInstId = decoder.decodeLong();
-        parameterId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
-        linkDetails = (org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails) decoder.decodeElement(new org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails());
+        parameterId = (ObjectKey) decoder.decodeElement(new ObjectKey());
+        linkDetails = (StatisticLinkDetails) decoder.decodeElement(new StatisticLinkDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

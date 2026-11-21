@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: A data structure that returns the status and supplementary suspension
  * information for an ActivityInstance affected by an MPS Plan Execution Control
  * service suspendActivity or resumeActivity operation.
  */
-public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActivitySuspensionStatus implements Composite {
 
     private static final long serialVersionUID = 1407374900330604L;
     /**
@@ -15,22 +23,22 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to an ActivityInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance;
+    private ObjectRef<ActivityInstance> activityInstance;
 
     /**
      * Optional reference to the Plan containing the ActivityInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Current Status of the ActivityInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status;
+    private ActivityStatusEnum status;
 
     /**
      * Supplementary information on the suspension/resumption status of the ActivityInstance.
@@ -54,9 +62,9 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
      * @param status Current Status of the ActivityInstance.
      * @param suspensionInfo Supplementary information on the suspension/resumption status of the ActivityInstance. This may detail the point of suspension, which may be specific to the suspension mode; or a reason why resumption was not possible.
      */
-    public ActivitySuspensionStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status,
+    public ActivitySuspensionStatus(ObjectRef<ActivityInstance> activityInstance,
+            ObjectRef<Plan> plan,
+            ActivityStatusEnum status,
             String suspensionInfo) {
         this.activityInstance = activityInstance;
         this.plan = plan;
@@ -70,8 +78,8 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
      * @param activityInstance Reference to an ActivityInstance.
      * @param status Current Status of the ActivityInstance.
      */
-    public ActivitySuspensionStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status) {
+    public ActivitySuspensionStatus(ObjectRef<ActivityInstance> activityInstance,
+            ActivityStatusEnum status) {
         this.activityInstance = activityInstance;
         this.plan = null;
         this.status = status;
@@ -79,8 +87,8 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ActivitySuspensionStatus();
+    public Element createElement() {
+        return new ActivitySuspensionStatus();
     }
 
     /**
@@ -88,7 +96,7 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field activityInstance
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> getActivityInstance() {
+    public ObjectRef<ActivityInstance> getActivityInstance() {
         return activityInstance;
     }
 
@@ -97,7 +105,7 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -106,7 +114,7 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityStatusEnum getStatus() {
+    public ActivityStatusEnum getStatus() {
         return status;
     }
 
@@ -187,12 +195,12 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (activityInstance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'activityInstance' cannot be null!");
+            throw new MALException("The field 'activityInstance' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(activityInstance);
         encoder.encodeNullableElement(plan);
@@ -201,16 +209,16 @@ public final class ActivitySuspensionStatus implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        activityInstance = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>());
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        status = (org.ccsds.moims.mo.mps.structures.ActivityStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.PLANNED);
+    public Element decode(MALDecoder decoder) throws MALException {
+        activityInstance = (ObjectRef<ActivityInstance>) decoder.decodeElement(new ObjectRef<ActivityInstance>());
+        plan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        status = (ActivityStatusEnum) decoder.decodeElement(ActivityStatusEnum.PLANNED);
         suspensionInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

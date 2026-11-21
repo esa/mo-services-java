@@ -8,7 +8,7 @@ public class IPTest2Helper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.malprototype.iptest2.IPTest2ServiceInfo IPTEST2_SERVICE = new org.ccsds.moims.mo.malprototype.iptest2.IPTest2ServiceInfo();
+    public static final IPTest2ServiceInfo IPTEST2_SERVICE = new IPTest2ServiceInfo();
 
     private IPTest2Helper() {
         // Utility class; not meant to be instantiated.

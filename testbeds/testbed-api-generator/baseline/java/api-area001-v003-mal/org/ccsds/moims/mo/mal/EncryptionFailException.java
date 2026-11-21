@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The EncryptionFailException exception. A failure in the MAL to encrypt/decrypt
  * the message.
  */
-public final class EncryptionFailException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class EncryptionFailException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Encryption Fail";
 

@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E3: An ItemRevision represents the changes that were made to a single planned
  * item inside a revision.
  */
-public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ItemRevision implements Composite {
 
     private static final long serialVersionUID = 1407374900331002L;
     /**
@@ -14,20 +22,20 @@ public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Object Type: ActivityInstance | EventInstance. Reference to a planned ActivityInstance
      * or EventInstance that is new or modified in the current Plan, or has been
      * deleted with respect to the referenced revisedPlan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> itemRef;
+    private ObjectRef<Element> itemRef;
 
     /**
      * Revision status of the referenced item.  May be one of New, Modified, Deleted,
      * or Undefined.
      */
-    private org.ccsds.moims.mo.mps.structures.RevisionStatusEnum revisionStatus;
+    private RevisionStatusEnum revisionStatus;
 
     /**
      * Default constructor for ItemRevision.
@@ -42,15 +50,15 @@ public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Com
      * @param itemRef Object Type: ActivityInstance | EventInstance. Reference to a planned ActivityInstance or EventInstance that is new or modified in the current Plan, or has been deleted with respect to the referenced revisedPlan.
      * @param revisionStatus Revision status of the referenced item.  May be one of New, Modified, Deleted, or Undefined.
      */
-    public ItemRevision(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> itemRef,
-            org.ccsds.moims.mo.mps.structures.RevisionStatusEnum revisionStatus) {
+    public ItemRevision(ObjectRef<Element> itemRef,
+            RevisionStatusEnum revisionStatus) {
         this.itemRef = itemRef;
         this.revisionStatus = revisionStatus;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ItemRevision();
+    public Element createElement() {
+        return new ItemRevision();
     }
 
     /**
@@ -58,7 +66,7 @@ public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field itemRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> getItemRef() {
+    public ObjectRef<Element> getItemRef() {
         return itemRef;
     }
 
@@ -67,7 +75,7 @@ public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field revisionStatus
      */
-    public org.ccsds.moims.mo.mps.structures.RevisionStatusEnum getRevisionStatus() {
+    public RevisionStatusEnum getRevisionStatus() {
         return revisionStatus;
     }
 
@@ -117,26 +125,26 @@ public final class ItemRevision implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (itemRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'itemRef' cannot be null!");
+            throw new MALException("The field 'itemRef' cannot be null!");
         }
         if (revisionStatus == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'revisionStatus' cannot be null!");
+            throw new MALException("The field 'revisionStatus' cannot be null!");
         }
         encoder.encodeAbstractElement(itemRef);
         encoder.encodeElement(revisionStatus);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        itemRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>) decoder.decodeAbstractElement();
-        revisionStatus = (org.ccsds.moims.mo.mps.structures.RevisionStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.RevisionStatusEnum.NEW);
+    public Element decode(MALDecoder decoder) throws MALException {
+        itemRef = (ObjectRef<Element>) decoder.decodeAbstractElement();
+        revisionStatus = (RevisionStatusEnum) decoder.decodeElement(RevisionStatusEnum.NEW);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

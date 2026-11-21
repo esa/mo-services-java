@@ -1,5 +1,29 @@
 package org.ccsds.moims.mo.mc.statistic.consumer;
 
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.com.structures.InstanceBooleanPairList;
+import org.ccsds.moims.mo.com.structures.ObjectKeyList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList;
+import org.ccsds.moims.mo.mc.structures.ObjectInstancePairList;
+
 /**
  * Consumer stub for Statistic service.
  */
@@ -8,7 +32,7 @@ public class StatisticStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +40,7 @@ public class StatisticStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public StatisticStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public StatisticStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +50,7 @@ public class StatisticStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -46,27 +70,27 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a requested function, group or parameters is unknown then an UNKNOWN error shall be returned.
 The sets of matched StatisticFunction objects and ParameterIdentity objects shall be matched to the set of existing StatisticLink objects to determine which StatisticLink objects to report on.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or parameters do not exist in the provider or statistic functions is not supported by the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or ParameterIdentity objects.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the requested groups or parameters do not exist in the provider or statistic functions is not supported by the provider.
+     * @throws InvalidException One of the supplied groups is not a group of groups or ParameterIdentity objects.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList getStatistics(org.ccsds.moims.mo.mal.structures.LongList funcObjInstIds,
+    public StatisticEvaluationReportList getStatistics(LongList funcObjInstIds,
             Boolean isGroup,
-            org.ccsds.moims.mo.com.structures.ObjectKeyList paramObjInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            ObjectKeyList paramObjInstIds) throws UnknownException, InvalidException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSTATISTICS_OP, funcObjInstIds, (isGroup == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroup), paramObjInstIds);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList());
-            return (org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(StatisticServiceInfo.GETSTATISTICS_OP, funcObjInstIds, (isGroup == null) ? null : new Union(isGroup), paramObjInstIds);
+            Object body0 = (Object) body.getBodyElement(0, new StatisticEvaluationReportList());
+            return (StatisticEvaluationReportList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -86,17 +110,17 @@ If a requested function, group or parameters is unknown then an UNKNOWN error sh
 The sets of matched StatisticFunction objects and ParameterIdentity objects shall be matched to the set of existing StatisticLink objects to determine which StatisticLink objects to report on.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetStatistics(org.ccsds.moims.mo.mal.structures.LongList funcObjInstIds,
+    public MALMessage asyncGetStatistics(LongList funcObjInstIds,
             Boolean isGroup,
-            org.ccsds.moims.mo.com.structures.ObjectKeyList paramObjInstIds,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            ObjectKeyList paramObjInstIds,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSTATISTICS_OP, adapter, funcObjInstIds, (isGroup == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroup), paramObjInstIds);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.GETSTATISTICS_OP, adapter, funcObjInstIds, (isGroup == null) ? null : new Union(isGroup), paramObjInstIds);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -107,17 +131,17 @@ The sets of matched StatisticFunction objects and ParameterIdentity objects shal
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueGetStatistics(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueGetStatistics(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSTATISTICS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.GETSTATISTICS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -136,27 +160,27 @@ If a requested function or group is unknown then an UNKNOWN error shall be retur
      * @param returnLatestEval If the returnLatestEval Boolean field is TRUE then the latest evaluation result for each of the matched links shall be returned before resetting, otherwise a NULL is returned.
 If an error is raised then no resetting of evaluations shall be made as a result of this operation call.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or functions is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
+     * @throws UnknownException One or more of the requested groups or functions is unknown.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList resetEvaluation(Boolean isStatLinkGroup,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            Boolean returnLatestEval) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public StatisticEvaluationReportList resetEvaluation(Boolean isStatLinkGroup,
+            LongList objInstIds,
+            Boolean returnLatestEval) throws InvalidException, UnknownException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.RESETEVALUATION_OP, (isStatLinkGroup == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isStatLinkGroup), objInstIds, (returnLatestEval == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnLatestEval));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList());
-            return (org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            MALMessageBody body = consumer.request(StatisticServiceInfo.RESETEVALUATION_OP, (isStatLinkGroup == null) ? null : new Union(isStatLinkGroup), objInstIds, (returnLatestEval == null) ? null : new Union(returnLatestEval));
+            Object body0 = (Object) body.getBodyElement(0, new StatisticEvaluationReportList());
+            return (StatisticEvaluationReportList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -173,17 +197,17 @@ If a requested function or group is unknown then an UNKNOWN error shall be retur
 If an error is raised then no resetting of evaluations shall be made as a result of this operation call.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncResetEvaluation(Boolean isStatLinkGroup,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds,
+    public MALMessage asyncResetEvaluation(Boolean isStatLinkGroup,
+            LongList objInstIds,
             Boolean returnLatestEval,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.RESETEVALUATION_OP, adapter, (isStatLinkGroup == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isStatLinkGroup), objInstIds, (returnLatestEval == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnLatestEval));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.RESETEVALUATION_OP, adapter, (isStatLinkGroup == null) ? null : new Union(isStatLinkGroup), objInstIds, (returnLatestEval == null) ? null : new Union(returnLatestEval));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -194,17 +218,17 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueResetEvaluation(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueResetEvaluation(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.RESETEVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.RESETEVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -213,15 +237,15 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorStatisticsRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorStatisticsRegister(Subscription subscription,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.register(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.MONITORSTATISTICS_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.register(StatisticServiceInfo.MONITORSTATISTICS_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -231,15 +255,15 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorStatisticsRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorStatisticsRegister(Subscription subscription,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRegister(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.MONITORSTATISTICS_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRegister(StatisticServiceInfo.MONITORSTATISTICS_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -247,14 +271,14 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * Deregister method for the monitorStatistics PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorStatisticsDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorStatisticsDeregister(IdentifierList identifierList) throws MALStandardError, MALException {
         try {
-            consumer.deregister(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.MONITORSTATISTICS_OP, identifierList);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.deregister(StatisticServiceInfo.MONITORSTATISTICS_OP, identifierList);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -264,15 +288,15 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorStatisticsDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorStatisticsDeregister(IdentifierList identifierList,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncDeregister(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.MONITORSTATISTICS_OP, identifierList, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncDeregister(StatisticServiceInfo.MONITORSTATISTICS_OP, identifierList, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -283,14 +307,14 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * @param enableService If enableService is set to TRUE the service shall be enabled and evaluation and reporting of statistics will be reset and commence.
 If enableService is set to FALSE then all evaluation of statistics shall be suspended and no statistics will be reported.
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void enableService(Boolean enableService) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void enableService(Boolean enableService) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLESERVICE_OP, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(StatisticServiceInfo.ENABLESERVICE_OP, (enableService == null) ? null : new Union(enableService));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -302,15 +326,15 @@ If enableService is set to FALSE then all evaluation of statistics shall be susp
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableService(Boolean enableService,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncEnableService(Boolean enableService,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLESERVICE_OP, adapter, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(StatisticServiceInfo.ENABLESERVICE_OP, adapter, (enableService == null) ? null : new Union(enableService));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -321,17 +345,17 @@ If the enableService value matches the current enabled state of the service then
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueEnableService(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueEnableService(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLESERVICE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.ENABLESERVICE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -340,16 +364,16 @@ If the enableService value matches the current enabled state of the service then
      * statistic service enabled status.
      * 
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public Boolean getServiceStatus() throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public Boolean getServiceStatus() throws MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSERVICESTATUS_OP, (Object[]) null);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE));
-            return (body0 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body0).getBooleanValue();
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            MALMessageBody body = consumer.request(StatisticServiceInfo.GETSERVICESTATUS_OP, (Object[]) null);
+            Object body0 = (Object) body.getBodyElement(0, new Union(Boolean.FALSE));
+            return (body0 == null) ? null : ((Union) body0).getBooleanValue();
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -358,14 +382,14 @@ If the enableService value matches the current enabled state of the service then
      * 
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetServiceStatus(org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncGetServiceStatus(StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSERVICESTATUS_OP, adapter, (Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.GETSERVICESTATUS_OP, adapter, (Object[]) null);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -376,17 +400,17 @@ If the enableService value matches the current enabled state of the service then
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueGetServiceStatus(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueGetServiceStatus(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.GETSERVICESTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.GETSERVICESTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -407,24 +431,24 @@ If a requested StatisticFunction or GroupIdentity object is unknown then an UNKN
 If an error is raised then no modifications shall be made as a result of this operation call.
 The provider should create and store a new StatisticLinkDefinition object in the COM archive if the reportingEnabled field is changed.
      * @param enableInstances If the generation of reports is being enabled, then the provider shall generate a report immediately and start the report interval from that report.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested StatisticFunction or Group objects is unknown.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the requested StatisticFunction or Group objects is unknown.
+     * @throws InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void enableReporting(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            InstanceBooleanPairList enableInstances) throws UnknownException, InvalidException, MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLEREPORTING_OP, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.submit(StatisticServiceInfo.ENABLEREPORTING_OP, (isGroupIds == null) ? null : new Union(isGroupIds), enableInstances);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -444,16 +468,16 @@ The provider should create and store a new StatisticLinkDefinition object in the
      * @param enableInstances If the generation of reports is being enabled, then the provider shall generate a report immediately and start the report interval from that report.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableReporting(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncEnableReporting(Boolean isGroupIds,
+            InstanceBooleanPairList enableInstances,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLEREPORTING_OP, adapter, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(StatisticServiceInfo.ENABLEREPORTING_OP, adapter, (isGroupIds == null) ? null : new Union(isGroupIds), enableInstances);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -464,17 +488,17 @@ The provider should create and store a new StatisticLinkDefinition object in the
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueEnableReporting(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueEnableReporting(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ENABLEREPORTING_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.ENABLEREPORTING_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -488,21 +512,21 @@ The request may contain the wildcard value of '0' to return all supported statis
 The wildcard value should be checked for first, if found no other checks of supplied identifiers shall be made.
 If a provided identifier does not include a wildcard and does not match an existing StatisticFunction object then this operation shall fail with an UNKNOWN error.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One of the supplied identifiers is unknown.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList listParameterEvaluations(org.ccsds.moims.mo.mal.structures.LongList statObjInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public StatisticLinkSummaryList listParameterEvaluations(LongList statObjInstIds) throws UnknownException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, statObjInstIds);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList());
-            return (org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, statObjInstIds);
+            Object body0 = (Object) body.getBodyElement(0, new StatisticLinkSummaryList());
+            return (StatisticLinkSummaryList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -515,15 +539,15 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing StatisticFunction object then this operation shall fail with an UNKNOWN error.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncListParameterEvaluations(org.ccsds.moims.mo.mal.structures.LongList statObjInstIds,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncListParameterEvaluations(LongList statObjInstIds,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, adapter, statObjInstIds);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, adapter, statObjInstIds);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -534,17 +558,17 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueListParameterEvaluations(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueListParameterEvaluations(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.LISTPARAMETEREVALUATIONS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -567,25 +591,25 @@ If an error is raised then no new StatisticLink object shall be created and stor
 If no error is to be raised then StatisticLink and StatisticLinkDefinition objects shall be created for each function/parameter link and stored in the COM archive.
 The referenced parameter shall be sampled immediately and the sampling, reporting and collection intervals started.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the supplied StatisticLink is either requesting an invalid sampling interval or invalid function for the request parameter.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the requested StatisticLink objects references either an unknown StatisticFunction object or an unknown ParameterIdentity object.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException One or more of the supplied StatisticLink is either requesting an invalid sampling interval or invalid function for the request parameter.
+     * @throws UnknownException One of the requested StatisticLink objects references either an unknown StatisticFunction object or an unknown ParameterIdentity object.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameterEvaluation(org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList newDetails) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public ObjectInstancePairList addParameterEvaluation(StatisticCreationRequestList newDetails) throws InvalidException, UnknownException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, newDetails);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
-            return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            MALMessageBody body = consumer.request(StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, newDetails);
+            Object body0 = (Object) body.getBodyElement(0, new ObjectInstancePairList());
+            return (ObjectInstancePairList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -605,15 +629,15 @@ If no error is to be raised then StatisticLink and StatisticLinkDefinition objec
 The referenced parameter shall be sampled immediately and the sampling, reporting and collection intervals started.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncAddParameterEvaluation(org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList newDetails,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncAddParameterEvaluation(StatisticCreationRequestList newDetails,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, adapter, newDetails);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, adapter, newDetails);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -624,17 +648,17 @@ The referenced parameter shall be sampled immediately and the sampling, reportin
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueAddParameterEvaluation(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueAddParameterEvaluation(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.ADDPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -658,27 +682,27 @@ If an error is raised then no links shall be updated as a result of this operati
 The provider shall create a new StatisticLinkDefinition object and store it in the COM archive.
 If any of the intervals are updated then the service shall reset the relevant timer and use the new intervals immediately.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the supplied object instance identifiers list contains either a NULL or '0' or is requesting an invalid sampling interval for the request parameter or the two supplied lists are not the same length.
+     * @throws UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
+     * @throws InvalidException One or more of the supplied object instance identifiers list contains either a NULL or '0' or is requesting an invalid sampling interval for the request parameter or the two supplied lists are not the same length.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.structures.LongList updateParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList linkIds,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList newDetails) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public LongList updateParameterEvaluation(LongList linkIds,
+            StatisticLinkDetailsList newDetails) throws UnknownException, InvalidException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, linkIds, newDetails);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, linkIds, newDetails);
+            Object body0 = (Object) body.getBodyElement(0, new LongList());
+            return (LongList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -697,16 +721,16 @@ The provider shall create a new StatisticLinkDefinition object and store it in t
 If any of the intervals are updated then the service shall reset the relevant timer and use the new intervals immediately.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList linkIds,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList newDetails,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncUpdateParameterEvaluation(LongList linkIds,
+            StatisticLinkDetailsList newDetails,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, adapter, linkIds, newDetails);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, adapter, linkIds, newDetails);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -717,17 +741,17 @@ If any of the intervals are updated then the service shall reset the relevant ti
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueUpdateParameterEvaluation(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueUpdateParameterEvaluation(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.UPDATEPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -747,19 +771,19 @@ If a provided StatisticLink object instance identifier does not include a wildca
 Matched StatisticLink objects shall not be removed from the COM archive only the list of evaluated StatisticLink objects in the provider.
 If an error is raised then no StatisticLink objects shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not evaluate those parameter/function definition combinations for the deleted StatisticLink objects anymore.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void removeParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void removeParameterEvaluation(LongList objInstIds) throws UnknownException, MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, objInstIds);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.submit(StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, objInstIds);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -775,15 +799,15 @@ If an error is raised then no StatisticLink objects shall be removed as a result
 If the operation succeeds then the provider shall not evaluate those parameter/function definition combinations for the deleted StatisticLink objects anymore.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncRemoveParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncRemoveParameterEvaluation(LongList objInstIds,
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, adapter, objInstIds);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, adapter, objInstIds);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -794,17 +818,17 @@ If the operation succeeds then the provider shall not evaluate those parameter/f
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueRemoveParameterEvaluation(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueRemoveParameterEvaluation(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.statistic.consumer.StatisticAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            StatisticAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(StatisticServiceInfo.REMOVEPARAMETEREVALUATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

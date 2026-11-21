@@ -1,120 +1,145 @@
 package org.ccsds.moims.mo.mc.action.provider;
 
+import java.io.IOException;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALProviderSet;
+import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.provider.MALSubmit;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mc.action.ActionHelper;
+import org.ccsds.moims.mo.mc.action.ActionServiceInfo;
+import org.ccsds.moims.mo.mc.structures.ActionExecutionRequest;
+
 /**
  * Provider Inheritance skeleton for ActionInheritanceSkeleton service.
  */
-public abstract class ActionInheritanceSkeleton implements org.ccsds.moims.mo.mal.provider.MALInteractionHandler, org.ccsds.moims.mo.mc.action.provider.ActionSkeleton, org.ccsds.moims.mo.mc.action.provider.ActionHandler {
+public abstract class ActionInheritanceSkeleton implements MALInteractionHandler, ActionSkeleton, ActionHandler {
 
     /**
      * The providerSet field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProviderSet providerSet = new org.ccsds.moims.mo.mal.provider.MALProviderSet(org.ccsds.moims.mo.mc.action.ActionHelper.ACTION_SERVICE);
+    private MALProviderSet providerSet = new MALProviderSet(ActionHelper.ACTION_SERVICE);
 
     /**
      * Returns the connection object for this provider.
      * 
      * @return the connection object for this provider
-     * @throws java.io.IOException if the method was not implemented yet.
+     * @throws IOException if the method was not implemented yet.
      */
-    public org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider getConnection() throws java.io.IOException {
-        throw new java.io.IOException("This method needs to be overridden!");
+    public ConnectionProvider getConnection() throws IOException {
+        throw new IOException("This method needs to be overridden!");
     }
 
     @Override
-    public void setSkeleton(org.ccsds.moims.mo.mc.action.provider.ActionSkeleton skeleton) {
+    public void setSkeleton(ActionSkeleton skeleton) {
         // Not used in the inheritance pattern (the skeleton is 'this');
     }
 
     @Override
-    public void malInitialize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malInitialize(MALProvider provider) throws MALException {
         providerSet.addProvider(provider);
     }
 
     @Override
-    public void malFinalize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malFinalize(MALProvider provider) throws MALException {
         providerSet.removeProvider(provider);
     }
 
     @Override
-    public org.ccsds.moims.mo.mc.action.provider.MonitorExecutionPublisher createMonitorExecutionPublisher(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.QoSLevel qos,
-            java.util.Map qosProps,
-            org.ccsds.moims.mo.mal.structures.UInteger priority) throws org.ccsds.moims.mo.mal.MALException {
-        return new org.ccsds.moims.mo.mc.action.provider.MonitorExecutionPublisher(providerSet.createPublisherSet(org.ccsds.moims.mo.mc.action.ActionServiceInfo.MONITOREXECUTION_OP, domain, sessionType, sessionName, qos, qosProps, null));
+    public MonitorExecutionPublisher createMonitorExecutionPublisher(IdentifierList domain,
+            Identifier networkZone,
+            SessionType sessionType,
+            Identifier sessionName,
+            QoSLevel qos,
+            Map qosProps,
+            UInteger priority) throws MALException {
+        return new MonitorExecutionPublisher(providerSet.createPublisherSet(ActionServiceInfo.MONITOREXECUTION_OP, domain, sessionType, sessionName, qos, qosProps, null));
     }
 
     @Override
-    public void handleSend(org.ccsds.moims.mo.mal.provider.MALInteraction interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSend(MALInteraction interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleSubmit(org.ccsds.moims.mo.mal.provider.MALSubmit interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSubmit(MALSubmit interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.mc.action.ActionServiceInfo._EXECUTE_OP_NUMBER:
-            execute((org.ccsds.moims.mo.mc.structures.ActionExecutionRequest) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ActionExecutionRequest()),
+          case ActionServiceInfo._EXECUTE_OP_NUMBER:
+            execute((ActionExecutionRequest) body.getBodyElement(0, new ActionExecutionRequest()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
-        }
-    }
-
-    @Override
-    public void handleRequest(org.ccsds.moims.mo.mal.provider.MALRequest interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
-        int opNumber = interaction.getOperation().getNumber().getValue();
-        switch (opNumber) {
-          default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleInvoke(org.ccsds.moims.mo.mal.provider.MALInvoke interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleRequest(MALRequest interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleProgress(org.ccsds.moims.mo.mal.provider.MALProgress interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleInvoke(MALInvoke interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+        }
+    }
+
+    @Override
+    public void handleProgress(MALProgress interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
+        int opNumber = interaction.getOperation().getNumber().getValue();
+        switch (opNumber) {
+          default:
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 

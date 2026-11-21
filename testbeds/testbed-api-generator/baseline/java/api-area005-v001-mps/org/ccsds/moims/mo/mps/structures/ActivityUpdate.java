@@ -1,5 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: ActivityUpdate is a data structure that is used to report the dynamic
  * status of an ActivityInstance in the context of the MPS Plan Execution
@@ -10,7 +22,7 @@ package org.ccsds.moims.mo.mps.structures;
  * function.  ActivityUpdates may be stored in activity history to provide
  * a complete record of evolving status over time.
  */
-public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.PlanDetailUpdate {
+public final class ActivityUpdate extends PlanDetailUpdate {
 
     private static final long serialVersionUID = 1407374900330602L;
     /**
@@ -20,78 +32,78 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the ActivityInstance to which the status update relates.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance;
+    private ObjectRef<ActivityInstance> activityInstance;
 
     /**
      * Time of status update. Only nullable in the context of an updateActivity
      * operation: the timestamp must be provided when reporting ActivityInstance
      * status.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * Optional reference to the Plan containing the ActivityInstance to which
      * this update pertains.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Argument values.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * Optionally specifies the trigger that initiates the ActivityInstance: may
      * be time, position, or event based.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger start;
+    private Trigger start;
 
     /**
      * Optionally specifies the trigger that ends the ActivityInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger end;
+    private Trigger end;
 
     /**
      * Optional duration of the ActivityInstance (estimated until execution, actual
      * post execution).
      */
-    private org.ccsds.moims.mo.mal.structures.Duration duration;
+    private Duration duration;
 
     /**
      * Optional association of the ActivityInstance with a defined sub-plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Set of tags that may be used to associate the ActivityInstance with an
      * identified subset of the Plan, grouping activities by operational responsibility
      * (controller/group/system) or other criteria.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList tags;
+    private StringList tags;
 
     /**
      * Current status of the ActivityInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status;
+    private ActivityStatusEnum status;
 
     /**
      * Reference to the instance of an executable body for the ActivityInstance
      * (procedure, action sequence, etc.).  The manner in which this reference
      * is interpreted is implementation specific.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier executionInstance;
+    private Identifier executionInstance;
 
     /**
      * Optional return data from the planning process, provided as a list of ID-Value
      * pairs.  This can be used to provide additional information required by
      * the User to interpret the planned activity.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList returnData;
+    private NamedValueList returnData;
 
     /**
      * StatusInfo provides the reason for entering the Terminated State and is
@@ -139,18 +151,18 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * @param errorCode Error Code optional in the case of a failure status for the planning activity (for example Terminated state with statusInfo Failed).  The codes are implementation specific.
      * @param errorInfo Supplementary error information.
      */
-    public ActivityUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments,
-            org.ccsds.moims.mo.mps.structures.Trigger start,
-            org.ccsds.moims.mo.mps.structures.Trigger end,
-            org.ccsds.moims.mo.mal.structures.Duration duration,
-            org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.Identifier executionInstance,
-            org.ccsds.moims.mo.mal.structures.NamedValueList returnData,
+    public ActivityUpdate(ObjectRef<ActivityInstance> activityInstance,
+            Time timestamp,
+            ObjectRef<Plan> plan,
+            ArgumentList arguments,
+            Trigger start,
+            Trigger end,
+            Duration duration,
+            Identifier subPlan,
+            StringList tags,
+            ActivityStatusEnum status,
+            Identifier executionInstance,
+            NamedValueList returnData,
             String statusInfo,
             Integer errorCode,
             String errorInfo) {
@@ -177,8 +189,8 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * @param activityInstance Reference to the ActivityInstance to which the status update relates.
      * @param status Current status of the ActivityInstance.
      */
-    public ActivityUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityInstance,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status) {
+    public ActivityUpdate(ObjectRef<ActivityInstance> activityInstance,
+            ActivityStatusEnum status) {
         this.activityInstance = activityInstance;
         this.timestamp = null;
         this.plan = null;
@@ -197,8 +209,8 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ActivityUpdate();
+    public Element createElement() {
+        return new ActivityUpdate();
     }
 
     /**
@@ -206,7 +218,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field activityInstance
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> getActivityInstance() {
+    public ObjectRef<ActivityInstance> getActivityInstance() {
         return activityInstance;
     }
 
@@ -215,7 +227,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -224,7 +236,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -233,7 +245,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -242,7 +254,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getStart() {
+    public Trigger getStart() {
         return start;
     }
 
@@ -251,7 +263,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getEnd() {
+    public Trigger getEnd() {
         return end;
     }
 
@@ -260,7 +272,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field duration
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
@@ -269,7 +281,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -278,7 +290,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field tags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getTags() {
+    public StringList getTags() {
         return tags;
     }
 
@@ -287,7 +299,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityStatusEnum getStatus() {
+    public ActivityStatusEnum getStatus() {
         return status;
     }
 
@@ -296,7 +308,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field executionInstance
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getExecutionInstance() {
+    public Identifier getExecutionInstance() {
         return executionInstance;
     }
 
@@ -305,7 +317,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
      * 
      * @return The field returnData
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getReturnData() {
+    public NamedValueList getReturnData() {
         return returnData;
     }
 
@@ -529,13 +541,13 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (activityInstance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'activityInstance' cannot be null!");
+            throw new MALException("The field 'activityInstance' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(activityInstance);
         encoder.encodeNullableTime(timestamp);
@@ -555,20 +567,20 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        activityInstance = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>());
+        activityInstance = (ObjectRef<ActivityInstance>) decoder.decodeElement(new ObjectRef<ActivityInstance>());
         timestamp = decoder.decodeNullableTime();
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
-        start = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        end = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
+        plan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
+        start = (Trigger) decoder.decodeNullableAbstractElement();
+        end = (Trigger) decoder.decodeNullableAbstractElement();
         duration = decoder.decodeNullableDuration();
         subPlan = decoder.decodeNullableIdentifier();
-        tags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
-        status = (org.ccsds.moims.mo.mps.structures.ActivityStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.PLANNED);
+        tags = (StringList) decoder.decodeNullableElement(new StringList());
+        status = (ActivityStatusEnum) decoder.decodeElement(ActivityStatusEnum.PLANNED);
         executionInstance = decoder.decodeNullableIdentifier();
-        returnData = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+        returnData = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
         statusInfo = decoder.decodeNullableString();
         errorCode = decoder.decodeNullableInteger();
         errorInfo = decoder.decodeNullableString();
@@ -576,7 +588,7 @@ public final class ActivityUpdate extends org.ccsds.moims.mo.mps.structures.Plan
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

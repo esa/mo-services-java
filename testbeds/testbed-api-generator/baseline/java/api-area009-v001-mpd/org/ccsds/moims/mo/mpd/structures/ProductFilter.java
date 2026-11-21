@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+
 /**
  * The ProductFilter is used in the context of standing orders and service
  * operations requesting a filtered list of available products. It specifies
@@ -14,7 +23,7 @@ package org.ccsds.moims.mo.mpd.structures;
  * to define new types for each mission, but the generated product will be
  * associated with a specific mission domain.
  */
-public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProductFilter implements Composite {
 
     private static final long serialVersionUID = 2533274807173126L;
     /**
@@ -24,18 +33,18 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the product type definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier productType;
+    private Identifier productType;
 
     /**
      * The domain to filter on. A wildcard may be used in order to select all
      * possibilities within a sub-domain.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The set of sources associated with the products to filter on. If the product
@@ -43,14 +52,14 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * If the sources field is set to NULL, then no filtering on the product source
      * will be performed.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList sources;
+    private IdentifierList sources;
 
     /**
      * Set of attribute filters defining the desired values of product metadata
      * attributes. If multiple attribute filters are defined, then the product
      * metadata must match all (ANDed) specified criteria to pass the filter.
      */
-    private org.ccsds.moims.mo.mpd.structures.AttributeFilterList attributeFilter;
+    private AttributeFilterList attributeFilter;
 
     /**
      * Default constructor for ProductFilter.
@@ -67,10 +76,10 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * @param sources The set of sources associated with the products to filter on. If the product source matches at least one of the listed sources, then it passes the filter. If the sources field is set to NULL, then no filtering on the product source will be performed.
      * @param attributeFilter Set of attribute filters defining the desired values of product metadata attributes. If multiple attribute filters are defined, then the product metadata must match all (ANDed) specified criteria to pass the filter.
      */
-    public ProductFilter(org.ccsds.moims.mo.mal.structures.Identifier productType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList sources,
-            org.ccsds.moims.mo.mpd.structures.AttributeFilterList attributeFilter) {
+    public ProductFilter(Identifier productType,
+            IdentifierList domain,
+            IdentifierList sources,
+            AttributeFilterList attributeFilter) {
         this.productType = productType;
         this.domain = domain;
         this.sources = sources;
@@ -78,8 +87,8 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.ProductFilter();
+    public Element createElement() {
+        return new ProductFilter();
     }
 
     /**
@@ -87,7 +96,7 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field productType
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getProductType() {
+    public Identifier getProductType() {
         return productType;
     }
 
@@ -96,7 +105,7 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -105,7 +114,7 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field sources
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getSources() {
+    public IdentifierList getSources() {
         return sources;
     }
 
@@ -114,7 +123,7 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field attributeFilter
      */
-    public org.ccsds.moims.mo.mpd.structures.AttributeFilterList getAttributeFilter() {
+    public AttributeFilterList getAttributeFilter() {
         return attributeFilter;
     }
 
@@ -186,7 +195,7 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableIdentifier(productType);
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableElement(sources);
@@ -194,16 +203,16 @@ public final class ProductFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         productType = decoder.decodeNullableIdentifier();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        sources = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        attributeFilter = (org.ccsds.moims.mo.mpd.structures.AttributeFilterList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mpd.structures.AttributeFilterList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        sources = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        attributeFilter = (AttributeFilterList) decoder.decodeNullableElement(new AttributeFilterList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

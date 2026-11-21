@@ -1,37 +1,42 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E7: Geometric constraints restrict the planning of the planning activity
  * by imposing a geometric condition that must be valid during some constraint
  * period.
  */
-public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public abstract class GeometricConstraint extends Constraint {
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the start of the constraint period relates. Default is the start
      * of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the end of the constraint period relates. Default is the end of
      * the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * Offset from startRef that specifies the start of the constraint period.
      * A positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * Offset from endRef that specifies the end of the constraint period.  A
      * positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * Default constructor for GeometricConstraint.
@@ -50,10 +55,10 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
      * @param endOffset Offset from endRef that specifies the end of the constraint period.  A positive offset implies a shift later in time. Default is no offset.
      */
     public GeometricConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset) {
         super(negate);
         this.startRef = startRef;
         this.endRef = endRef;
@@ -66,7 +71,7 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -75,7 +80,7 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -84,7 +89,7 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -93,7 +98,7 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -169,7 +174,7 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableElement(startRef);
         encoder.encodeNullableElement(endRef);
@@ -178,12 +183,12 @@ public abstract class GeometricConstraint extends org.ccsds.moims.mo.mps.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
         return this;
     }
 

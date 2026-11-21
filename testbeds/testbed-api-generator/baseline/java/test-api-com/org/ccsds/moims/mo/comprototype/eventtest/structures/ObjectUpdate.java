@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.comprototype.eventtest.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ShortList;
+
 /**
  * Holds object update details.
 .
  */
-public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ObjectUpdate implements Composite {
 
     private static final long serialVersionUID = 56295003948843011L;
     /**
@@ -14,31 +23,31 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Optional field - holds enum value.
 .
      */
-    private org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum EnumField;
+    private BasicEnum EnumField;
 
     /**
      * Optional field - holds duration value.
 .
      */
-    private org.ccsds.moims.mo.mal.structures.Duration DurationField;
+    private Duration DurationField;
 
     /**
      * Optional field - holds one or more numeric (short values).
 .
      */
-    private org.ccsds.moims.mo.mal.structures.ShortList NumericListField;
+    private ShortList NumericListField;
 
     /**
      * Optional field - holds a composite containing a number of discrete value.
      * .
      */
-    private org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite CompositeField;
+    private UpdateComposite CompositeField;
 
     /**
      * Default constructor for ObjectUpdate.
@@ -59,10 +68,10 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
      * @param CompositeField Optional field - holds a composite containing a number of discrete value.
 
      */
-    public ObjectUpdate(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum EnumField,
-            org.ccsds.moims.mo.mal.structures.Duration DurationField,
-            org.ccsds.moims.mo.mal.structures.ShortList NumericListField,
-            org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite CompositeField) {
+    public ObjectUpdate(BasicEnum EnumField,
+            Duration DurationField,
+            ShortList NumericListField,
+            UpdateComposite CompositeField) {
         this.EnumField = EnumField;
         this.DurationField = DurationField;
         this.NumericListField = NumericListField;
@@ -70,8 +79,8 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate();
+    public Element createElement() {
+        return new ObjectUpdate();
     }
 
     /**
@@ -79,7 +88,7 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field EnumField
      */
-    public org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum getEnumField() {
+    public BasicEnum getEnumField() {
         return EnumField;
     }
 
@@ -88,7 +97,7 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field DurationField
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getDurationField() {
+    public Duration getDurationField() {
         return DurationField;
     }
 
@@ -97,7 +106,7 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field NumericListField
      */
-    public org.ccsds.moims.mo.mal.structures.ShortList getNumericListField() {
+    public ShortList getNumericListField() {
         return NumericListField;
     }
 
@@ -106,7 +115,7 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field CompositeField
      */
-    public org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite getCompositeField() {
+    public UpdateComposite getCompositeField() {
         return CompositeField;
     }
 
@@ -178,7 +187,7 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(EnumField);
         encoder.encodeNullableDuration(DurationField);
         encoder.encodeNullableElement(NumericListField);
@@ -186,16 +195,16 @@ public final class ObjectUpdate implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        EnumField = (org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum) decoder.decodeNullableElement(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.FIRST);
+    public Element decode(MALDecoder decoder) throws MALException {
+        EnumField = (BasicEnum) decoder.decodeNullableElement(BasicEnum.FIRST);
         DurationField = decoder.decodeNullableDuration();
-        NumericListField = (org.ccsds.moims.mo.mal.structures.ShortList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ShortList());
-        CompositeField = (org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite) decoder.decodeNullableElement(new org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite());
+        NumericListField = (ShortList) decoder.decodeNullableElement(new ShortList());
+        CompositeField = (UpdateComposite) decoder.decodeNullableElement(new UpdateComposite());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

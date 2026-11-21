@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for StandingOrder.
  */
-public final class StandingOrderList extends java.util.ArrayList<org.ccsds.moims.mo.mpd.structures.StandingOrder> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mpd.structures.StandingOrder> {
+public final class StandingOrderList extends ArrayList<StandingOrder> implements HomogeneousList<StandingOrder> {
 
     private static final long serialVersionUID = 2533274823950333L;
     /**
@@ -13,7 +21,7 @@ public final class StandingOrderList extends java.util.ArrayList<org.ccsds.moims
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for StandingOrderList.
@@ -36,14 +44,14 @@ public final class StandingOrderList extends java.util.ArrayList<org.ccsds.moims
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public StandingOrderList(java.util.ArrayList<org.ccsds.moims.mo.mpd.structures.StandingOrder> elementList) {
-        for(org.ccsds.moims.mo.mpd.structures.StandingOrder element : elementList) {
+    public StandingOrderList(ArrayList<StandingOrder> elementList) {
+        for(StandingOrder element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mpd.structures.StandingOrder element) {
+    public boolean add(StandingOrder element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class StandingOrderList extends java.util.ArrayList<org.ccsds.moims
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new StandingOrderList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mpd.structures.StandingOrder();
+    public Element createTypedElement() {
+        return new StandingOrder();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

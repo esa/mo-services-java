@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The StatisticFunctionDetails structure holds the details of the function.
  */
-public final class StatisticFunctionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StatisticFunctionDetails implements Composite {
 
     private static final long serialVersionUID = 1125921398456321L;
     /**
@@ -13,12 +21,12 @@ public final class StatisticFunctionDetails implements org.ccsds.moims.mo.mal.st
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the statistical function.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The description of the statistical function.
@@ -38,15 +46,15 @@ public final class StatisticFunctionDetails implements org.ccsds.moims.mo.mal.st
      * @param name The name of the statistical function.
      * @param description The description of the statistical function.
      */
-    public StatisticFunctionDetails(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public StatisticFunctionDetails(Identifier name,
             String description) {
         this.name = name;
         this.description = description;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticFunctionDetails();
+    public Element createElement() {
+        return new StatisticFunctionDetails();
     }
 
     /**
@@ -54,7 +62,7 @@ public final class StatisticFunctionDetails implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -113,26 +121,26 @@ public final class StatisticFunctionDetails implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeString(description);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
         description = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -8,7 +8,7 @@ public class DataTestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo DATATEST_SERVICE = new org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo();
+    public static final DataTestServiceInfo DATATEST_SERVICE = new DataTestServiceInfo();
 
     private DataTestHelper() {
         // Utility class; not meant to be instantiated.

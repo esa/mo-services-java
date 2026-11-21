@@ -1,5 +1,21 @@
 package org.ccsds.moims.mo.mc.alert.consumer;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mc.AmbiguousException;
+import org.ccsds.moims.mo.mc.alert.AlertServiceInfo;
+import org.ccsds.moims.mo.mc.structures.AlertConfigurationList;
+
 /**
  * Consumer stub for Alert service.
  */
@@ -8,7 +24,7 @@ public class AlertStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +32,7 @@ public class AlertStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public AlertStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public AlertStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +42,7 @@ public class AlertStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -35,15 +51,15 @@ public class AlertStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorAlertRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorAlertRegister(Subscription subscription,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.register(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.MONITORALERT_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.register(AlertServiceInfo.MONITORALERT_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -53,15 +69,15 @@ public class AlertStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorAlertRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorAlertRegister(Subscription subscription,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRegister(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.MONITORALERT_OP, subscription, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRegister(AlertServiceInfo.MONITORALERT_OP, subscription, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -69,14 +85,14 @@ public class AlertStub {
      * Deregister method for the monitorAlert PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorAlertDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void monitorAlertDeregister(IdentifierList identifierList) throws MALStandardError, MALException {
         try {
-            consumer.deregister(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.MONITORALERT_OP, identifierList);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.deregister(AlertServiceInfo.MONITORALERT_OP, identifierList);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -86,15 +102,15 @@ public class AlertStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorAlertDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncMonitorAlertDeregister(IdentifierList identifierList,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncDeregister(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.MONITORALERT_OP, identifierList, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncDeregister(AlertServiceInfo.MONITORALERT_OP, identifierList, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -105,26 +121,26 @@ public class AlertStub {
      * @param domain The domain field.
      * @param keys The keys field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
-     * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Operation specific.
+     * @throws AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.structures.AlertConfigurationList getAlertConfiguration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public AlertConfigurationList getAlertConfiguration(IdentifierList domain,
+            IdentifierList keys) throws UnknownException, AmbiguousException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.GETALERTCONFIGURATION_OP, domain, keys);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.AlertConfigurationList());
-            return (org.ccsds.moims.mo.mc.structures.AlertConfigurationList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(AlertServiceInfo.GETALERTCONFIGURATION_OP, domain, keys);
+            Object body0 = (Object) body.getBodyElement(0, new AlertConfigurationList());
+            return (AlertConfigurationList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mc.AmbiguousException) {
-                throw (org.ccsds.moims.mo.mc.AmbiguousException) error;
+            if (error instanceof AmbiguousException) {
+                throw (AmbiguousException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -135,16 +151,16 @@ public class AlertStub {
      * @param keys The keys field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetAlertConfiguration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncGetAlertConfiguration(IdentifierList domain,
+            IdentifierList keys,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.GETALERTCONFIGURATION_OP, adapter, domain, keys);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(AlertServiceInfo.GETALERTCONFIGURATION_OP, adapter, domain, keys);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -155,17 +171,17 @@ public class AlertStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueGetAlertConfiguration(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueGetAlertConfiguration(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.GETALERTCONFIGURATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(AlertServiceInfo.GETALERTCONFIGURATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -175,24 +191,24 @@ public class AlertStub {
      * 
      * @param domain The domain field.
      * @param keys The keys field.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
-     * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Operation specific.
+     * @throws AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void enableGeneration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void enableGeneration(IdentifierList domain,
+            IdentifierList keys) throws UnknownException, AmbiguousException, MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.ENABLEGENERATION_OP, domain, keys);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.submit(AlertServiceInfo.ENABLEGENERATION_OP, domain, keys);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mc.AmbiguousException) {
-                throw (org.ccsds.moims.mo.mc.AmbiguousException) error;
+            if (error instanceof AmbiguousException) {
+                throw (AmbiguousException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -203,16 +219,16 @@ public class AlertStub {
      * @param keys The keys field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableGeneration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncEnableGeneration(IdentifierList domain,
+            IdentifierList keys,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.ENABLEGENERATION_OP, adapter, domain, keys);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(AlertServiceInfo.ENABLEGENERATION_OP, adapter, domain, keys);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -223,17 +239,17 @@ public class AlertStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueEnableGeneration(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueEnableGeneration(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.ENABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(AlertServiceInfo.ENABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -243,24 +259,24 @@ public class AlertStub {
      * 
      * @param domain The domain field.
      * @param keys The keys field.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
-     * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Operation specific.
+     * @throws AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void disableGeneration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void disableGeneration(IdentifierList domain,
+            IdentifierList keys) throws UnknownException, AmbiguousException, MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.DISABLEGENERATION_OP, domain, keys);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.submit(AlertServiceInfo.DISABLEGENERATION_OP, domain, keys);
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mc.AmbiguousException) {
-                throw (org.ccsds.moims.mo.mc.AmbiguousException) error;
+            if (error instanceof AmbiguousException) {
+                throw (AmbiguousException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -271,16 +287,16 @@ public class AlertStub {
      * @param keys The keys field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncDisableGeneration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncDisableGeneration(IdentifierList domain,
+            IdentifierList keys,
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.DISABLEGENERATION_OP, adapter, domain, keys);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(AlertServiceInfo.DISABLEGENERATION_OP, adapter, domain, keys);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -291,17 +307,17 @@ public class AlertStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueDisableGeneration(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueDisableGeneration(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            AlertAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.mc.alert.AlertServiceInfo.DISABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(AlertServiceInfo.DISABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

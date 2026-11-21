@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for EventStatusEnum.
  */
-public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class EventStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330699L;
     /**
@@ -13,7 +17,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for GROUP.
@@ -23,7 +27,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value GROUP.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EventStatusEnum GROUP = new org.ccsds.moims.mo.mps.structures.EventStatusEnum(org.ccsds.moims.mo.mps.structures.EventStatusEnum.GROUP_VALUE);
+    public static final EventStatusEnum GROUP = new EventStatusEnum(EventStatusEnum.GROUP_VALUE);
 
     /**
      * Enumeration value for PLANNED.
@@ -33,7 +37,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value PLANNED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EventStatusEnum PLANNED = new org.ccsds.moims.mo.mps.structures.EventStatusEnum(org.ccsds.moims.mo.mps.structures.EventStatusEnum.PLANNED_VALUE);
+    public static final EventStatusEnum PLANNED = new EventStatusEnum(EventStatusEnum.PLANNED_VALUE);
 
     /**
      * Enumeration value for ACTIVATED.
@@ -43,7 +47,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value ACTIVATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EventStatusEnum ACTIVATED = new org.ccsds.moims.mo.mps.structures.EventStatusEnum(org.ccsds.moims.mo.mps.structures.EventStatusEnum.ACTIVATED_VALUE);
+    public static final EventStatusEnum ACTIVATED = new EventStatusEnum(EventStatusEnum.ACTIVATED_VALUE);
 
     /**
      * Enumeration value for TERMINATED.
@@ -53,12 +57,12 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value TERMINATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EventStatusEnum TERMINATED = new org.ccsds.moims.mo.mps.structures.EventStatusEnum(org.ccsds.moims.mo.mps.structures.EventStatusEnum.TERMINATED_VALUE);
+    public static final EventStatusEnum TERMINATED = new EventStatusEnum(EventStatusEnum.TERMINATED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.EventStatusEnum[] _ENUMERATIONS = {
+    private static final EventStatusEnum[] _ENUMERATIONS = {
         GROUP, PLANNED, ACTIVATED, TERMINATED};
 
     /**
@@ -100,7 +104,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.EventStatusEnum fromString(String s) {
+    public static EventStatusEnum fromString(String s) {
         switch (s) {
             case "GROUP":
                 return EventStatusEnum.GROUP;
@@ -116,7 +120,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case GROUP_VALUE:
                 return EventStatusEnum.GROUP;
@@ -132,7 +136,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -142,7 +146,7 @@ public final class EventStatusEnum extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

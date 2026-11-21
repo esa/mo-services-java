@@ -4,6 +4,18 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 15.1 (21 November 2026)
+* Adds a deserialization filter to the RMI transport's client-side lookup, closing a CWE-502 vector from an attacker-controlled From URI
+* Removes the unsafe object serialization helpers from HelperAttributes
+* Selects the body decoder from the encoding identifier in the message header
+* Returns a refused message's error from the broker it was sent to, fixing a hung publisher or subscriber
+* Fixes createMALconsumer to use the given authentication id and local name, and to select ASSURED QoS when offered
+* Fixes the TCP/IP fixed-binary decoder to read complete values and accept its own headers
+* Returns the type short form for byte and short in getTypeShortForm
+* Imports the types used by the generated Java classes
+* Updates the MC Alert service to the specification and drops its unused interval fields
+* Bumps Jetty to 9.4.58 in transport-http
+
 ### Version 15.0 (27 September 2026)
 * Replaces the three old API generators (generator-interfaces, generator-java and generator-docs) with the api-generator-lib, which the Maven plugin now calls directly
 * Removes the api-generator-maven-plugin options packageBindings, generateStructures, generateCOM, extraProperties and xsdRefDirectory

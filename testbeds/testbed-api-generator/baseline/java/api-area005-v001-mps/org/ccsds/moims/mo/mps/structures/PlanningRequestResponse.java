@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: PlanningRequestResponse is a data structure used in the context of
  * the MPS Planning Request service submitRequest and updateRequest operations,
@@ -7,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * contains a reference to the created RequestInstance and the supplied userReference
  * to allow the user to correlate the two.
  */
-public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanningRequestResponse implements Composite {
 
     private static final long serialVersionUID = 1407374900330902L;
     /**
@@ -17,20 +26,20 @@ public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the RequestInstance created in response to a submitRequest
      * operation, or the updated version of the RequestInstance following an updateRequest
      * operation.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> instance;
+    private ObjectRef<RequestInstance> instance;
 
     /**
      * User supplied reference for the planning request.  This is distinct from
      * the identity of the RequestInstance that is assigned by the planning function.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier userReference;
+    private Identifier userReference;
 
     /**
      * Default constructor for PlanningRequestResponse.
@@ -45,15 +54,15 @@ public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.str
      * @param instance Reference to the RequestInstance created in response to a submitRequest operation, or the updated version of the RequestInstance following an updateRequest operation.
      * @param userReference User supplied reference for the planning request.  This is distinct from the identity of the RequestInstance that is assigned by the planning function.
      */
-    public PlanningRequestResponse(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> instance,
-            org.ccsds.moims.mo.mal.structures.Identifier userReference) {
+    public PlanningRequestResponse(ObjectRef<RequestInstance> instance,
+            Identifier userReference) {
         this.instance = instance;
         this.userReference = userReference;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanningRequestResponse();
+    public Element createElement() {
+        return new PlanningRequestResponse();
     }
 
     /**
@@ -61,7 +70,7 @@ public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field instance
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> getInstance() {
+    public ObjectRef<RequestInstance> getInstance() {
         return instance;
     }
 
@@ -70,7 +79,7 @@ public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field userReference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserReference() {
+    public Identifier getUserReference() {
         return userReference;
     }
 
@@ -120,26 +129,26 @@ public final class PlanningRequestResponse implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (instance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'instance' cannot be null!");
+            throw new MALException("The field 'instance' cannot be null!");
         }
         if (userReference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'userReference' cannot be null!");
+            throw new MALException("The field 'userReference' cannot be null!");
         }
         encoder.encodeElement(instance);
         encoder.encodeIdentifier(userReference);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        instance = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        instance = (ObjectRef<RequestInstance>) decoder.decodeElement(new ObjectRef<RequestInstance>());
         userReference = decoder.decodeIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

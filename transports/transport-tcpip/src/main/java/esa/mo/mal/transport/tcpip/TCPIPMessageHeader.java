@@ -109,8 +109,12 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         return encodingId;
     }
 
-    @Deprecated
-    private void setEncodingId(short encodingId) {
+    /**
+     * Sets the identifier of the encoding of the message body.
+     *
+     * @param encodingId The encoding identifier.
+     */
+    public void setEncodingId(short encodingId) {
         this.encodingId = encodingId;
     }
 

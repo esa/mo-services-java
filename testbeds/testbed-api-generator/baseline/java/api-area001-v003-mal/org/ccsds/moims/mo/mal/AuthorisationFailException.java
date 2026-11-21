@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The AuthorisationFailException exception. A failure in the MAL to authorise
  * the message.
  */
-public final class AuthorisationFailException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class AuthorisationFailException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Authorisation Fail";
 

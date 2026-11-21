@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for Position.
  */
-public final class PositionList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class PositionList extends HeterogeneousList {
 
     /**
      * Default constructor for PositionList.
@@ -13,7 +16,7 @@ public final class PositionList extends org.ccsds.moims.mo.mal.structures.Hetero
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof Position)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: Position");
         }

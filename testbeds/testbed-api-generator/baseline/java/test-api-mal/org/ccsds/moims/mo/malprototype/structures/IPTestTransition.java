@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * This structure is used to define an expected transition from an IP test.
  * It asserts what transition is expected and what result is expected from
  * the transition: successful or failure.
  */
-public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class IPTestTransition implements Composite {
 
     private static final long serialVersionUID = 28147497687842821L;
     /**
@@ -15,18 +23,18 @@ public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The type of the transition to do.
      */
-    private org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType Type;
+    private IPTestTransitionType Type;
 
     /**
      * The code of the error expected to be raised when doing the transition (failed
      * transition).-1 if no error is expected (successful transition).
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger errorCode;
+    private UInteger errorCode;
 
     /**
      * Default constructor for IPTestTransition.
@@ -41,15 +49,15 @@ public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures
      * @param Type The type of the transition to do
      * @param errorCode The code of the error expected to be raised when doing the transition (failed transition).-1 if no error is expected (successful transition).
      */
-    public IPTestTransition(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType Type,
-            org.ccsds.moims.mo.mal.structures.UInteger errorCode) {
+    public IPTestTransition(IPTestTransitionType Type,
+            UInteger errorCode) {
         this.Type = Type;
         this.errorCode = errorCode;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.IPTestTransition();
+    public Element createElement() {
+        return new IPTestTransition();
     }
 
     /**
@@ -57,7 +65,7 @@ public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field Type
      */
-    public org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType getType() {
+    public IPTestTransitionType getType() {
         return Type;
     }
 
@@ -66,7 +74,7 @@ public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field errorCode
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getErrorCode() {
+    public UInteger getErrorCode() {
         return errorCode;
     }
 
@@ -116,20 +124,20 @@ public final class IPTestTransition implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(Type);
         encoder.encodeNullableUInteger(errorCode);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        Type = (org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType) decoder.decodeNullableElement(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.ACK);
+    public Element decode(MALDecoder decoder) throws MALException {
+        Type = (IPTestTransitionType) decoder.decodeNullableElement(IPTestTransitionType.ACK);
         errorCode = decoder.decodeNullableUInteger();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ActionCategory.
  */
-public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ActionCategory extends Enumeration {
 
     private static final long serialVersionUID = 1125899940397066L;
     /**
@@ -13,7 +17,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for DEFAULT.
@@ -23,7 +27,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value DEFAULT.
      */
-    public static final org.ccsds.moims.mo.mc.structures.ActionCategory DEFAULT = new org.ccsds.moims.mo.mc.structures.ActionCategory(org.ccsds.moims.mo.mc.structures.ActionCategory.DEFAULT_VALUE);
+    public static final ActionCategory DEFAULT = new ActionCategory(ActionCategory.DEFAULT_VALUE);
 
     /**
      * Enumeration value for HIPRIORITY.
@@ -33,7 +37,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value HIPRIORITY.
      */
-    public static final org.ccsds.moims.mo.mc.structures.ActionCategory HIPRIORITY = new org.ccsds.moims.mo.mc.structures.ActionCategory(org.ccsds.moims.mo.mc.structures.ActionCategory.HIPRIORITY_VALUE);
+    public static final ActionCategory HIPRIORITY = new ActionCategory(ActionCategory.HIPRIORITY_VALUE);
 
     /**
      * Enumeration value for CRITICAL.
@@ -43,12 +47,12 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value CRITICAL.
      */
-    public static final org.ccsds.moims.mo.mc.structures.ActionCategory CRITICAL = new org.ccsds.moims.mo.mc.structures.ActionCategory(org.ccsds.moims.mo.mc.structures.ActionCategory.CRITICAL_VALUE);
+    public static final ActionCategory CRITICAL = new ActionCategory(ActionCategory.CRITICAL_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.structures.ActionCategory[] _ENUMERATIONS = {
+    private static final ActionCategory[] _ENUMERATIONS = {
         DEFAULT, HIPRIORITY, CRITICAL};
 
     /**
@@ -88,7 +92,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.structures.ActionCategory fromString(String s) {
+    public static ActionCategory fromString(String s) {
         switch (s) {
             case "DEFAULT":
                 return ActionCategory.DEFAULT;
@@ -102,7 +106,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case DEFAULT_VALUE:
                 return ActionCategory.DEFAULT;
@@ -116,7 +120,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -126,7 +130,7 @@ public final class ActionCategory extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

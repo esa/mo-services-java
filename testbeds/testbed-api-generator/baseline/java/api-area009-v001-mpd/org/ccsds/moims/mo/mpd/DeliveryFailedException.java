@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mpd;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DeliveryFailedException exception. An attempt to deliver a product
  * file to the nominated address failed.
  */
-public final class DeliveryFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DeliveryFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Delivery Failed";
 

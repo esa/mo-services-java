@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ProviderDetails structure holds information about a provider of a service
  * and its capabilities. The structure contains a list of AddressDetails structures
@@ -7,7 +14,7 @@ package org.ccsds.moims.mo.common.directory.structures;
  * do not supply address information. A provider may support more than one
  * transport technology and therefore can be reached using more than one address.
  */
-public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProviderDetails implements Composite {
 
     private static final long serialVersionUID = 844429241876481L;
     /**
@@ -17,12 +24,12 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The service capabilities supported by this service provider.
      */
-    private org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList serviceCapabilities;
+    private ServiceCapabilityList serviceCapabilities;
 
     /**
      * List of addresses for all services of this service provider unless service
@@ -30,7 +37,7 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
      * address information is supplied in the serviceCapabilities field this list
      * should be zero length.
      */
-    private org.ccsds.moims.mo.common.directory.structures.AddressDetailsList providerAddresses;
+    private AddressDetailsList providerAddresses;
 
     /**
      * Default constructor for ProviderDetails.
@@ -45,15 +52,15 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
      * @param serviceCapabilities The service capabilities supported by this service provider
      * @param providerAddresses List of addresses for all services of this service provider unless service specific addresses are supplied in the serviceCapabilities field. If all address information is supplied in the serviceCapabilities field this list should be zero length.
      */
-    public ProviderDetails(org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList serviceCapabilities,
-            org.ccsds.moims.mo.common.directory.structures.AddressDetailsList providerAddresses) {
+    public ProviderDetails(ServiceCapabilityList serviceCapabilities,
+            AddressDetailsList providerAddresses) {
         this.serviceCapabilities = serviceCapabilities;
         this.providerAddresses = providerAddresses;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.ProviderDetails();
+    public Element createElement() {
+        return new ProviderDetails();
     }
 
     /**
@@ -61,7 +68,7 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field serviceCapabilities
      */
-    public org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList getServiceCapabilities() {
+    public ServiceCapabilityList getServiceCapabilities() {
         return serviceCapabilities;
     }
 
@@ -70,7 +77,7 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field providerAddresses
      */
-    public org.ccsds.moims.mo.common.directory.structures.AddressDetailsList getProviderAddresses() {
+    public AddressDetailsList getProviderAddresses() {
         return providerAddresses;
     }
 
@@ -120,26 +127,26 @@ public final class ProviderDetails implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (serviceCapabilities == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'serviceCapabilities' cannot be null!");
+            throw new MALException("The field 'serviceCapabilities' cannot be null!");
         }
         if (providerAddresses == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerAddresses' cannot be null!");
+            throw new MALException("The field 'providerAddresses' cannot be null!");
         }
         encoder.encodeElement(serviceCapabilities);
         encoder.encodeElement(providerAddresses);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        serviceCapabilities = (org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList) decoder.decodeElement(new org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList());
-        providerAddresses = (org.ccsds.moims.mo.common.directory.structures.AddressDetailsList) decoder.decodeElement(new org.ccsds.moims.mo.common.directory.structures.AddressDetailsList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        serviceCapabilities = (ServiceCapabilityList) decoder.decodeElement(new ServiceCapabilityList());
+        providerAddresses = (AddressDetailsList) decoder.decodeElement(new AddressDetailsList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

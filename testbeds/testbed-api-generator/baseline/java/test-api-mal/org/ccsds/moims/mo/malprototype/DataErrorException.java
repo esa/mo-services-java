@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.malprototype;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DataErrorException exception. Data interoperability error.
  */
-public final class DataErrorException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DataErrorException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "DATA_ERROR";
 

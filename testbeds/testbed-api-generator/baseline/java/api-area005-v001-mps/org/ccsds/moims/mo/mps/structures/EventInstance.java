@@ -1,5 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * E1: An EventInstance is an MO object that contains the identity of a specific
  * occurrence of a planning event, together with both static and dynamic information
@@ -10,7 +22,7 @@ package org.ccsds.moims.mo.mps.structures;
  * event by an ActivityInstance, so that the ActivityInstance can reference
  * the timing and arguments of the related EventInstance.
  */
-public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class EventInstance extends MOObject {
 
     private static final long serialVersionUID = 1407374900330698L;
     /**
@@ -20,40 +32,40 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the EventDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> definition;
+    private ObjectRef<EventDefinition> definition;
 
     /**
      * Reference to an external source event (e.g., NAV predicted event, or CSS
      * contact event).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sourceEvent;
+    private Identifier sourceEvent;
 
     /**
      * List of references to child EventInstances.  For a single event, this list
      * is empty; for a group event, the list will be populated.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList events;
+    private ObjectRefList events;
 
     /**
      * Predicted or actual time of the event.  EventTime is nullable: it can be
      * predicted without an eventTime (e.g., if position based).
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime eventTime;
+    private FineTime eventTime;
 
     /**
      * Argument values for each argument defined in the EventDefinition.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * Current status of the event instance (see event state model in 4.5.3.2).
      */
-    private org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus;
+    private EventStatusEnum eventStatus;
 
     /**
      * StatusInfo provides the reason for entering the terminated state and is
@@ -83,13 +95,13 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * @param eventStatus Current status of the event instance (see event state model in 4.5.3.2).
      * @param statusInfo StatusInfo provides the reason for entering the terminated state and is customizable, but if the following conditions exist then the specified text shall be used: - Occurred (Event has been triggered); - Did Not Occur (Event expired or did not occur within validity period); - Deleted (Event was deleted).
      */
-    public EventInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> definition,
-            org.ccsds.moims.mo.mal.structures.Identifier sourceEvent,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList events,
-            org.ccsds.moims.mo.mal.structures.FineTime eventTime,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments,
-            org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus,
+    public EventInstance(ObjectIdentity objectIdentity,
+            ObjectRef<EventDefinition> definition,
+            Identifier sourceEvent,
+            ObjectRefList events,
+            FineTime eventTime,
+            ArgumentList arguments,
+            EventStatusEnum eventStatus,
             String statusInfo) {
         super(objectIdentity);
         this.definition = definition;
@@ -108,9 +120,9 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * @param definition Reference to the EventDefinition.
      * @param eventStatus Current status of the event instance (see event state model in 4.5.3.2).
      */
-    public EventInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> definition,
-            org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus) {
+    public EventInstance(ObjectIdentity objectIdentity,
+            ObjectRef<EventDefinition> definition,
+            EventStatusEnum eventStatus) {
         super(objectIdentity);
         this.definition = definition;
         this.sourceEvent = null;
@@ -122,8 +134,8 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventInstance();
+    public Element createElement() {
+        return new EventInstance();
     }
 
     /**
@@ -131,7 +143,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field definition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> getDefinition() {
+    public ObjectRef<EventDefinition> getDefinition() {
         return definition;
     }
 
@@ -140,7 +152,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field sourceEvent
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSourceEvent() {
+    public Identifier getSourceEvent() {
         return sourceEvent;
     }
 
@@ -149,7 +161,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field events
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getEvents() {
+    public ObjectRefList getEvents() {
         return events;
     }
 
@@ -158,7 +170,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field eventTime
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getEventTime() {
+    public FineTime getEventTime() {
         return eventTime;
     }
 
@@ -167,7 +179,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -176,7 +188,7 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
      * 
      * @return The field eventStatus
      */
-    public org.ccsds.moims.mo.mps.structures.EventStatusEnum getEventStatus() {
+    public EventStatusEnum getEventStatus() {
         return eventStatus;
     }
 
@@ -294,13 +306,13 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (definition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'definition' cannot be null!");
+            throw new MALException("The field 'definition' cannot be null!");
         }
         if (eventStatus == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventStatus' cannot be null!");
+            throw new MALException("The field 'eventStatus' cannot be null!");
         }
         encoder.encodeElement(definition);
         encoder.encodeNullableIdentifier(sourceEvent);
@@ -312,20 +324,20 @@ public final class EventInstance extends org.ccsds.moims.mo.mal.structures.MOObj
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        definition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition>());
+        definition = (ObjectRef<EventDefinition>) decoder.decodeElement(new ObjectRef<EventDefinition>());
         sourceEvent = decoder.decodeNullableIdentifier();
-        events = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        events = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         eventTime = decoder.decodeNullableFineTime();
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
-        eventStatus = (org.ccsds.moims.mo.mps.structures.EventStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.EventStatusEnum.GROUP);
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
+        eventStatus = (EventStatusEnum) decoder.decodeElement(EventStatusEnum.GROUP);
         statusInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: Sub-type of Trigger based on planning event.
  */
-public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigger {
+public final class EventTrigger extends Trigger {
 
     private static final long serialVersionUID = 1407374900330551L;
     /**
@@ -13,17 +22,17 @@ public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to an EventInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> triggerEvent;
+    private ObjectRef<EventInstance> triggerEvent;
 
     /**
      * Time offset from the EventInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration timeOffset;
+    private Duration timeOffset;
 
     /**
      * Default constructor for EventTrigger.
@@ -39,17 +48,17 @@ public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * @param triggerEvent Reference to an EventInstance
      * @param timeOffset Time offset from the EventInstance
      */
-    public EventTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> triggerEvent,
-            org.ccsds.moims.mo.mal.structures.Duration timeOffset) {
+    public EventTrigger(Time time,
+            ObjectRef<EventInstance> triggerEvent,
+            Duration timeOffset) {
         super(time);
         this.triggerEvent = triggerEvent;
         this.timeOffset = timeOffset;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventTrigger();
+    public Element createElement() {
+        return new EventTrigger();
     }
 
     /**
@@ -57,7 +66,7 @@ public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field triggerEvent
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> getTriggerEvent() {
+    public ObjectRef<EventInstance> getTriggerEvent() {
         return triggerEvent;
     }
 
@@ -66,7 +75,7 @@ public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field timeOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getTimeOffset() {
+    public Duration getTimeOffset() {
         return timeOffset;
     }
 
@@ -120,28 +129,28 @@ public final class EventTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (triggerEvent == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'triggerEvent' cannot be null!");
+            throw new MALException("The field 'triggerEvent' cannot be null!");
         }
         if (timeOffset == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timeOffset' cannot be null!");
+            throw new MALException("The field 'timeOffset' cannot be null!");
         }
         encoder.encodeElement(triggerEvent);
         encoder.encodeDuration(timeOffset);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        triggerEvent = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>());
+        triggerEvent = (ObjectRef<EventInstance>) decoder.decodeElement(new ObjectRef<EventInstance>());
         timeOffset = decoder.decodeDuration();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

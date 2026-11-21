@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * The object representing a Garage with multiple references and lists of
  * references to cars.
  */
-public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class Garage extends MOObject {
 
     private static final long serialVersionUID = 28147497687842938L;
     /**
@@ -14,37 +24,37 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The Porsche courtesy car offered by the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Porsche> courtesyCarAsPorsche;
+    private ObjectRef<Porsche> courtesyCarAsPorsche;
 
     /**
      * The courtesy car offered by the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> courtesyCarAsAuto;
+    private ObjectRef<Auto> courtesyCarAsAuto;
 
     /**
      * The courtesy car offered by the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> courtesyCarAsObject;
+    private ObjectRef<Element> courtesyCarAsObject;
 
     /**
      * The list of Porsche cars parked in the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsPorsches;
+    private ObjectRefList carsAsPorsches;
 
     /**
      * The list of cars parked in the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsAutos;
+    private ObjectRefList carsAsAutos;
 
     /**
      * The list of cars parked in the garage.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsObjects;
+    private ObjectRefList carsAsObjects;
 
     /**
      * Default constructor for Garage.
@@ -64,13 +74,13 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * @param carsAsAutos The list of cars parked in the garage.
      * @param carsAsObjects The list of cars parked in the garage.
      */
-    public Garage(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Porsche> courtesyCarAsPorsche,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> courtesyCarAsAuto,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> courtesyCarAsObject,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsPorsches,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsAutos,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList carsAsObjects) {
+    public Garage(ObjectIdentity objectIdentity,
+            ObjectRef<Porsche> courtesyCarAsPorsche,
+            ObjectRef<Auto> courtesyCarAsAuto,
+            ObjectRef<Element> courtesyCarAsObject,
+            ObjectRefList carsAsPorsches,
+            ObjectRefList carsAsAutos,
+            ObjectRefList carsAsObjects) {
         super(objectIdentity);
         this.courtesyCarAsPorsche = courtesyCarAsPorsche;
         this.courtesyCarAsAuto = courtesyCarAsAuto;
@@ -85,7 +95,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public Garage(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public Garage(ObjectIdentity objectIdentity) {
         super(objectIdentity);
         this.courtesyCarAsPorsche = null;
         this.courtesyCarAsAuto = null;
@@ -96,8 +106,8 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.Garage();
+    public Element createElement() {
+        return new Garage();
     }
 
     /**
@@ -105,7 +115,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field courtesyCarAsPorsche
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Porsche> getCourtesyCarAsPorsche() {
+    public ObjectRef<Porsche> getCourtesyCarAsPorsche() {
         return courtesyCarAsPorsche;
     }
 
@@ -114,7 +124,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field courtesyCarAsAuto
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> getCourtesyCarAsAuto() {
+    public ObjectRef<Auto> getCourtesyCarAsAuto() {
         return courtesyCarAsAuto;
     }
 
@@ -123,7 +133,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field courtesyCarAsObject
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> getCourtesyCarAsObject() {
+    public ObjectRef<Element> getCourtesyCarAsObject() {
         return courtesyCarAsObject;
     }
 
@@ -132,7 +142,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field carsAsPorsches
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getCarsAsPorsches() {
+    public ObjectRefList getCarsAsPorsches() {
         return carsAsPorsches;
     }
 
@@ -141,7 +151,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field carsAsAutos
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getCarsAsAutos() {
+    public ObjectRefList getCarsAsAutos() {
         return carsAsAutos;
     }
 
@@ -150,7 +160,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field carsAsObjects
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getCarsAsObjects() {
+    public ObjectRefList getCarsAsObjects() {
         return carsAsObjects;
     }
 
@@ -248,7 +258,7 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableElement(courtesyCarAsPorsche);
         encoder.encodeNullableElement(courtesyCarAsAuto);
@@ -259,19 +269,19 @@ public final class Garage extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        courtesyCarAsPorsche = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Porsche>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Porsche>());
-        courtesyCarAsAuto = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto>());
-        courtesyCarAsObject = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>());
-        carsAsPorsches = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        carsAsAutos = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        carsAsObjects = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        courtesyCarAsPorsche = (ObjectRef<Porsche>) decoder.decodeNullableElement(new ObjectRef<Porsche>());
+        courtesyCarAsAuto = (ObjectRef<Auto>) decoder.decodeNullableElement(new ObjectRef<Auto>());
+        courtesyCarAsObject = (ObjectRef<Element>) decoder.decodeNullableElement(new ObjectRef<Element>());
+        carsAsPorsches = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        carsAsAutos = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        carsAsObjects = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * E1: The source of a planning request is the user that raises it, and this
  * is identified in the user field of a RequestInstance as a reference to
  * a PlanningUser object.
  */
-public final class PlanningUser extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class PlanningUser extends MOObject {
 
     private static final long serialVersionUID = 1407374900331097L;
     /**
@@ -15,7 +23,7 @@ public final class PlanningUser extends org.ccsds.moims.mo.mal.structures.MOObje
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for PlanningUser.
@@ -29,13 +37,13 @@ public final class PlanningUser extends org.ccsds.moims.mo.mal.structures.MOObje
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public PlanningUser(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public PlanningUser(ObjectIdentity objectIdentity) {
         super(objectIdentity);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanningUser();
+    public Element createElement() {
+        return new PlanningUser();
     }
 
     @Override
@@ -65,18 +73,18 @@ public final class PlanningUser extends org.ccsds.moims.mo.mal.structures.MOObje
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

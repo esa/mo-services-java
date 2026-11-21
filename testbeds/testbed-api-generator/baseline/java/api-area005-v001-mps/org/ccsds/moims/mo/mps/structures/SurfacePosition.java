@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: A SurfacePosition is typically used to specify a coordinate on the
  * surface of a celestial body.  Optionally, an altitude above the surface
  * may also be specified.  The reference ellipsoid used to define the surface
  * may be mission specific.
  */
-public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Position {
+public final class SurfacePosition extends Position {
 
     private static final long serialVersionUID = 1407374900330505L;
     /**
@@ -16,7 +23,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Angular coordinate.  May also represent azimuth.
@@ -32,7 +39,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
      * Reference frame used to determine the origin and orientation of the reference
      * ellipsoid.  Must be a celestial body reference frame (see 4.4.2).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier frame;
+    private Identifier frame;
 
     /**
      * The units for the quantity of angle, in which to express the longitude
@@ -70,7 +77,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
      */
     public SurfacePosition(Double longitude,
             Double latitude,
-            org.ccsds.moims.mo.mal.structures.Identifier frame,
+            Identifier frame,
             String units,
             Double altitude,
             String altitudeUnits) {
@@ -91,7 +98,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
      */
     public SurfacePosition(Double longitude,
             Double latitude,
-            org.ccsds.moims.mo.mal.structures.Identifier frame) {
+            Identifier frame) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.frame = frame;
@@ -101,8 +108,8 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SurfacePosition();
+    public Element createElement() {
+        return new SurfacePosition();
     }
 
     /**
@@ -128,7 +135,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
      * 
      * @return The field frame
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFrame() {
+    public Identifier getFrame() {
         return frame;
     }
 
@@ -253,16 +260,16 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (longitude == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'longitude' cannot be null!");
+            throw new MALException("The field 'longitude' cannot be null!");
         }
         if (latitude == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'latitude' cannot be null!");
+            throw new MALException("The field 'latitude' cannot be null!");
         }
         if (frame == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'frame' cannot be null!");
+            throw new MALException("The field 'frame' cannot be null!");
         }
         encoder.encodeDouble(longitude);
         encoder.encodeDouble(latitude);
@@ -273,7 +280,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         longitude = decoder.decodeDouble();
         latitude = decoder.decodeDouble();
@@ -285,7 +292,7 @@ public final class SurfacePosition extends org.ccsds.moims.mo.mps.structures.Pos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

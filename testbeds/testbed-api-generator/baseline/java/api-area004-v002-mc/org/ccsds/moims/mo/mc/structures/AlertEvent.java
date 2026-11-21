@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The AlertEvent structure shall be used to hold the details of an instance
  * of an alert.
  */
-public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AlertEvent implements Composite {
 
     private static final long serialVersionUID = 1125899940397087L;
     /**
@@ -14,22 +24,22 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The alertRef field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition> alertRef;
+    private ObjectRef<AlertDefinition> alertRef;
 
     /**
      * The timestamp field.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The argumentValues field.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList argumentValues;
+    private NullableAttributeList argumentValues;
 
     /**
      * Default constructor for AlertEvent.
@@ -45,9 +55,9 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
      * @param timestamp The timestamp field.
      * @param argumentValues The argumentValues field.
      */
-    public AlertEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition> alertRef,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList argumentValues) {
+    public AlertEvent(ObjectRef<AlertDefinition> alertRef,
+            Time timestamp,
+            NullableAttributeList argumentValues) {
         this.alertRef = alertRef;
         this.timestamp = timestamp;
         this.argumentValues = argumentValues;
@@ -59,16 +69,16 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
      * @param alertRef The alertRef field.
      * @param timestamp The timestamp field.
      */
-    public AlertEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition> alertRef,
-            org.ccsds.moims.mo.mal.structures.Time timestamp) {
+    public AlertEvent(ObjectRef<AlertDefinition> alertRef,
+            Time timestamp) {
         this.alertRef = alertRef;
         this.timestamp = timestamp;
         this.argumentValues = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.AlertEvent();
+    public Element createElement() {
+        return new AlertEvent();
     }
 
     /**
@@ -76,7 +86,7 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field alertRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition> getAlertRef() {
+    public ObjectRef<AlertDefinition> getAlertRef() {
         return alertRef;
     }
 
@@ -85,7 +95,7 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -94,7 +104,7 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field argumentValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getArgumentValues() {
+    public NullableAttributeList getArgumentValues() {
         return argumentValues;
     }
 
@@ -155,12 +165,12 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (alertRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'alertRef' cannot be null!");
+            throw new MALException("The field 'alertRef' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         encoder.encodeElement(alertRef);
         encoder.encodeTime(timestamp);
@@ -168,15 +178,15 @@ public final class AlertEvent implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        alertRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AlertDefinition>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        alertRef = (ObjectRef<AlertDefinition>) decoder.decodeElement(new ObjectRef<AlertDefinition>());
         timestamp = decoder.decodeTime();
-        argumentValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        argumentValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: The PlanInformation section of a plan contains administrative and validity
  * details associated with the plan as a whole.
  */
-public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanInformation implements Composite {
 
     private static final long serialVersionUID = 1407374900330999L;
     /**
@@ -14,19 +23,19 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identity of the entity or system responsible for the production of the
      * plan.  The implementing planning system is responsible for defining the
      * value to be provided for this field.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier originator;
+    private Identifier originator;
 
     /**
      * Date and time of production of the plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Time productionTime;
+    private Time productionTime;
 
     /**
      * Description of the plan.
@@ -44,12 +53,12 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * the plan is available for operational use.  It cannot be used outside its
      * validity period.
      */
-    private org.ccsds.moims.mo.mal.structures.Time validityStart;
+    private Time validityStart;
 
     /**
      * End of validity period for the plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Time validityEnd;
+    private Time validityEnd;
 
     /**
      * Start of the plan period. The plan period defines the start and end points
@@ -59,18 +68,18 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * position, pointing, or planning events.  Examples are: - a specified period
      * of time; - an orbital repeat cycle; - a period between two events.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger planPeriodStart;
+    private Trigger planPeriodStart;
 
     /**
      * End of the plan period.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger planPeriodEnd;
+    private Trigger planPeriodEnd;
 
     /**
      * Specifies the time system used for all time fields within the Plan (see
      * 4.4.1). If Null, the default time system is used.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier timeSystem;
+    private Identifier timeSystem;
 
     /**
      * Default constructor for PlanInformation.
@@ -92,15 +101,15 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * @param planPeriodEnd End of the plan period.
      * @param timeSystem Specifies the time system used for all time fields within the Plan (see 4.4.1). If Null, the default time system is used.
      */
-    public PlanInformation(org.ccsds.moims.mo.mal.structures.Identifier originator,
-            org.ccsds.moims.mo.mal.structures.Time productionTime,
+    public PlanInformation(Identifier originator,
+            Time productionTime,
             String description,
             String comments,
-            org.ccsds.moims.mo.mal.structures.Time validityStart,
-            org.ccsds.moims.mo.mal.structures.Time validityEnd,
-            org.ccsds.moims.mo.mps.structures.Trigger planPeriodStart,
-            org.ccsds.moims.mo.mps.structures.Trigger planPeriodEnd,
-            org.ccsds.moims.mo.mal.structures.Identifier timeSystem) {
+            Time validityStart,
+            Time validityEnd,
+            Trigger planPeriodStart,
+            Trigger planPeriodEnd,
+            Identifier timeSystem) {
         this.originator = originator;
         this.productionTime = productionTime;
         this.description = description;
@@ -123,13 +132,13 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * @param planPeriodStart Start of the plan period. The plan period defines the start and end points of the plan.  Planned items (planning activities and events) contained within the plan must at least partially overlap the plan period.  The use of the trigger structure allows this to be specified in terms of time, position, pointing, or planning events.  Examples are: - a specified period of time; - an orbital repeat cycle; - a period between two events.
      * @param planPeriodEnd End of the plan period.
      */
-    public PlanInformation(org.ccsds.moims.mo.mal.structures.Identifier originator,
-            org.ccsds.moims.mo.mal.structures.Time productionTime,
+    public PlanInformation(Identifier originator,
+            Time productionTime,
             String description,
-            org.ccsds.moims.mo.mal.structures.Time validityStart,
-            org.ccsds.moims.mo.mal.structures.Time validityEnd,
-            org.ccsds.moims.mo.mps.structures.Trigger planPeriodStart,
-            org.ccsds.moims.mo.mps.structures.Trigger planPeriodEnd) {
+            Time validityStart,
+            Time validityEnd,
+            Trigger planPeriodStart,
+            Trigger planPeriodEnd) {
         this.originator = originator;
         this.productionTime = productionTime;
         this.description = description;
@@ -142,8 +151,8 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanInformation();
+    public Element createElement() {
+        return new PlanInformation();
     }
 
     /**
@@ -151,7 +160,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field originator
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOriginator() {
+    public Identifier getOriginator() {
         return originator;
     }
 
@@ -160,7 +169,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field productionTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getProductionTime() {
+    public Time getProductionTime() {
         return productionTime;
     }
 
@@ -187,7 +196,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field validityStart
      */
-    public org.ccsds.moims.mo.mal.structures.Time getValidityStart() {
+    public Time getValidityStart() {
         return validityStart;
     }
 
@@ -196,7 +205,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field validityEnd
      */
-    public org.ccsds.moims.mo.mal.structures.Time getValidityEnd() {
+    public Time getValidityEnd() {
         return validityEnd;
     }
 
@@ -205,7 +214,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field planPeriodStart
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPlanPeriodStart() {
+    public Trigger getPlanPeriodStart() {
         return planPeriodStart;
     }
 
@@ -214,7 +223,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field planPeriodEnd
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPlanPeriodEnd() {
+    public Trigger getPlanPeriodEnd() {
         return planPeriodEnd;
     }
 
@@ -223,7 +232,7 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field timeSystem
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getTimeSystem() {
+    public Identifier getTimeSystem() {
         return timeSystem;
     }
 
@@ -350,27 +359,27 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (originator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'originator' cannot be null!");
+            throw new MALException("The field 'originator' cannot be null!");
         }
         if (productionTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'productionTime' cannot be null!");
+            throw new MALException("The field 'productionTime' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (validityStart == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'validityStart' cannot be null!");
+            throw new MALException("The field 'validityStart' cannot be null!");
         }
         if (validityEnd == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'validityEnd' cannot be null!");
+            throw new MALException("The field 'validityEnd' cannot be null!");
         }
         if (planPeriodStart == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'planPeriodStart' cannot be null!");
+            throw new MALException("The field 'planPeriodStart' cannot be null!");
         }
         if (planPeriodEnd == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'planPeriodEnd' cannot be null!");
+            throw new MALException("The field 'planPeriodEnd' cannot be null!");
         }
         encoder.encodeIdentifier(originator);
         encoder.encodeTime(productionTime);
@@ -384,21 +393,21 @@ public final class PlanInformation implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         originator = decoder.decodeIdentifier();
         productionTime = decoder.decodeTime();
         description = decoder.decodeString();
         comments = decoder.decodeNullableString();
         validityStart = decoder.decodeTime();
         validityEnd = decoder.decodeTime();
-        planPeriodStart = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeAbstractElement();
-        planPeriodEnd = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeAbstractElement();
+        planPeriodStart = (Trigger) decoder.decodeAbstractElement();
+        planPeriodEnd = (Trigger) decoder.decodeAbstractElement();
         timeSystem = decoder.decodeNullableIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

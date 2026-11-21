@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.common.configuration.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ConfigurationType.
  */
-public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ConfigurationType extends Enumeration {
 
     private static final long serialVersionUID = 844446421745668L;
     /**
@@ -13,7 +17,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for PROVIDER.
@@ -23,7 +27,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value PROVIDER.
      */
-    public static final org.ccsds.moims.mo.common.configuration.structures.ConfigurationType PROVIDER = new org.ccsds.moims.mo.common.configuration.structures.ConfigurationType(org.ccsds.moims.mo.common.configuration.structures.ConfigurationType.PROVIDER_VALUE);
+    public static final ConfigurationType PROVIDER = new ConfigurationType(ConfigurationType.PROVIDER_VALUE);
 
     /**
      * Enumeration value for SERVICE.
@@ -33,12 +37,12 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value SERVICE.
      */
-    public static final org.ccsds.moims.mo.common.configuration.structures.ConfigurationType SERVICE = new org.ccsds.moims.mo.common.configuration.structures.ConfigurationType(org.ccsds.moims.mo.common.configuration.structures.ConfigurationType.SERVICE_VALUE);
+    public static final ConfigurationType SERVICE = new ConfigurationType(ConfigurationType.SERVICE_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.common.configuration.structures.ConfigurationType[] _ENUMERATIONS = {
+    private static final ConfigurationType[] _ENUMERATIONS = {
         PROVIDER, SERVICE};
 
     /**
@@ -76,7 +80,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.common.configuration.structures.ConfigurationType fromString(String s) {
+    public static ConfigurationType fromString(String s) {
         switch (s) {
             case "PROVIDER":
                 return ConfigurationType.PROVIDER;
@@ -88,7 +92,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case PROVIDER_VALUE:
                 return ConfigurationType.PROVIDER;
@@ -100,7 +104,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -110,7 +114,7 @@ public final class ConfigurationType extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

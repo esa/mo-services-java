@@ -8,7 +8,7 @@ public class GroupHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.group.GroupServiceInfo GROUP_SERVICE = new org.ccsds.moims.mo.mc.group.GroupServiceInfo();
+    public static final GroupServiceInfo GROUP_SERVICE = new GroupServiceInfo();
 
     private GroupHelper() {
         // Utility class; not meant to be instantiated.

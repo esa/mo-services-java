@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ReportConfiguration structure is used to retrieve the configuration
  * of the report generation of a parameter.
  */
-public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ReportConfiguration implements Composite {
 
     private static final long serialVersionUID = 1125899940397080L;
     /**
@@ -14,7 +22,7 @@ public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The generationEnabled field.
@@ -24,7 +32,7 @@ public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structu
     /**
      * The reportInterval field.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration reportInterval;
+    private Duration reportInterval;
 
     /**
      * Default constructor for ReportConfiguration.
@@ -40,14 +48,14 @@ public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structu
      * @param reportInterval The reportInterval field.
      */
     public ReportConfiguration(Boolean generationEnabled,
-            org.ccsds.moims.mo.mal.structures.Duration reportInterval) {
+            Duration reportInterval) {
         this.generationEnabled = generationEnabled;
         this.reportInterval = reportInterval;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ReportConfiguration();
+    public Element createElement() {
+        return new ReportConfiguration();
     }
 
     /**
@@ -64,7 +72,7 @@ public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field reportInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getReportInterval() {
+    public Duration getReportInterval() {
         return reportInterval;
     }
 
@@ -114,26 +122,26 @@ public final class ReportConfiguration implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (generationEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'generationEnabled' cannot be null!");
+            throw new MALException("The field 'generationEnabled' cannot be null!");
         }
         if (reportInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reportInterval' cannot be null!");
+            throw new MALException("The field 'reportInterval' cannot be null!");
         }
         encoder.encodeBoolean(generationEnabled);
         encoder.encodeDuration(reportInterval);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         generationEnabled = decoder.decodeBoolean();
         reportInterval = decoder.decodeDuration();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

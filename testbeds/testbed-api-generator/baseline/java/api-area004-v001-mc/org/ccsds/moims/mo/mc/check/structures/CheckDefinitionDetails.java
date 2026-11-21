@@ -1,9 +1,18 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The CheckDefinitionDetails structure holds the definition of a check.
  */
-public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class CheckDefinitionDetails implements Composite {
 
     /**
      * The description of the check. May be empty.
@@ -14,7 +23,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * Indicates the seriousness of the violation based on its possible negative
      * consequences.
      */
-    private org.ccsds.moims.mo.mc.structures.Severity checkSeverity;
+    private Severity checkSeverity;
 
     /**
      * Maximum interval that can elapse between generations of CheckResult reports.
@@ -22,13 +31,13 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * for the previous and current state. If set to &quot;0&quot;, then no maximum
      * reporting interval shall be applied.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval;
+    private Duration maxReportingInterval;
 
     /**
      * Number of consecutive valid samples passing the check for the check to
      * be OK.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger nominalCount;
+    private UInteger nominalCount;
 
     /**
      * If nominalCount is zero then this is duration that a parameter is continuously
@@ -37,13 +46,13 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * calculation, i.e. samples further in the past than nominalTime are not
      * considered.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration nominalTime;
+    private Duration nominalTime;
 
     /**
      * Number of consecutive valid samples violating the check for the check to
      * be in violation.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger violationCount;
+    private UInteger violationCount;
 
     /**
      * If violationCount is zero then this is duration that a parameter is continuously
@@ -52,7 +61,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * violationCount calculation, i.e. samples further in the past than violationTime
      * are not considered.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration violationTime;
+    private Duration violationTime;
 
     /**
      * Default constructor for CheckDefinitionDetails.
@@ -73,12 +82,12 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * @param violationTime If violationCount is zero then this is duration that a parameter is continuously violating the check for the check to be in violation. If violationCount not zero then this is the period over which samples will be used in the violationCount calculation, i.e. samples further in the past than violationTime are not considered.
      */
     public CheckDefinitionDetails(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime) {
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime) {
         this.description = description;
         this.checkSeverity = checkSeverity;
         this.maxReportingInterval = maxReportingInterval;
@@ -102,7 +111,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field checkSeverity
      */
-    public org.ccsds.moims.mo.mc.structures.Severity getCheckSeverity() {
+    public Severity getCheckSeverity() {
         return checkSeverity;
     }
 
@@ -111,7 +120,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field maxReportingInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getMaxReportingInterval() {
+    public Duration getMaxReportingInterval() {
         return maxReportingInterval;
     }
 
@@ -120,7 +129,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field nominalCount
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getNominalCount() {
+    public UInteger getNominalCount() {
         return nominalCount;
     }
 
@@ -129,7 +138,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field nominalTime
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getNominalTime() {
+    public Duration getNominalTime() {
         return nominalTime;
     }
 
@@ -138,7 +147,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field violationCount
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getViolationCount() {
+    public UInteger getViolationCount() {
         return violationCount;
     }
 
@@ -147,7 +156,7 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field violationTime
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getViolationTime() {
+    public Duration getViolationTime() {
         return violationTime;
     }
 
@@ -252,27 +261,27 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (checkSeverity == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkSeverity' cannot be null!");
+            throw new MALException("The field 'checkSeverity' cannot be null!");
         }
         if (maxReportingInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'maxReportingInterval' cannot be null!");
+            throw new MALException("The field 'maxReportingInterval' cannot be null!");
         }
         if (nominalCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'nominalCount' cannot be null!");
+            throw new MALException("The field 'nominalCount' cannot be null!");
         }
         if (nominalTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'nominalTime' cannot be null!");
+            throw new MALException("The field 'nominalTime' cannot be null!");
         }
         if (violationCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'violationCount' cannot be null!");
+            throw new MALException("The field 'violationCount' cannot be null!");
         }
         if (violationTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'violationTime' cannot be null!");
+            throw new MALException("The field 'violationTime' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(checkSeverity);
@@ -284,9 +293,9 @@ public abstract class CheckDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
-        checkSeverity = (org.ccsds.moims.mo.mc.structures.Severity) decoder.decodeElement(org.ccsds.moims.mo.mc.structures.Severity.INFORMATIONAL);
+        checkSeverity = (Severity) decoder.decodeElement(Severity.INFORMATIONAL);
         maxReportingInterval = decoder.decodeDuration();
         nominalCount = decoder.decodeUInteger();
         nominalTime = decoder.decodeDuration();

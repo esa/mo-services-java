@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E7: Pointing constraints impose a restriction on a planning activity appearing
  * in a Plan, based on the pointing direction of a physical object, such as
@@ -14,7 +21,7 @@ package org.ccsds.moims.mo.mps.structures;
  * generic templates that describe pointing modes that may be followed by
  * spacecraft.
  */
-public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class PointingConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330537L;
     /**
@@ -24,33 +31,33 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Optional.  Reference frame to which the pointing constraint applies (see
      * 4.4.2). Default frame is the spacecraft frame or any other mission specific
      * default frame.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier pointingFrame;
+    private Identifier pointingFrame;
 
     /**
      * The primary axis to which the pointing constraints applies.  Direction
      * in any spacecraft frame.
      */
-    private org.ccsds.moims.mo.mal.structures.Element boresight;
+    private Element boresight;
 
     /**
      * Defines an optional cone region around the boresight, allowing a margin
      * for application of the pointing constraint. Default = 0.0.
      */
-    private org.ccsds.moims.mo.mal.structures.Element boresightMargin;
+    private Element boresightMargin;
 
     /**
      * Defines an optional rotation around the boresight with respect to the default
      * phase angle, allowing a margin for application of the pointing constraint.
      * Default = 0.0.
      */
-    private org.ccsds.moims.mo.mal.structures.Element phaseAngleMargin;
+    private Element phaseAngleMargin;
 
     /**
      * If True, no constraint will apply to the phaseAngle.  The phaseAngleMargin
@@ -62,13 +69,13 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * One of the pointing templates defined in the PRM or a mission specific
      * pointing template (see 4.4.4).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier pointingTemplate;
+    private Identifier pointingTemplate;
 
     /**
      * The argument list shall be consistent with the referenced template by name.
      * Each value type shall match the argument type according to table 4-6.
      */
-    private org.ccsds.moims.mo.mps.structures.NamedElementList pointingArguments;
+    private NamedElementList pointingArguments;
 
     /**
      * Default constructor for PointingConstraint.
@@ -94,17 +101,17 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param pointingArguments The argument list shall be consistent with the referenced template by name.  Each value type shall match the argument type according to table 4-6.
      */
     public PointingConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Identifier pointingFrame,
-            org.ccsds.moims.mo.mal.structures.Element boresight,
-            org.ccsds.moims.mo.mal.structures.Element boresightMargin,
-            org.ccsds.moims.mo.mal.structures.Element phaseAngleMargin,
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Identifier pointingFrame,
+            Element boresight,
+            Element boresightMargin,
+            Element phaseAngleMargin,
             Boolean unconstrainedPhaseAngle,
-            org.ccsds.moims.mo.mal.structures.Identifier pointingTemplate,
-            org.ccsds.moims.mo.mps.structures.NamedElementList pointingArguments) {
+            Identifier pointingTemplate,
+            NamedElementList pointingArguments) {
         super(negate,
             startRef,
             endRef,
@@ -125,8 +132,8 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param boresight The primary axis to which the pointing constraints applies.  Direction in any spacecraft frame.
      * @param pointingTemplate One of the pointing templates defined in the PRM or a mission specific pointing template (see 4.4.4).
      */
-    public PointingConstraint(org.ccsds.moims.mo.mal.structures.Element boresight,
-            org.ccsds.moims.mo.mal.structures.Identifier pointingTemplate) {
+    public PointingConstraint(Element boresight,
+            Identifier pointingTemplate) {
         this.pointingFrame = null;
         this.boresight = boresight;
         this.boresightMargin = null;
@@ -137,8 +144,8 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PointingConstraint();
+    public Element createElement() {
+        return new PointingConstraint();
     }
 
     /**
@@ -146,7 +153,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field pointingFrame
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getPointingFrame() {
+    public Identifier getPointingFrame() {
         return pointingFrame;
     }
 
@@ -155,7 +162,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field boresight
      */
-    public org.ccsds.moims.mo.mal.structures.Element getBoresight() {
+    public Element getBoresight() {
         return boresight;
     }
 
@@ -164,7 +171,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field boresightMargin
      */
-    public org.ccsds.moims.mo.mal.structures.Element getBoresightMargin() {
+    public Element getBoresightMargin() {
         return boresightMargin;
     }
 
@@ -173,7 +180,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field phaseAngleMargin
      */
-    public org.ccsds.moims.mo.mal.structures.Element getPhaseAngleMargin() {
+    public Element getPhaseAngleMargin() {
         return phaseAngleMargin;
     }
 
@@ -191,7 +198,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field pointingTemplate
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getPointingTemplate() {
+    public Identifier getPointingTemplate() {
         return pointingTemplate;
     }
 
@@ -200,7 +207,7 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field pointingArguments
      */
-    public org.ccsds.moims.mo.mps.structures.NamedElementList getPointingArguments() {
+    public NamedElementList getPointingArguments() {
         return pointingArguments;
     }
 
@@ -309,13 +316,13 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (boresight == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'boresight' cannot be null!");
+            throw new MALException("The field 'boresight' cannot be null!");
         }
         if (pointingTemplate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'pointingTemplate' cannot be null!");
+            throw new MALException("The field 'pointingTemplate' cannot be null!");
         }
         encoder.encodeNullableIdentifier(pointingFrame);
         encoder.encodeAbstractElement(boresight);
@@ -327,20 +334,20 @@ public final class PointingConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         pointingFrame = decoder.decodeNullableIdentifier();
-        boresight = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        boresightMargin = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        phaseAngleMargin = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+        boresight = (Element) decoder.decodeAbstractElement();
+        boresightMargin = (Element) decoder.decodeNullableAbstractElement();
+        phaseAngleMargin = (Element) decoder.decodeNullableAbstractElement();
         unconstrainedPhaseAngle = decoder.decodeNullableBoolean();
         pointingTemplate = decoder.decodeIdentifier();
-        pointingArguments = (org.ccsds.moims.mo.mps.structures.NamedElementList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.NamedElementList());
+        pointingArguments = (NamedElementList) decoder.decodeNullableElement(new NamedElementList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

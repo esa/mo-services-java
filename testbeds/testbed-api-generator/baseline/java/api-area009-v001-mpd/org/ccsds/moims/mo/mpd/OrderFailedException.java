@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mpd;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The OrderFailedException exception. Creation of a new product order failed.
  */
-public final class OrderFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class OrderFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Order Failed";
 

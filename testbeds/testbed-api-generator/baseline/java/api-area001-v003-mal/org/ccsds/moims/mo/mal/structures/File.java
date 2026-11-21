@@ -1,11 +1,16 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The File structure represents a file and shall be used to hold details
  * about a file. It may also, optionally, hold a BLOB of the file data. The
  * file type shall be denoted using the internet MIME media types.
  */
-public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class File implements Composite {
 
     private static final long serialVersionUID = 281475027043311L;
     /**
@@ -15,7 +20,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The file name.
@@ -30,27 +35,27 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
     /**
      * The creation timestamp of the file, NULL if not known.
      */
-    private org.ccsds.moims.mo.mal.structures.Time creationDate;
+    private Time creationDate;
 
     /**
      * The last modification timestamp of the file, NULL if not known.
      */
-    private org.ccsds.moims.mo.mal.structures.Time modificationDate;
+    private Time modificationDate;
 
     /**
      * The size of the file in Octets, NULL if not known.
      */
-    private org.ccsds.moims.mo.mal.structures.ULong size;
+    private ULong size;
 
     /**
      * The contents of the file, NULL if not supplied.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob content;
+    private Blob content;
 
     /**
      * A list of extra metadata for the file.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList metaData;
+    private NamedValueList metaData;
 
     /**
      * Default constructor for File.
@@ -72,11 +77,11 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      */
     public File(String name,
             String mimeType,
-            org.ccsds.moims.mo.mal.structures.Time creationDate,
-            org.ccsds.moims.mo.mal.structures.Time modificationDate,
-            org.ccsds.moims.mo.mal.structures.ULong size,
-            org.ccsds.moims.mo.mal.structures.Blob content,
-            org.ccsds.moims.mo.mal.structures.NamedValueList metaData) {
+            Time creationDate,
+            Time modificationDate,
+            ULong size,
+            Blob content,
+            NamedValueList metaData) {
         this.name = name;
         this.mimeType = mimeType;
         this.creationDate = creationDate;
@@ -102,8 +107,8 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.File();
+    public Element createElement() {
+        return new File();
     }
 
     /**
@@ -129,7 +134,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      * 
      * @return The field creationDate
      */
-    public org.ccsds.moims.mo.mal.structures.Time getCreationDate() {
+    public Time getCreationDate() {
         return creationDate;
     }
 
@@ -138,7 +143,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      * 
      * @return The field modificationDate
      */
-    public org.ccsds.moims.mo.mal.structures.Time getModificationDate() {
+    public Time getModificationDate() {
         return modificationDate;
     }
 
@@ -147,7 +152,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      * 
      * @return The field size
      */
-    public org.ccsds.moims.mo.mal.structures.ULong getSize() {
+    public ULong getSize() {
         return size;
     }
 
@@ -156,7 +161,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      * 
      * @return The field content
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getContent() {
+    public Blob getContent() {
         return content;
     }
 
@@ -165,7 +170,7 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
      * 
      * @return The field metaData
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getMetaData() {
+    public NamedValueList getMetaData() {
         return metaData;
     }
 
@@ -270,9 +275,9 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         encoder.encodeString(name);
         encoder.encodeNullableString(mimeType);
@@ -284,19 +289,19 @@ public final class File implements org.ccsds.moims.mo.mal.structures.Composite {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeString();
         mimeType = decoder.decodeNullableString();
         creationDate = decoder.decodeNullableTime();
         modificationDate = decoder.decodeNullableTime();
         size = decoder.decodeNullableULong();
         content = decoder.decodeNullableBlob();
-        metaData = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+        metaData = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

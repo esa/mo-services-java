@@ -68,6 +68,11 @@ public class RMITransport extends Transport<byte[], byte[]> {
     public static final String RMI_HOSTNAME_PROPERTY = "org.ccsds.moims.mo.mal.transport.rmi.host";
     private static final char RMI_PORT_DELIM = ':';
     private final String serverHost;
+    /**
+     * The URI scheme prefix of this transport, used to reject a connection to a
+     * target that is not addressed through this transport.
+     */
+    private final String uriScheme;
     private Registry registry;
     private int portNumber;
     private UnicastRemoteObject ourRMIinterface;
@@ -82,6 +87,8 @@ public class RMITransport extends Transport<byte[], byte[]> {
     public RMITransport(final String protocol, final java.util.Map properties) throws MALException {
         super(protocol, '-', true, properties);
 
+        this.uriScheme = protocol + "://";
+
         String lhost = null;
 
         if ((properties != null) && (properties.containsKey(RMI_HOSTNAME_PROPERTY))) {
@@ -93,6 +100,10 @@ public class RMITransport extends Transport<byte[], byte[]> {
 
     @Override
     public void init() throws MALException {
+        // Constrain the Java deserialization performed by the client-side
+        // Naming.lookup() before any outbound connection can be made.
+        RMISerialFilter.install();
+
         // Port numbers above 1023 are up for grabs on any machine....
         int iRmiPort = 1024;
         while (true) {
@@ -189,6 +200,18 @@ public class RMITransport extends Transport<byte[], byte[]> {
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "RMI received request to create connections to URI: {0}", remoteRootURI);
+
+        // The target comes from the To field, which for an error reply is the
+        // From field of the received message. Reject a target that is not an
+        // RMI URI of this transport so the sender cannot be redirected to
+        // another scheme.
+        if (remoteRootURI == null || !remoteRootURI.startsWith(uriScheme)) {
+            RLOGGER.log(Level.WARNING,
+                    "RMI refusing to connect to a target that is not a {0} URI: {1}",
+                    new Object[]{uriScheme, remoteRootURI});
+            throw new MALTransmitErrorException(msgHeader,
+                    new DestinationUnknownException(null), null);
+        }
 
         try {
             return new RMIMessageSender(remoteRootURI); // create new sender for this URI

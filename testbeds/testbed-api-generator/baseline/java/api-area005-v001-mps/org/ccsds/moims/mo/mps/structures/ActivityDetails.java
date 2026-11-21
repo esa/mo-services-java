@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Contains the information required to create one or more ActivityInstances,
  * including the specification of argument values and constraints. It should
@@ -9,26 +15,26 @@ package org.ccsds.moims.mo.mps.structures;
  * can be specified as constraints attached to a concrete SimpleActivityDetails
  * structure.
  */
-public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class ActivityDetails implements Composite {
 
     /**
      * Specifies how the ActivityInstance is placed with respect to any defined
      * Repetition (0=Start; 1=End). Default is Start.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider activityRef;
+    private Slider activityRef;
 
     /**
      * Specifies an offset in time for the ActivityInstance from any defined Repetition.
      * Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element activityOffset;
+    private Element activityOffset;
 
     /**
      * Specifies a related Event (or Event Group) for the ActivityInstance.  Argument
      * specifications and constraints may reference arguments and fields of the
      * RelatedEvent.
      */
-    private org.ccsds.moims.mo.mal.structures.Element relatedEvent;
+    private Element relatedEvent;
 
     /**
      * Any notes associated with the ActivityDetails.
@@ -50,9 +56,9 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
      * @param relatedEvent Specifies a related Event (or Event Group) for the ActivityInstance.  Argument specifications and constraints may reference arguments and fields of the RelatedEvent.
      * @param comments Any notes associated with the ActivityDetails.
      */
-    public ActivityDetails(org.ccsds.moims.mo.mps.structures.Slider activityRef,
-            org.ccsds.moims.mo.mal.structures.Element activityOffset,
-            org.ccsds.moims.mo.mal.structures.Element relatedEvent,
+    public ActivityDetails(Slider activityRef,
+            Element activityOffset,
+            Element relatedEvent,
             String comments) {
         this.activityRef = activityRef;
         this.activityOffset = activityOffset;
@@ -65,7 +71,7 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field activityRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getActivityRef() {
+    public Slider getActivityRef() {
         return activityRef;
     }
 
@@ -74,7 +80,7 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field activityOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getActivityOffset() {
+    public Element getActivityOffset() {
         return activityOffset;
     }
 
@@ -83,7 +89,7 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field relatedEvent
      */
-    public org.ccsds.moims.mo.mal.structures.Element getRelatedEvent() {
+    public Element getRelatedEvent() {
         return relatedEvent;
     }
 
@@ -164,7 +170,7 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(activityRef);
         encoder.encodeNullableAbstractElement(activityOffset);
         encoder.encodeNullableAbstractElement(relatedEvent);
@@ -172,10 +178,10 @@ public abstract class ActivityDetails implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        activityRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        activityOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        relatedEvent = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+    public Element decode(MALDecoder decoder) throws MALException {
+        activityRef = (Slider) decoder.decodeNullableElement(new Slider());
+        activityOffset = (Element) decoder.decodeNullableAbstractElement();
+        relatedEvent = (Element) decoder.decodeNullableAbstractElement();
         comments = decoder.decodeNullableString();
         return this;
     }

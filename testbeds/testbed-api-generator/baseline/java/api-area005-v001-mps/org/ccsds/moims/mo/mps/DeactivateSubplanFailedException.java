@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DeactivateSubplanFailedException exception. The deactivateSubPlan operation
  * failed.
  */
-public final class DeactivateSubplanFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DeactivateSubplanFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "DEACTIVATE_SUBPLAN_FAILED";
 

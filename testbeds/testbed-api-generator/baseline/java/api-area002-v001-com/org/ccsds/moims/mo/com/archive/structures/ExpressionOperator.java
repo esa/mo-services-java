@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ExpressionOperator.
  */
-public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ExpressionOperator extends Enumeration {
 
     private static final long serialVersionUID = 562958560133125L;
     /**
@@ -13,7 +17,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for EQUAL.
@@ -23,7 +27,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value EQUAL.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator EQUAL = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.EQUAL_VALUE);
+    public static final ExpressionOperator EQUAL = new ExpressionOperator(ExpressionOperator.EQUAL_VALUE);
 
     /**
      * Enumeration value for DIFFER.
@@ -33,7 +37,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value DIFFER.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator DIFFER = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.DIFFER_VALUE);
+    public static final ExpressionOperator DIFFER = new ExpressionOperator(ExpressionOperator.DIFFER_VALUE);
 
     /**
      * Enumeration value for GREATER.
@@ -43,7 +47,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value GREATER.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator GREATER = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.GREATER_VALUE);
+    public static final ExpressionOperator GREATER = new ExpressionOperator(ExpressionOperator.GREATER_VALUE);
 
     /**
      * Enumeration value for GREATER_OR_EQUAL.
@@ -53,7 +57,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value GREATER_OR_EQUAL.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator GREATER_OR_EQUAL = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.GREATER_OR_EQUAL_VALUE);
+    public static final ExpressionOperator GREATER_OR_EQUAL = new ExpressionOperator(ExpressionOperator.GREATER_OR_EQUAL_VALUE);
 
     /**
      * Enumeration value for LESS.
@@ -63,7 +67,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value LESS.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator LESS = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.LESS_VALUE);
+    public static final ExpressionOperator LESS = new ExpressionOperator(ExpressionOperator.LESS_VALUE);
 
     /**
      * Enumeration value for LESS_OR_EQUAL.
@@ -73,7 +77,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value LESS_OR_EQUAL.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator LESS_OR_EQUAL = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.LESS_OR_EQUAL_VALUE);
+    public static final ExpressionOperator LESS_OR_EQUAL = new ExpressionOperator(ExpressionOperator.LESS_OR_EQUAL_VALUE);
 
     /**
      * Enumeration value for CONTAINS.
@@ -83,7 +87,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value CONTAINS.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator CONTAINS = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.CONTAINS_VALUE);
+    public static final ExpressionOperator CONTAINS = new ExpressionOperator(ExpressionOperator.CONTAINS_VALUE);
 
     /**
      * Enumeration value for ICONTAINS.
@@ -93,12 +97,12 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value ICONTAINS.
      */
-    public static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator ICONTAINS = new org.ccsds.moims.mo.com.archive.structures.ExpressionOperator(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.ICONTAINS_VALUE);
+    public static final ExpressionOperator ICONTAINS = new ExpressionOperator(ExpressionOperator.ICONTAINS_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.com.archive.structures.ExpressionOperator[] _ENUMERATIONS = {
+    private static final ExpressionOperator[] _ENUMERATIONS = {
         EQUAL, DIFFER, GREATER, GREATER_OR_EQUAL, LESS, LESS_OR_EQUAL, CONTAINS,
         ICONTAINS};
 
@@ -149,7 +153,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.com.archive.structures.ExpressionOperator fromString(String s) {
+    public static ExpressionOperator fromString(String s) {
         switch (s) {
             case "EQUAL":
                 return ExpressionOperator.EQUAL;
@@ -173,7 +177,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case EQUAL_VALUE:
                 return ExpressionOperator.EQUAL;
@@ -197,7 +201,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -207,7 +211,7 @@ public final class ExpressionOperator extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,5 +1,7 @@
 package org.ccsds.moims.mo.common.login.body;
 
+import org.ccsds.moims.mo.mal.structures.Blob;
+
 /**
  * Multi body return class for LoginResponse.
  */
@@ -10,7 +12,7 @@ public final class LoginResponse {
      * field in future MAL messages by the consumer MAL for authentication. The
      * token is specific to the user and role in use.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob authId;
+    private Blob authId;
 
     /**
      * objInstId: The returned objInstId field shall contain the LoginInstance
@@ -31,7 +33,7 @@ public final class LoginResponse {
      * @param authId The returned authId field shall be used as the authenticationId field in future MAL messages by the consumer MAL for authentication. The token is specific to the user and role in use.
      * @param objInstId The returned objInstId field shall contain the LoginInstance COM object instance identifier that was created by the login operation.
      */
-    public LoginResponse(org.ccsds.moims.mo.mal.structures.Blob authId,
+    public LoginResponse(Blob authId,
             Long objInstId) {
         this.authId = authId;
         this.objInstId = objInstId;
@@ -42,7 +44,7 @@ public final class LoginResponse {
      * 
      * @return The field authId
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getAuthId() {
+    public Blob getAuthId() {
         return authId;
     }
 

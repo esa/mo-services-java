@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for GenerationMode.
  */
-public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class GenerationMode extends Enumeration {
 
     private static final long serialVersionUID = 1125925693423625L;
     /**
@@ -13,7 +17,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for ADHOC.
@@ -23,7 +27,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value ADHOC.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode ADHOC = new org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode(org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode.ADHOC_VALUE);
+    public static final GenerationMode ADHOC = new GenerationMode(GenerationMode.ADHOC_VALUE);
 
     /**
      * Enumeration value for PERIODIC.
@@ -33,7 +37,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value PERIODIC.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode PERIODIC = new org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode(org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode.PERIODIC_VALUE);
+    public static final GenerationMode PERIODIC = new GenerationMode(GenerationMode.PERIODIC_VALUE);
 
     /**
      * Enumeration value for FILTERED_TIMEOUT.
@@ -43,12 +47,12 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value FILTERED_TIMEOUT.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode FILTERED_TIMEOUT = new org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode(org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode.FILTERED_TIMEOUT_VALUE);
+    public static final GenerationMode FILTERED_TIMEOUT = new GenerationMode(GenerationMode.FILTERED_TIMEOUT_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode[] _ENUMERATIONS = {
+    private static final GenerationMode[] _ENUMERATIONS = {
         ADHOC, PERIODIC, FILTERED_TIMEOUT};
 
     /**
@@ -89,7 +93,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode fromString(String s) {
+    public static GenerationMode fromString(String s) {
         switch (s) {
             case "ADHOC":
                 return GenerationMode.ADHOC;
@@ -103,7 +107,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case ADHOC_VALUE:
                 return GenerationMode.ADHOC;
@@ -117,7 +121,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -127,7 +131,7 @@ public final class GenerationMode extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

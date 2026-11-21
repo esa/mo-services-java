@@ -8,7 +8,7 @@ public class PlanExecutionControlHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mps.planexecutioncontrol.PlanExecutionControlServiceInfo PLANEXECUTIONCONTROL_SERVICE = new org.ccsds.moims.mo.mps.planexecutioncontrol.PlanExecutionControlServiceInfo();
+    public static final PlanExecutionControlServiceInfo PLANEXECUTIONCONTROL_SERVICE = new PlanExecutionControlServiceInfo();
 
     private PlanExecutionControlHelper() {
         // Utility class; not meant to be instantiated.

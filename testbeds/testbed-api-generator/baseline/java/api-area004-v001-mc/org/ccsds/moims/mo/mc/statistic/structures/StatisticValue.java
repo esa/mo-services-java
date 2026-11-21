@@ -1,9 +1,19 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * The StatisticValue structure holds the statistical result for a parameter.
  */
-public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StatisticValue implements Composite {
 
     private static final long serialVersionUID = 1125921398456323L;
     /**
@@ -13,7 +23,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the ParameterDefinition object used for
@@ -26,26 +36,26 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * start time can be derived by other means, e.g., other start times in a
      * set of StatisticValue structures.
      */
-    private org.ccsds.moims.mo.mal.structures.Time startTime;
+    private Time startTime;
 
     /**
      * Time the statistic calculations ended. This value can be NULL if the time
      * can be derived by other means, e.g., other times in a set of StatisticValue
      * structures.
      */
-    private org.ccsds.moims.mo.mal.structures.Time endTime;
+    private Time endTime;
 
     /**
      * Time the statistic value was reached. The time is only applicable for particular
      * statistic values such as min or max. Shall be NULL if not applicable for
      * cases such as &quot;mean average&quot;.
      */
-    private org.ccsds.moims.mo.mal.structures.Time valueTime;
+    private Time valueTime;
 
     /**
      * Value of the statistic.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Holds the number of samples that contributed to the statistic value. For
@@ -54,7 +64,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * such as &quot;min&quot; then it is the number of samples that were in the
      * set evaluated.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger sampleCount;
+    private UInteger sampleCount;
 
     /**
      * Default constructor for StatisticValue.
@@ -74,11 +84,11 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * @param sampleCount Holds the number of samples that contributed to the statistic value. For calculated values such as 'mean average' this holds the number of samples that were used to calculate the value, for non-calculated values such as 'min' then it is the number of samples that were in the set evaluated.
      */
     public StatisticValue(Long paramDefInstId,
-            org.ccsds.moims.mo.mal.structures.Time startTime,
-            org.ccsds.moims.mo.mal.structures.Time endTime,
-            org.ccsds.moims.mo.mal.structures.Time valueTime,
-            org.ccsds.moims.mo.mal.structures.Attribute value,
-            org.ccsds.moims.mo.mal.structures.UInteger sampleCount) {
+            Time startTime,
+            Time endTime,
+            Time valueTime,
+            Attribute value,
+            UInteger sampleCount) {
         this.paramDefInstId = paramDefInstId;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -94,7 +104,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * @param sampleCount Holds the number of samples that contributed to the statistic value. For calculated values such as 'mean average' this holds the number of samples that were used to calculate the value, for non-calculated values such as 'min' then it is the number of samples that were in the set evaluated.
      */
     public StatisticValue(Long paramDefInstId,
-            org.ccsds.moims.mo.mal.structures.UInteger sampleCount) {
+            UInteger sampleCount) {
         this.paramDefInstId = paramDefInstId;
         this.startTime = null;
         this.endTime = null;
@@ -104,8 +114,8 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticValue();
+    public Element createElement() {
+        return new StatisticValue();
     }
 
     /**
@@ -122,7 +132,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field startTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
@@ -131,7 +141,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field endTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
@@ -140,7 +150,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field valueTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getValueTime() {
+    public Time getValueTime() {
         return valueTime;
     }
 
@@ -149,7 +159,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -158,7 +168,7 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field sampleCount
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getSampleCount() {
+    public UInteger getSampleCount() {
         return sampleCount;
     }
 
@@ -252,12 +262,12 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (paramDefInstId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'paramDefInstId' cannot be null!");
+            throw new MALException("The field 'paramDefInstId' cannot be null!");
         }
         if (sampleCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sampleCount' cannot be null!");
+            throw new MALException("The field 'sampleCount' cannot be null!");
         }
         encoder.encodeLong(paramDefInstId);
         encoder.encodeNullableTime(startTime);
@@ -268,18 +278,18 @@ public final class StatisticValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         paramDefInstId = decoder.decodeLong();
         startTime = decoder.decodeNullableTime();
         endTime = decoder.decodeNullableTime();
         valueTime = decoder.decodeNullableTime();
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        value = (Attribute) decoder.decodeNullableAttribute();
         sampleCount = decoder.decodeUInteger();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * List class for UShort.
  */
-public final class UShortList extends java.util.ArrayList<org.ccsds.moims.mo.mal.structures.UShort> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mal.structures.UShort> {
+public final class UShortList extends ArrayList<UShort> implements HomogeneousList<UShort> {
 
     private static final long serialVersionUID = 281475043819510L;
     /**
@@ -13,7 +19,7 @@ public final class UShortList extends java.util.ArrayList<org.ccsds.moims.mo.mal
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for UShortList.
@@ -36,14 +42,14 @@ public final class UShortList extends java.util.ArrayList<org.ccsds.moims.mo.mal
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public UShortList(java.util.ArrayList<org.ccsds.moims.mo.mal.structures.UShort> elementList) {
-        for(org.ccsds.moims.mo.mal.structures.UShort element : elementList) {
+    public UShortList(ArrayList<UShort> elementList) {
+        for(UShort element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.UShort element) {
+    public boolean add(UShort element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +57,28 @@ public final class UShortList extends java.util.ArrayList<org.ccsds.moims.mo.mal
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new UShortList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mal.structures.UShort();
+    public Element createTypedElement() {
+        return new UShort();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

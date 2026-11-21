@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * Enumeration class for MOArea.
  */
-public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class MOArea extends Enumeration {
 
     private static final long serialVersionUID = 281475027042409L;
     /**
@@ -13,7 +15,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for MAL.
@@ -23,7 +25,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value MAL.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea MAL = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.MAL_VALUE);
+    public static final MOArea MAL = new MOArea(MOArea.MAL_VALUE);
 
     /**
      * Enumeration value for COM.
@@ -33,7 +35,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value COM.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea COM = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.COM_VALUE);
+    public static final MOArea COM = new MOArea(MOArea.COM_VALUE);
 
     /**
      * Enumeration value for COMMON.
@@ -43,7 +45,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value COMMON.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea COMMON = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.COMMON_VALUE);
+    public static final MOArea COMMON = new MOArea(MOArea.COMMON_VALUE);
 
     /**
      * Enumeration value for MC.
@@ -53,7 +55,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value MC.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea MC = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.MC_VALUE);
+    public static final MOArea MC = new MOArea(MOArea.MC_VALUE);
 
     /**
      * Enumeration value for MPS.
@@ -63,7 +65,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value MPS.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea MPS = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.MPS_VALUE);
+    public static final MOArea MPS = new MOArea(MOArea.MPS_VALUE);
 
     /**
      * Enumeration value for SM.
@@ -73,7 +75,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value SM.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea SM = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.SM_VALUE);
+    public static final MOArea SM = new MOArea(MOArea.SM_VALUE);
 
     /**
      * Enumeration value for MDPD.
@@ -83,12 +85,12 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     /**
      * Enumeration singleton for value MDPD.
      */
-    public static final org.ccsds.moims.mo.mal.structures.MOArea MDPD = new org.ccsds.moims.mo.mal.structures.MOArea(org.ccsds.moims.mo.mal.structures.MOArea.MDPD_VALUE);
+    public static final MOArea MDPD = new MOArea(MOArea.MDPD_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mal.structures.MOArea[] _ENUMERATIONS = {
+    private static final MOArea[] _ENUMERATIONS = {
         MAL, COM, COMMON, MC, MPS, SM, MDPD};
 
     /**
@@ -137,7 +139,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mal.structures.MOArea fromString(String s) {
+    public static MOArea fromString(String s) {
         switch (s) {
             case "MAL":
                 return MOArea.MAL;
@@ -159,7 +161,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case MAL_VALUE:
                 return MOArea.MAL;
@@ -181,7 +183,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -191,7 +193,7 @@ public final class MOArea extends org.ccsds.moims.mo.mal.structures.Enumeration 
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

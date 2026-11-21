@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * The object representing a Lamborghini car.
  */
-public final class Lamborghini extends org.ccsds.moims.mo.malprototype.structures.Auto {
+public final class Lamborghini extends Auto {
 
     private static final long serialVersionUID = 28147497687842936L;
     /**
@@ -13,7 +21,7 @@ public final class Lamborghini extends org.ccsds.moims.mo.malprototype.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for Lamborghini.
@@ -30,10 +38,10 @@ public final class Lamborghini extends org.ccsds.moims.mo.malprototype.structure
      * @param chassis The chassis of the car.
      * @param windows The windows of the car.
      */
-    public Lamborghini(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public Lamborghini(ObjectIdentity objectIdentity,
             String engine,
             String chassis,
-            org.ccsds.moims.mo.mal.structures.StringList windows) {
+            StringList windows) {
         super(objectIdentity,
             engine,
             chassis,
@@ -45,13 +53,13 @@ public final class Lamborghini extends org.ccsds.moims.mo.malprototype.structure
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public Lamborghini(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public Lamborghini(ObjectIdentity objectIdentity) {
         super(objectIdentity);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.Lamborghini();
+    public Element createElement() {
+        return new Lamborghini();
     }
 
     @Override
@@ -81,18 +89,18 @@ public final class Lamborghini extends org.ccsds.moims.mo.malprototype.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

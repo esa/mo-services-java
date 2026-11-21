@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.File;
+
 /**
  * E6: An OrbitFilePosition represents a Position that is defined with respect
  * to some Orbit Data Message (ODM) file (reference [D10]).
  */
-public final class OrbitFilePosition extends org.ccsds.moims.mo.mps.structures.Position {
+public final class OrbitFilePosition extends Position {
 
     private static final long serialVersionUID = 1407374900330506L;
     /**
@@ -14,12 +21,12 @@ public final class OrbitFilePosition extends org.ccsds.moims.mo.mps.structures.P
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of or reference to a file containing an ODM.
      */
-    private org.ccsds.moims.mo.mal.structures.File orbitFile;
+    private File orbitFile;
 
     /**
      * Default constructor for OrbitFilePosition.
@@ -33,13 +40,13 @@ public final class OrbitFilePosition extends org.ccsds.moims.mo.mps.structures.P
      * 
      * @param orbitFile Name of or reference to a file containing an ODM.
      */
-    public OrbitFilePosition(org.ccsds.moims.mo.mal.structures.File orbitFile) {
+    public OrbitFilePosition(File orbitFile) {
         this.orbitFile = orbitFile;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.OrbitFilePosition();
+    public Element createElement() {
+        return new OrbitFilePosition();
     }
 
     /**
@@ -47,7 +54,7 @@ public final class OrbitFilePosition extends org.ccsds.moims.mo.mps.structures.P
      * 
      * @return The field orbitFile
      */
-    public org.ccsds.moims.mo.mal.structures.File getOrbitFile() {
+    public File getOrbitFile() {
         return orbitFile;
     }
 
@@ -90,23 +97,23 @@ public final class OrbitFilePosition extends org.ccsds.moims.mo.mps.structures.P
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (orbitFile == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitFile' cannot be null!");
+            throw new MALException("The field 'orbitFile' cannot be null!");
         }
         encoder.encodeElement(orbitFile);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        orbitFile = (org.ccsds.moims.mo.mal.structures.File) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.File());
+        orbitFile = (File) decoder.decodeElement(new File());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

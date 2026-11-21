@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: A sub-type of Repetition based on the angle subtended between three
  * physical objects.
  */
-public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class AngleRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330558L;
     /**
@@ -14,39 +20,39 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Position of the center object.
      */
-    private org.ccsds.moims.mo.mal.structures.Element centerObject;
+    private Element centerObject;
 
     /**
      * Position of target object 1.
      */
-    private org.ccsds.moims.mo.mal.structures.Element targetObject1;
+    private Element targetObject1;
 
     /**
      * Position of target object 2.
      */
-    private org.ccsds.moims.mo.mal.structures.Element targetObject2;
+    private Element targetObject2;
 
     /**
      * Initial angle subtended at the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mal.structures.Element initialAngle;
+    private Element initialAngle;
 
     /**
      * The required angle between occurrences. If this is zero, this implies that
      * repetition is between multiple occurrences of the initialAngle.
      */
-    private org.ccsds.moims.mo.mal.structures.Element separation;
+    private Element separation;
 
     /**
      * The allowed tolerance (+/-) in the required angle between occurrences,
      * the interpretation of which is dependent on the separationType.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for AngleRepetition.
@@ -69,14 +75,14 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param tolerance The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.
      */
     public AngleRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element centerObject,
-            org.ccsds.moims.mo.mal.structures.Element targetObject1,
-            org.ccsds.moims.mo.mal.structures.Element targetObject2,
-            org.ccsds.moims.mo.mal.structures.Element initialAngle,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element centerObject,
+            Element targetObject1,
+            Element targetObject2,
+            Element initialAngle,
+            Element separation,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -99,13 +105,13 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param separation The required angle between occurrences. If this is zero, this implies that repetition is between multiple occurrences of the initialAngle.
      * @param tolerance The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.
      */
-    public AngleRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element centerObject,
-            org.ccsds.moims.mo.mal.structures.Element targetObject1,
-            org.ccsds.moims.mo.mal.structures.Element targetObject2,
-            org.ccsds.moims.mo.mal.structures.Element initialAngle,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public AngleRepetition(SeparationTypeEnum separationType,
+            Element centerObject,
+            Element targetObject1,
+            Element targetObject2,
+            Element initialAngle,
+            Element separation,
+            Element tolerance) {
         super(separationType);
         this.centerObject = centerObject;
         this.targetObject1 = targetObject1;
@@ -116,8 +122,8 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.AngleRepetition();
+    public Element createElement() {
+        return new AngleRepetition();
     }
 
     /**
@@ -125,7 +131,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field centerObject
      */
-    public org.ccsds.moims.mo.mal.structures.Element getCenterObject() {
+    public Element getCenterObject() {
         return centerObject;
     }
 
@@ -134,7 +140,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field targetObject1
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTargetObject1() {
+    public Element getTargetObject1() {
         return targetObject1;
     }
 
@@ -143,7 +149,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field targetObject2
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTargetObject2() {
+    public Element getTargetObject2() {
         return targetObject2;
     }
 
@@ -152,7 +158,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field initialAngle
      */
-    public org.ccsds.moims.mo.mal.structures.Element getInitialAngle() {
+    public Element getInitialAngle() {
         return initialAngle;
     }
 
@@ -161,7 +167,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field separation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getSeparation() {
+    public Element getSeparation() {
         return separation;
     }
 
@@ -170,7 +176,7 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -268,25 +274,25 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (centerObject == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'centerObject' cannot be null!");
+            throw new MALException("The field 'centerObject' cannot be null!");
         }
         if (targetObject1 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject1' cannot be null!");
+            throw new MALException("The field 'targetObject1' cannot be null!");
         }
         if (targetObject2 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject2' cannot be null!");
+            throw new MALException("The field 'targetObject2' cannot be null!");
         }
         if (initialAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'initialAngle' cannot be null!");
+            throw new MALException("The field 'initialAngle' cannot be null!");
         }
         if (separation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separation' cannot be null!");
+            throw new MALException("The field 'separation' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(centerObject);
         encoder.encodeAbstractElement(targetObject1);
@@ -297,19 +303,19 @@ public final class AngleRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        centerObject = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        targetObject1 = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        targetObject2 = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        initialAngle = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        separation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        centerObject = (Element) decoder.decodeAbstractElement();
+        targetObject1 = (Element) decoder.decodeAbstractElement();
+        targetObject2 = (Element) decoder.decodeAbstractElement();
+        initialAngle = (Element) decoder.decodeAbstractElement();
+        separation = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

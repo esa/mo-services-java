@@ -1,9 +1,18 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * The ParameterDefinition structure holds a parameter definition.
  */
-public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class ParameterDefinition extends MOObject {
 
     private static final long serialVersionUID = 1125899940397077L;
     /**
@@ -13,7 +22,7 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description field.
@@ -23,7 +32,7 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     /**
      * The rawType field.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeType rawType;
+    private AttributeType rawType;
 
     /**
      * The rawUnit field.
@@ -33,7 +42,7 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     /**
      * The convertedType field.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeType convertedType;
+    private AttributeType convertedType;
 
     /**
      * The convertedUnit field.
@@ -57,11 +66,11 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
      * @param convertedType The convertedType field.
      * @param convertedUnit The convertedUnit field.
      */
-    public ParameterDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ParameterDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.AttributeType rawType,
+            AttributeType rawType,
             String rawUnit,
-            org.ccsds.moims.mo.mal.structures.AttributeType convertedType,
+            AttributeType convertedType,
             String convertedUnit) {
         super(objectIdentity);
         this.description = description;
@@ -78,9 +87,9 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
      * @param description The description field.
      * @param rawType The rawType field.
      */
-    public ParameterDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ParameterDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.AttributeType rawType) {
+            AttributeType rawType) {
         super(objectIdentity);
         this.description = description;
         this.rawType = rawType;
@@ -90,8 +99,8 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ParameterDefinition();
+    public Element createElement() {
+        return new ParameterDefinition();
     }
 
     /**
@@ -108,7 +117,7 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
      * 
      * @return The field rawType
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeType getRawType() {
+    public AttributeType getRawType() {
         return rawType;
     }
 
@@ -126,7 +135,7 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
      * 
      * @return The field convertedType
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeType getConvertedType() {
+    public AttributeType getConvertedType() {
         return convertedType;
     }
 
@@ -222,13 +231,13 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (rawType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'rawType' cannot be null!");
+            throw new MALException("The field 'rawType' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(rawType);
@@ -238,18 +247,18 @@ public final class ParameterDefinition extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        rawType = (org.ccsds.moims.mo.mal.structures.AttributeType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB);
+        rawType = (AttributeType) decoder.decodeElement(AttributeType.BLOB);
         rawUnit = decoder.decodeNullableString();
-        convertedType = (org.ccsds.moims.mo.mal.structures.AttributeType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB);
+        convertedType = (AttributeType) decoder.decodeNullableElement(AttributeType.BLOB);
         convertedUnit = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

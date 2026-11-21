@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ActionEvent is the base type of all events used by the monitorActionExec
  * operation to publish a new execution stage reached by the execution of
  * an action.
  */
-public abstract class ActionEvent implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class ActionEvent implements Composite {
 
     /**
      * The success field.
@@ -110,16 +116,16 @@ public abstract class ActionEvent implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (success == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'success' cannot be null!");
+            throw new MALException("The field 'success' cannot be null!");
         }
         encoder.encodeBoolean(success);
         encoder.encodeNullableString(comment);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         success = decoder.decodeBoolean();
         comment = decoder.decodeNullableString();
         return this;

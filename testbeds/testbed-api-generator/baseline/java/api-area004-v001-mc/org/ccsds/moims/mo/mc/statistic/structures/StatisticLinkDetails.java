@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The StatisticLinkDetails structure holds the sampling, reporting, and collection
  * intervals for one parameter statistic function link.
  */
-public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StatisticLinkDetails implements Composite {
 
     private static final long serialVersionUID = 1125921398456322L;
     /**
@@ -14,25 +22,25 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The interval between samples of the parameter.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration samplingInterval;
+    private Duration samplingInterval;
 
     /**
      * The interval between periodic reports being generated. If set to &quot;0&quot;,
      * then no periodic reports shall be sent.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration reportingInterval;
+    private Duration reportingInterval;
 
     /**
      * The collection and reset interval of the statistical evaluation for the
      * linked parameter. If set to &quot;0&quot;, then no periodic reset of the
      * evaluation shall be performed.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration collectionInterval;
+    private Duration collectionInterval;
 
     /**
      * If TRUE the evaluation will reset its value every collection interval.
@@ -69,9 +77,9 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
      * @param reportingEnabled TRUE if reporting of the evaluation instance is enabled.
      * @param useConverted If TRUE then use the converted value of the Parameter, else use the raw value
      */
-    public StatisticLinkDetails(org.ccsds.moims.mo.mal.structures.Duration samplingInterval,
-            org.ccsds.moims.mo.mal.structures.Duration reportingInterval,
-            org.ccsds.moims.mo.mal.structures.Duration collectionInterval,
+    public StatisticLinkDetails(Duration samplingInterval,
+            Duration reportingInterval,
+            Duration collectionInterval,
             Boolean resetEveryCollection,
             Boolean reportingEnabled,
             Boolean useConverted) {
@@ -84,8 +92,8 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetails();
+    public Element createElement() {
+        return new StatisticLinkDetails();
     }
 
     /**
@@ -93,7 +101,7 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field samplingInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getSamplingInterval() {
+    public Duration getSamplingInterval() {
         return samplingInterval;
     }
 
@@ -102,7 +110,7 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field reportingInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getReportingInterval() {
+    public Duration getReportingInterval() {
         return reportingInterval;
     }
 
@@ -111,7 +119,7 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field collectionInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getCollectionInterval() {
+    public Duration getCollectionInterval() {
         return collectionInterval;
     }
 
@@ -232,24 +240,24 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (samplingInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'samplingInterval' cannot be null!");
+            throw new MALException("The field 'samplingInterval' cannot be null!");
         }
         if (reportingInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reportingInterval' cannot be null!");
+            throw new MALException("The field 'reportingInterval' cannot be null!");
         }
         if (collectionInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'collectionInterval' cannot be null!");
+            throw new MALException("The field 'collectionInterval' cannot be null!");
         }
         if (resetEveryCollection == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'resetEveryCollection' cannot be null!");
+            throw new MALException("The field 'resetEveryCollection' cannot be null!");
         }
         if (reportingEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reportingEnabled' cannot be null!");
+            throw new MALException("The field 'reportingEnabled' cannot be null!");
         }
         if (useConverted == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'useConverted' cannot be null!");
+            throw new MALException("The field 'useConverted' cannot be null!");
         }
         encoder.encodeDuration(samplingInterval);
         encoder.encodeDuration(reportingInterval);
@@ -260,7 +268,7 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         samplingInterval = decoder.decodeDuration();
         reportingInterval = decoder.decodeDuration();
         collectionInterval = decoder.decodeDuration();
@@ -271,7 +279,7 @@ public final class StatisticLinkDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

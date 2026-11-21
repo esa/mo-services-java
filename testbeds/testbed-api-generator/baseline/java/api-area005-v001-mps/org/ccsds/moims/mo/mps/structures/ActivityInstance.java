@@ -1,5 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * E1: An ActivityInstance is an MO object that contains the identity of a
  * specific occurrence of a planning activity, together with both static and
@@ -13,7 +27,7 @@ package org.ccsds.moims.mo.mps.structures;
  * of a Plan.  Duration may be used in conjunction with a specified end trigger
  * to determine the planned start time of an ActivityInstance.
  */
-public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class ActivityInstance extends MOObject {
 
     private static final long serialVersionUID = 1407374900330598L;
     /**
@@ -23,12 +37,12 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the ActivityDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> definition;
+    private ObjectRef<ActivityDefinition> definition;
 
     /**
      * Object Type: RequestInstance | ActivityInstance | PlanningUser Reference
@@ -36,19 +50,19 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * a RequestInstance if it is a root Activity, or a PlanningUser if directly
      * inserted.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> source;
+    private ObjectRef<Element> source;
 
     /**
      * Optional reference to an EventInstance that is specifically associated
      * with this instance of the Activity.  Typically, the Activity is placed
      * in response to the Event.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> relatedEvent;
+    private ObjectRef<EventInstance> relatedEvent;
 
     /**
      * References to any child ActivityInstances.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList children;
+    private ObjectRefList children;
 
     /**
      * Any notes associated with this instance of the Activity.
@@ -59,65 +73,65 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * A single constraint or a constraint node that may contain multiple constraints,
      * applicable to this instance of the Activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Constraint constraints;
+    private Constraint constraints;
 
     /**
      * Set of Effects applicable to this instance of the Activity.
      */
-    private org.ccsds.moims.mo.mps.structures.EffectList effects;
+    private EffectList effects;
 
     /**
      * Argument values for each Argument defined in the Activity Definition.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * Optionally specifies the trigger that initiates the Activity: may be time,
      * position or event based.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger start;
+    private Trigger start;
 
     /**
      * Optionally specifies the trigger that ends the Activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger end;
+    private Trigger end;
 
     /**
      * Optional duration of the Activity (estimated until execution, actual post
      * execution).
      */
-    private org.ccsds.moims.mo.mal.structures.Duration duration;
+    private Duration duration;
 
     /**
      * Optional association of the Activity with a defined sub-plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Set of Tags that may be used to associate the Activity with others, grouping
      * activities by operational responsibility (controller/group/system) or other
      * criteria.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList tags;
+    private StringList tags;
 
     /**
      * Current Status of the Activity Instance (see Activity State Model in 4.5.2.2).
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status;
+    private ActivityStatusEnum status;
 
     /**
      * Reference to the instance of an executable body for the Activity (procedure,
      * action sequence, etc.).  The manner in which this reference is interpreted
      * is implementation specific.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier executionInstance;
+    private Identifier executionInstance;
 
     /**
      * Optional return data from the planning process, provided as a list of ID-Value
      * pairs.  This can be used to provide additional information required by
      * the User to interpret the planned activity.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList returnData;
+    private NamedValueList returnData;
 
     /**
      * StatusInfo provides the reason for entering the Terminated State and is
@@ -170,23 +184,23 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * @param errorCode Error Code optional in the case of a failure status for the planning activity (for example Terminated state with statusInfo Failed).  The codes are implementation specific.
      * @param errorInfo Supplementary Error Information.
      */
-    public ActivityInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> definition,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> source,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> relatedEvent,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList children,
+    public ActivityInstance(ObjectIdentity objectIdentity,
+            ObjectRef<ActivityDefinition> definition,
+            ObjectRef<Element> source,
+            ObjectRef<EventInstance> relatedEvent,
+            ObjectRefList children,
             String comments,
-            org.ccsds.moims.mo.mps.structures.Constraint constraints,
-            org.ccsds.moims.mo.mps.structures.EffectList effects,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments,
-            org.ccsds.moims.mo.mps.structures.Trigger start,
-            org.ccsds.moims.mo.mps.structures.Trigger end,
-            org.ccsds.moims.mo.mal.structures.Duration duration,
-            org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.Identifier executionInstance,
-            org.ccsds.moims.mo.mal.structures.NamedValueList returnData,
+            Constraint constraints,
+            EffectList effects,
+            ArgumentList arguments,
+            Trigger start,
+            Trigger end,
+            Duration duration,
+            Identifier subPlan,
+            StringList tags,
+            ActivityStatusEnum status,
+            Identifier executionInstance,
+            NamedValueList returnData,
             String statusInfo,
             Integer errorCode,
             String errorInfo) {
@@ -220,10 +234,10 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * @param source Object Type: RequestInstance | ActivityInstance | PlanningUser Reference to the source of the ActivityInstance, which is either its parent ActivityInstance, a RequestInstance if it is a root Activity, or a PlanningUser if directly inserted.
      * @param status Current Status of the Activity Instance (see Activity State Model in 4.5.2.2).
      */
-    public ActivityInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> definition,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> source,
-            org.ccsds.moims.mo.mps.structures.ActivityStatusEnum status) {
+    public ActivityInstance(ObjectIdentity objectIdentity,
+            ObjectRef<ActivityDefinition> definition,
+            ObjectRef<Element> source,
+            ActivityStatusEnum status) {
         super(objectIdentity);
         this.definition = definition;
         this.source = source;
@@ -247,8 +261,8 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ActivityInstance();
+    public Element createElement() {
+        return new ActivityInstance();
     }
 
     /**
@@ -256,7 +270,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field definition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> getDefinition() {
+    public ObjectRef<ActivityDefinition> getDefinition() {
         return definition;
     }
 
@@ -265,7 +279,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> getSource() {
+    public ObjectRef<Element> getSource() {
         return source;
     }
 
@@ -274,7 +288,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field relatedEvent
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> getRelatedEvent() {
+    public ObjectRef<EventInstance> getRelatedEvent() {
         return relatedEvent;
     }
 
@@ -283,7 +297,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field children
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getChildren() {
+    public ObjectRefList getChildren() {
         return children;
     }
 
@@ -301,7 +315,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field constraints
      */
-    public org.ccsds.moims.mo.mps.structures.Constraint getConstraints() {
+    public Constraint getConstraints() {
         return constraints;
     }
 
@@ -310,7 +324,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field effects
      */
-    public org.ccsds.moims.mo.mps.structures.EffectList getEffects() {
+    public EffectList getEffects() {
         return effects;
     }
 
@@ -319,7 +333,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -328,7 +342,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getStart() {
+    public Trigger getStart() {
         return start;
     }
 
@@ -337,7 +351,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getEnd() {
+    public Trigger getEnd() {
         return end;
     }
 
@@ -346,7 +360,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field duration
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
@@ -355,7 +369,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -364,7 +378,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field tags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getTags() {
+    public StringList getTags() {
         return tags;
     }
 
@@ -373,7 +387,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityStatusEnum getStatus() {
+    public ActivityStatusEnum getStatus() {
         return status;
     }
 
@@ -382,7 +396,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field executionInstance
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getExecutionInstance() {
+    public Identifier getExecutionInstance() {
         return executionInstance;
     }
 
@@ -391,7 +405,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field returnData
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getReturnData() {
+    public NamedValueList getReturnData() {
         return returnData;
     }
 
@@ -659,16 +673,16 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (definition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'definition' cannot be null!");
+            throw new MALException("The field 'definition' cannot be null!");
         }
         if (source == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'source' cannot be null!");
+            throw new MALException("The field 'source' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(definition);
         encoder.encodeAbstractElement(source);
@@ -692,24 +706,24 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        definition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition>());
-        source = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>) decoder.decodeAbstractElement();
-        relatedEvent = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>());
-        children = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        definition = (ObjectRef<ActivityDefinition>) decoder.decodeElement(new ObjectRef<ActivityDefinition>());
+        source = (ObjectRef<Element>) decoder.decodeAbstractElement();
+        relatedEvent = (ObjectRef<EventInstance>) decoder.decodeNullableElement(new ObjectRef<EventInstance>());
+        children = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         comments = decoder.decodeNullableString();
-        constraints = (org.ccsds.moims.mo.mps.structures.Constraint) decoder.decodeNullableAbstractElement();
-        effects = (org.ccsds.moims.mo.mps.structures.EffectList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EffectList());
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
-        start = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        end = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
+        constraints = (Constraint) decoder.decodeNullableAbstractElement();
+        effects = (EffectList) decoder.decodeNullableElement(new EffectList());
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
+        start = (Trigger) decoder.decodeNullableAbstractElement();
+        end = (Trigger) decoder.decodeNullableAbstractElement();
         duration = decoder.decodeNullableDuration();
         subPlan = decoder.decodeNullableIdentifier();
-        tags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
-        status = (org.ccsds.moims.mo.mps.structures.ActivityStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.PLANNED);
+        tags = (StringList) decoder.decodeNullableElement(new StringList());
+        status = (ActivityStatusEnum) decoder.decodeElement(ActivityStatusEnum.PLANNED);
         executionInstance = decoder.decodeNullableIdentifier();
-        returnData = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+        returnData = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
         statusInfo = decoder.decodeNullableString();
         errorCode = decoder.decodeNullableInteger();
         errorInfo = decoder.decodeNullableString();
@@ -717,7 +731,7 @@ public final class ActivityInstance extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * A concrete composite example extending an Abstract composite with some
  * common fields.
  */
-public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.structures.AbstractComposite {
+public final class ComplexStructure extends AbstractComposite {
 
     private static final long serialVersionUID = 28147497687843161L;
     /**
@@ -14,7 +20,7 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Extra Boolean item.
@@ -29,7 +35,7 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
     /**
      * Contained structure.
      */
-    private org.ccsds.moims.mo.malprototype.structures.TestBody last_item;
+    private TestBody last_item;
 
     /**
      * Default constructor for ComplexStructure.
@@ -51,7 +57,7 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
             Integer secondItem,
             Boolean third_item,
             Integer fourth_item,
-            org.ccsds.moims.mo.malprototype.structures.TestBody last_item) {
+            TestBody last_item) {
         super(firstItem,
             secondItem);
         this.third_item = third_item;
@@ -60,8 +66,8 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.ComplexStructure();
+    public Element createElement() {
+        return new ComplexStructure();
     }
 
     /**
@@ -87,7 +93,7 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
      * 
      * @return The field last_item
      */
-    public org.ccsds.moims.mo.malprototype.structures.TestBody getLast_item() {
+    public TestBody getLast_item() {
         return last_item;
     }
 
@@ -152,7 +158,7 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableBoolean(third_item);
         encoder.encodeNullableInteger(fourth_item);
@@ -160,16 +166,16 @@ public final class ComplexStructure extends org.ccsds.moims.mo.malprototype.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         third_item = decoder.decodeNullableBoolean();
         fourth_item = decoder.decodeNullableInteger();
-        last_item = (org.ccsds.moims.mo.malprototype.structures.TestBody) decoder.decodeNullableElement(new org.ccsds.moims.mo.malprototype.structures.TestBody());
+        last_item = (TestBody) decoder.decodeNullableElement(new TestBody());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -81,7 +81,8 @@ public class AlertBasicDataset extends AlertDataset {
 								new UInteger(1)),
 						new String(""),
 						Severity.SEVERE,
-						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))));
+						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))),
+						new DefaultConfiguration(false));
 	}
 
 }

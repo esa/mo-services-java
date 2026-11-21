@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ParameterValueData structure shall be used to hold a specific value
  * of the parameter.
  */
-public final class ParameterValueData implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterValueData implements Composite {
 
     private static final long serialVersionUID = 1125899940397078L;
     /**
@@ -14,22 +22,22 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The validityState field.
      */
-    private org.ccsds.moims.mo.mc.structures.ValidityState validityState;
+    private ValidityState validityState;
 
     /**
      * The rawValue field.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute rawValue;
+    private Attribute rawValue;
 
     /**
      * The convertedValue field.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute convertedValue;
+    private Attribute convertedValue;
 
     /**
      * Default constructor for ParameterValueData.
@@ -45,9 +53,9 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
      * @param rawValue The rawValue field.
      * @param convertedValue The convertedValue field.
      */
-    public ParameterValueData(org.ccsds.moims.mo.mc.structures.ValidityState validityState,
-            org.ccsds.moims.mo.mal.structures.Attribute rawValue,
-            org.ccsds.moims.mo.mal.structures.Attribute convertedValue) {
+    public ParameterValueData(ValidityState validityState,
+            Attribute rawValue,
+            Attribute convertedValue) {
         this.validityState = validityState;
         this.rawValue = rawValue;
         this.convertedValue = convertedValue;
@@ -58,15 +66,15 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
      * 
      * @param validityState The validityState field.
      */
-    public ParameterValueData(org.ccsds.moims.mo.mc.structures.ValidityState validityState) {
+    public ParameterValueData(ValidityState validityState) {
         this.validityState = validityState;
         this.rawValue = null;
         this.convertedValue = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ParameterValueData();
+    public Element createElement() {
+        return new ParameterValueData();
     }
 
     /**
@@ -74,7 +82,7 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field validityState
      */
-    public org.ccsds.moims.mo.mc.structures.ValidityState getValidityState() {
+    public ValidityState getValidityState() {
         return validityState;
     }
 
@@ -83,7 +91,7 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field rawValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getRawValue() {
+    public Attribute getRawValue() {
         return rawValue;
     }
 
@@ -92,7 +100,7 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field convertedValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getConvertedValue() {
+    public Attribute getConvertedValue() {
         return convertedValue;
     }
 
@@ -153,9 +161,9 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (validityState == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'validityState' cannot be null!");
+            throw new MALException("The field 'validityState' cannot be null!");
         }
         encoder.encodeElement(validityState);
         encoder.encodeNullableAttribute(rawValue);
@@ -163,15 +171,15 @@ public final class ParameterValueData implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        validityState = (org.ccsds.moims.mo.mc.structures.ValidityState) decoder.decodeElement(org.ccsds.moims.mo.mc.structures.ValidityState.VALID);
-        rawValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
-        convertedValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+    public Element decode(MALDecoder decoder) throws MALException {
+        validityState = (ValidityState) decoder.decodeElement(ValidityState.VALID);
+        rawValue = (Attribute) decoder.decodeNullableAttribute();
+        convertedValue = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

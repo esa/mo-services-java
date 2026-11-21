@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E8: Contains the information required to invoke a defined function, including
  * the specification of argument values.
  */
-public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class FunctionDetails implements Composite {
 
     private static final long serialVersionUID = 1407374900331198L;
     /**
@@ -14,19 +22,19 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * ID of a specific FunctionDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier functionID;
+    private Identifier functionID;
 
     /**
      * Set of argument specifications for each argument definition contained in
      * the referenced function definition.  These supply a value for each argument,
      * or an expression to enable the value to be derived.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgSpecList argSpecs;
+    private ArgSpecList argSpecs;
 
     /**
      * Default constructor for FunctionDetails.
@@ -41,8 +49,8 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
      * @param functionID ID of a specific FunctionDefinition.
      * @param argSpecs Set of argument specifications for each argument definition contained in the referenced function definition.  These supply a value for each argument, or an expression to enable the value to be derived.
      */
-    public FunctionDetails(org.ccsds.moims.mo.mal.structures.Identifier functionID,
-            org.ccsds.moims.mo.mps.structures.ArgSpecList argSpecs) {
+    public FunctionDetails(Identifier functionID,
+            ArgSpecList argSpecs) {
         this.functionID = functionID;
         this.argSpecs = argSpecs;
     }
@@ -52,14 +60,14 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
      * 
      * @param functionID ID of a specific FunctionDefinition.
      */
-    public FunctionDetails(org.ccsds.moims.mo.mal.structures.Identifier functionID) {
+    public FunctionDetails(Identifier functionID) {
         this.functionID = functionID;
         this.argSpecs = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.FunctionDetails();
+    public Element createElement() {
+        return new FunctionDetails();
     }
 
     /**
@@ -67,7 +75,7 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field functionID
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFunctionID() {
+    public Identifier getFunctionID() {
         return functionID;
     }
 
@@ -76,7 +84,7 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field argSpecs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgSpecList getArgSpecs() {
+    public ArgSpecList getArgSpecs() {
         return argSpecs;
     }
 
@@ -126,23 +134,23 @@ public final class FunctionDetails implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (functionID == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'functionID' cannot be null!");
+            throw new MALException("The field 'functionID' cannot be null!");
         }
         encoder.encodeIdentifier(functionID);
         encoder.encodeNullableElement(argSpecs);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         functionID = decoder.decodeIdentifier();
-        argSpecs = (org.ccsds.moims.mo.mps.structures.ArgSpecList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgSpecList());
+        argSpecs = (ArgSpecList) decoder.decodeNullableElement(new ArgSpecList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The AggregationValue structure shall be used to hold the values of the
  * aggregation parameters.
  */
-public final class AggregationValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationValue implements Composite {
 
     private static final long serialVersionUID = 1125899940397117L;
     /**
@@ -14,22 +23,22 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The aggregationRef field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AggregationDefinition> aggregationRef;
+    private ObjectRef<AggregationDefinition> aggregationRef;
 
     /**
      * The timestamp field.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The parameterValues field.
      */
-    private org.ccsds.moims.mo.mc.structures.ParameterValueDataList parameterValues;
+    private ParameterValueDataList parameterValues;
 
     /**
      * Default constructor for AggregationValue.
@@ -45,17 +54,17 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * @param timestamp The timestamp field.
      * @param parameterValues The parameterValues field.
      */
-    public AggregationValue(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AggregationDefinition> aggregationRef,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mc.structures.ParameterValueDataList parameterValues) {
+    public AggregationValue(ObjectRef<AggregationDefinition> aggregationRef,
+            Time timestamp,
+            ParameterValueDataList parameterValues) {
         this.aggregationRef = aggregationRef;
         this.timestamp = timestamp;
         this.parameterValues = parameterValues;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.AggregationValue();
+    public Element createElement() {
+        return new AggregationValue();
     }
 
     /**
@@ -63,7 +72,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field aggregationRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AggregationDefinition> getAggregationRef() {
+    public ObjectRef<AggregationDefinition> getAggregationRef() {
         return aggregationRef;
     }
 
@@ -72,7 +81,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -81,7 +90,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field parameterValues
      */
-    public org.ccsds.moims.mo.mc.structures.ParameterValueDataList getParameterValues() {
+    public ParameterValueDataList getParameterValues() {
         return parameterValues;
     }
 
@@ -142,15 +151,15 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (aggregationRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'aggregationRef' cannot be null!");
+            throw new MALException("The field 'aggregationRef' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (parameterValues == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterValues' cannot be null!");
+            throw new MALException("The field 'parameterValues' cannot be null!");
         }
         encoder.encodeElement(aggregationRef);
         encoder.encodeTime(timestamp);
@@ -158,15 +167,15 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        aggregationRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AggregationDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.AggregationDefinition>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        aggregationRef = (ObjectRef<AggregationDefinition>) decoder.decodeElement(new ObjectRef<AggregationDefinition>());
         timestamp = decoder.decodeTime();
-        parameterValues = (org.ccsds.moims.mo.mc.structures.ParameterValueDataList) decoder.decodeElement(new org.ccsds.moims.mo.mc.structures.ParameterValueDataList());
+        parameterValues = (ParameterValueDataList) decoder.decodeElement(new ParameterValueDataList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

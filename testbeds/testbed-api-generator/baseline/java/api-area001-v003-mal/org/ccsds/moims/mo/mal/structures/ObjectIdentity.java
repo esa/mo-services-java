@@ -1,10 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The ObjectIdentity structure shall represent the Object Identity of an
  * MO Object.
  */
-public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ObjectIdentity implements Composite {
 
     private static final long serialVersionUID = 281475027043312L;
     /**
@@ -14,22 +19,22 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The domain of the MO Object being referenced.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The key of the MO Object being referenced.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier key;
+    private Identifier key;
 
     /**
      * The version of the MO Object being referenced.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger version;
+    private UInteger version;
 
     /**
      * Default constructor for ObjectIdentity.
@@ -45,17 +50,17 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
      * @param key The key of the MO Object being referenced.
      * @param version The version of the MO Object being referenced.
      */
-    public ObjectIdentity(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier key,
-            org.ccsds.moims.mo.mal.structures.UInteger version) {
+    public ObjectIdentity(IdentifierList domain,
+            Identifier key,
+            UInteger version) {
         this.domain = domain;
         this.key = key;
         this.version = version;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.ObjectIdentity();
+    public Element createElement() {
+        return new ObjectIdentity();
     }
 
     /**
@@ -63,7 +68,7 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -72,7 +77,7 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field key
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getKey() {
+    public Identifier getKey() {
         return key;
     }
 
@@ -81,7 +86,7 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field version
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getVersion() {
+    public UInteger getVersion() {
         return version;
     }
 
@@ -142,15 +147,15 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (domain == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'domain' cannot be null!");
+            throw new MALException("The field 'domain' cannot be null!");
         }
         if (key == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'key' cannot be null!");
+            throw new MALException("The field 'key' cannot be null!");
         }
         if (version == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'version' cannot be null!");
+            throw new MALException("The field 'version' cannot be null!");
         }
         encoder.encodeElement(domain);
         encoder.encodeIdentifier(key);
@@ -158,15 +163,15 @@ public final class ObjectIdentity implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
         key = decoder.decodeIdentifier();
         version = decoder.decodeUInteger();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

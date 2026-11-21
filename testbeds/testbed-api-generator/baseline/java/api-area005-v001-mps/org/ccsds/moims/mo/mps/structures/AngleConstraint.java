@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E7: Specifies a range of values for the angle subtended between three physical
  * objects.  .
  */
-public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class AngleConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330540L;
     /**
@@ -14,32 +20,32 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Position of the center object.
      */
-    private org.ccsds.moims.mo.mal.structures.Element centerObject;
+    private Element centerObject;
 
     /**
      * Position of target object 1.
      */
-    private org.ccsds.moims.mo.mal.structures.Element targetObject1;
+    private Element targetObject1;
 
     /**
      * Position of target object 2.
      */
-    private org.ccsds.moims.mo.mal.structures.Element targetObject2;
+    private Element targetObject2;
 
     /**
      * Minimum angle subtended at the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mal.structures.Element minAngle;
+    private Element minAngle;
 
     /**
      * Maximum angle subtended at the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mal.structures.Element maxAngle;
+    private Element maxAngle;
 
     /**
      * Default constructor for AngleConstraint.
@@ -63,15 +69,15 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * @param maxAngle Maximum angle subtended at the center object by target objects 1 and 2.
      */
     public AngleConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Element centerObject,
-            org.ccsds.moims.mo.mal.structures.Element targetObject1,
-            org.ccsds.moims.mo.mal.structures.Element targetObject2,
-            org.ccsds.moims.mo.mal.structures.Element minAngle,
-            org.ccsds.moims.mo.mal.structures.Element maxAngle) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Element centerObject,
+            Element targetObject1,
+            Element targetObject2,
+            Element minAngle,
+            Element maxAngle) {
         super(negate,
             startRef,
             endRef,
@@ -93,11 +99,11 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * @param minAngle Minimum angle subtended at the center object by target objects 1 and 2.
      * @param maxAngle Maximum angle subtended at the center object by target objects 1 and 2.
      */
-    public AngleConstraint(org.ccsds.moims.mo.mal.structures.Element centerObject,
-            org.ccsds.moims.mo.mal.structures.Element targetObject1,
-            org.ccsds.moims.mo.mal.structures.Element targetObject2,
-            org.ccsds.moims.mo.mal.structures.Element minAngle,
-            org.ccsds.moims.mo.mal.structures.Element maxAngle) {
+    public AngleConstraint(Element centerObject,
+            Element targetObject1,
+            Element targetObject2,
+            Element minAngle,
+            Element maxAngle) {
         this.centerObject = centerObject;
         this.targetObject1 = targetObject1;
         this.targetObject2 = targetObject2;
@@ -106,8 +112,8 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.AngleConstraint();
+    public Element createElement() {
+        return new AngleConstraint();
     }
 
     /**
@@ -115,7 +121,7 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * 
      * @return The field centerObject
      */
-    public org.ccsds.moims.mo.mal.structures.Element getCenterObject() {
+    public Element getCenterObject() {
         return centerObject;
     }
 
@@ -124,7 +130,7 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * 
      * @return The field targetObject1
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTargetObject1() {
+    public Element getTargetObject1() {
         return targetObject1;
     }
 
@@ -133,7 +139,7 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * 
      * @return The field targetObject2
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTargetObject2() {
+    public Element getTargetObject2() {
         return targetObject2;
     }
 
@@ -142,7 +148,7 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * 
      * @return The field minAngle
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMinAngle() {
+    public Element getMinAngle() {
         return minAngle;
     }
 
@@ -151,7 +157,7 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
      * 
      * @return The field maxAngle
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMaxAngle() {
+    public Element getMaxAngle() {
         return maxAngle;
     }
 
@@ -238,22 +244,22 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (centerObject == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'centerObject' cannot be null!");
+            throw new MALException("The field 'centerObject' cannot be null!");
         }
         if (targetObject1 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject1' cannot be null!");
+            throw new MALException("The field 'targetObject1' cannot be null!");
         }
         if (targetObject2 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject2' cannot be null!");
+            throw new MALException("The field 'targetObject2' cannot be null!");
         }
         if (minAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'minAngle' cannot be null!");
+            throw new MALException("The field 'minAngle' cannot be null!");
         }
         if (maxAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'maxAngle' cannot be null!");
+            throw new MALException("The field 'maxAngle' cannot be null!");
         }
         encoder.encodeAbstractElement(centerObject);
         encoder.encodeAbstractElement(targetObject1);
@@ -263,18 +269,18 @@ public final class AngleConstraint extends org.ccsds.moims.mo.mps.structures.Geo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        centerObject = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        targetObject1 = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        targetObject2 = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        minAngle = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        maxAngle = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        centerObject = (Element) decoder.decodeAbstractElement();
+        targetObject1 = (Element) decoder.decodeAbstractElement();
+        targetObject2 = (Element) decoder.decodeAbstractElement();
+        minAngle = (Element) decoder.decodeAbstractElement();
+        maxAngle = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

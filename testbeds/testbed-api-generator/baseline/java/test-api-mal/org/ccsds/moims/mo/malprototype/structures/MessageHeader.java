@@ -1,11 +1,28 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The MessageHeader structure is used to hold all fields that are passed
  * for each message exchanged between a consumer and provider. See 4.1 for
  * more information.
  */
-public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class MessageHeader implements Composite {
 
     private static final long serialVersionUID = 28147497687842829L;
     /**
@@ -15,93 +32,93 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Message Source URI.
      */
-    private org.ccsds.moims.mo.mal.structures.URI URIfrom;
+    private URI URIfrom;
 
     /**
      * Source Authentication Credentials.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob authenticationId;
+    private Blob authenticationId;
 
     /**
      * Message Destination URI.
      */
-    private org.ccsds.moims.mo.mal.structures.URI URIto;
+    private URI URIto;
 
     /**
      * Message generation timestamp.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The QoS level of the message.
      */
-    private org.ccsds.moims.mo.mal.structures.QoSLevel QoSlevel;
+    private QoSLevel QoSlevel;
 
     /**
      * The QoS priority of the message.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger priority;
+    private UInteger priority;
 
     /**
      * Domain of the message.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Network zone of the message.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier networkZone;
+    private Identifier networkZone;
 
     /**
      * Type of session of the message.
      */
-    private org.ccsds.moims.mo.mal.structures.SessionType session;
+    private SessionType session;
 
     /**
      * Name of the session of the message. Shall be ‘LIVE’ if session type is
      * LIVE.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sessionName;
+    private Identifier sessionName;
 
     /**
      * Interaction Pattern Type.
      */
-    private org.ccsds.moims.mo.mal.structures.InteractionType interactionType;
+    private InteractionType interactionType;
 
     /**
      * Interaction Pattern Stage.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet interactionStage;
+    private UOctet interactionStage;
 
     /**
      * Unique to consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier transactionId;
+    private Identifier transactionId;
 
     /**
      * Service Area Identifier.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier area;
+    private Identifier area;
 
     /**
      * Service Identifier.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier service;
+    private Identifier service;
 
     /**
      * Service Operation Identifier.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier operation;
+    private Identifier operation;
 
     /**
      * Service version.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet version;
+    private UOctet version;
 
     /**
      * True if this is an error message else False.
@@ -137,23 +154,23 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * @param version Service version
      * @param isError True if this is an error message else False.
      */
-    public MessageHeader(org.ccsds.moims.mo.mal.structures.URI URIfrom,
-            org.ccsds.moims.mo.mal.structures.Blob authenticationId,
-            org.ccsds.moims.mo.mal.structures.URI URIto,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.QoSLevel QoSlevel,
-            org.ccsds.moims.mo.mal.structures.UInteger priority,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType session,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.InteractionType interactionType,
-            org.ccsds.moims.mo.mal.structures.UOctet interactionStage,
-            org.ccsds.moims.mo.mal.structures.Identifier transactionId,
-            org.ccsds.moims.mo.mal.structures.Identifier area,
-            org.ccsds.moims.mo.mal.structures.Identifier service,
-            org.ccsds.moims.mo.mal.structures.Identifier operation,
-            org.ccsds.moims.mo.mal.structures.UOctet version,
+    public MessageHeader(URI URIfrom,
+            Blob authenticationId,
+            URI URIto,
+            Time timestamp,
+            QoSLevel QoSlevel,
+            UInteger priority,
+            IdentifierList domain,
+            Identifier networkZone,
+            SessionType session,
+            Identifier sessionName,
+            InteractionType interactionType,
+            UOctet interactionStage,
+            Identifier transactionId,
+            Identifier area,
+            Identifier service,
+            Identifier operation,
+            UOctet version,
             Boolean isError) {
         this.URIfrom = URIfrom;
         this.authenticationId = authenticationId;
@@ -176,8 +193,8 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.MessageHeader();
+    public Element createElement() {
+        return new MessageHeader();
     }
 
     /**
@@ -185,7 +202,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field URIfrom
      */
-    public org.ccsds.moims.mo.mal.structures.URI getURIfrom() {
+    public URI getURIfrom() {
         return URIfrom;
     }
 
@@ -194,7 +211,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field authenticationId
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getAuthenticationId() {
+    public Blob getAuthenticationId() {
         return authenticationId;
     }
 
@@ -203,7 +220,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field URIto
      */
-    public org.ccsds.moims.mo.mal.structures.URI getURIto() {
+    public URI getURIto() {
         return URIto;
     }
 
@@ -212,7 +229,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -221,7 +238,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field QoSlevel
      */
-    public org.ccsds.moims.mo.mal.structures.QoSLevel getQoSlevel() {
+    public QoSLevel getQoSlevel() {
         return QoSlevel;
     }
 
@@ -230,7 +247,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field priority
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getPriority() {
+    public UInteger getPriority() {
         return priority;
     }
 
@@ -239,7 +256,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -248,7 +265,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field networkZone
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone() {
+    public Identifier getNetworkZone() {
         return networkZone;
     }
 
@@ -257,7 +274,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field session
      */
-    public org.ccsds.moims.mo.mal.structures.SessionType getSession() {
+    public SessionType getSession() {
         return session;
     }
 
@@ -266,7 +283,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field sessionName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSessionName() {
+    public Identifier getSessionName() {
         return sessionName;
     }
 
@@ -275,7 +292,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field interactionType
      */
-    public org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType() {
+    public InteractionType getInteractionType() {
         return interactionType;
     }
 
@@ -284,7 +301,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field interactionStage
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getInteractionStage() {
+    public UOctet getInteractionStage() {
         return interactionStage;
     }
 
@@ -293,7 +310,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field transactionId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getTransactionId() {
+    public Identifier getTransactionId() {
         return transactionId;
     }
 
@@ -302,7 +319,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field area
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getArea() {
+    public Identifier getArea() {
         return area;
     }
 
@@ -311,7 +328,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field service
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getService() {
+    public Identifier getService() {
         return service;
     }
 
@@ -320,7 +337,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field operation
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOperation() {
+    public Identifier getOperation() {
         return operation;
     }
 
@@ -329,7 +346,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field version
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getVersion() {
+    public UOctet getVersion() {
         return version;
     }
 
@@ -564,7 +581,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableURI(URIfrom);
         encoder.encodeNullableBlob(authenticationId);
         encoder.encodeNullableURI(URIto);
@@ -586,18 +603,18 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         URIfrom = decoder.decodeNullableURI();
         authenticationId = decoder.decodeNullableBlob();
         URIto = decoder.decodeNullableURI();
         timestamp = decoder.decodeNullableTime();
-        QoSlevel = (org.ccsds.moims.mo.mal.structures.QoSLevel) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.QoSLevel.BESTEFFORT);
+        QoSlevel = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
         priority = decoder.decodeNullableUInteger();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         networkZone = decoder.decodeNullableIdentifier();
-        session = (org.ccsds.moims.mo.mal.structures.SessionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.SessionType.LIVE);
+        session = (SessionType) decoder.decodeNullableElement(SessionType.LIVE);
         sessionName = decoder.decodeNullableIdentifier();
-        interactionType = (org.ccsds.moims.mo.mal.structures.InteractionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.InteractionType.SEND);
+        interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
         interactionStage = decoder.decodeNullableUOctet();
         transactionId = decoder.decodeNullableIdentifier();
         area = decoder.decodeNullableIdentifier();
@@ -609,7 +626,7 @@ public final class MessageHeader implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

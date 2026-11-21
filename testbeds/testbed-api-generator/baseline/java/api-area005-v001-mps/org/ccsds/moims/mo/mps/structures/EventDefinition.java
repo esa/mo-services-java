@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * E1: An EventDefinition is an MO object that contains static configuration
  * data relating to multiple occurrences of a planning event.  Its identity
@@ -11,7 +20,7 @@ package org.ccsds.moims.mo.mps.structures;
  * that may occur during the execution of a Plan, but the specific time or
  * position is not predicted.
  */
-public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class EventDefinition extends MOObject {
 
     private static final long serialVersionUID = 1407374900330697L;
     /**
@@ -21,7 +30,7 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Description of the event.
@@ -32,7 +41,7 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * Enumeration: one of {Predicted, Potential} indicating whether the event
      * occurrence is known in advance or can occur at any time.  .
      */
-    private org.ccsds.moims.mo.mps.structures.PredictabilityEnum predictability;
+    private PredictabilityEnum predictability;
 
     /**
      * Free-text field that can be used to categorize an event into one of several
@@ -45,13 +54,13 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     /**
      * List of argument definitions.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgDefList argDefs;
+    private ArgDefList argDefs;
 
     /**
      * List of child event definitions.  For a single event, this list shall be
      * empty; for a group event, the list shall be populated.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList eventDefinitions;
+    private ObjectRefList eventDefinitions;
 
     /**
      * Default constructor for EventDefinition.
@@ -70,12 +79,12 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * @param argDefs List of argument definitions.
      * @param eventDefinitions List of child event definitions.  For a single event, this list shall be empty; for a group event, the list shall be populated.
      */
-    public EventDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public EventDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mps.structures.PredictabilityEnum predictability,
+            PredictabilityEnum predictability,
             String eventType,
-            org.ccsds.moims.mo.mps.structures.ArgDefList argDefs,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList eventDefinitions) {
+            ArgDefList argDefs,
+            ObjectRefList eventDefinitions) {
         super(objectIdentity);
         this.description = description;
         this.predictability = predictability;
@@ -91,9 +100,9 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * @param description Description of the event.
      * @param predictability Enumeration: one of {Predicted, Potential} indicating whether the event occurrence is known in advance or can occur at any time.  
      */
-    public EventDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public EventDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mps.structures.PredictabilityEnum predictability) {
+            PredictabilityEnum predictability) {
         super(objectIdentity);
         this.description = description;
         this.predictability = predictability;
@@ -103,8 +112,8 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventDefinition();
+    public Element createElement() {
+        return new EventDefinition();
     }
 
     /**
@@ -121,7 +130,7 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field predictability
      */
-    public org.ccsds.moims.mo.mps.structures.PredictabilityEnum getPredictability() {
+    public PredictabilityEnum getPredictability() {
         return predictability;
     }
 
@@ -139,7 +148,7 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field argDefs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgDefList getArgDefs() {
+    public ArgDefList getArgDefs() {
         return argDefs;
     }
 
@@ -148,7 +157,7 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field eventDefinitions
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getEventDefinitions() {
+    public ObjectRefList getEventDefinitions() {
         return eventDefinitions;
     }
 
@@ -235,13 +244,13 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (predictability == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'predictability' cannot be null!");
+            throw new MALException("The field 'predictability' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(predictability);
@@ -251,18 +260,18 @@ public final class EventDefinition extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        predictability = (org.ccsds.moims.mo.mps.structures.PredictabilityEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.PredictabilityEnum.PREDICTED);
+        predictability = (PredictabilityEnum) decoder.decodeElement(PredictabilityEnum.PREDICTED);
         eventType = decoder.decodeNullableString();
-        argDefs = (org.ccsds.moims.mo.mps.structures.ArgDefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgDefList());
-        eventDefinitions = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        argDefs = (ArgDefList) decoder.decodeNullableElement(new ArgDefList());
+        eventDefinitions = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

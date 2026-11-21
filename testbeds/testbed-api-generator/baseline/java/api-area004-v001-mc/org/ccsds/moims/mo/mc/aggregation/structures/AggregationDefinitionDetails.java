@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+
 /**
  * The AggregationDefinitionDetails structure holds definition details of
  * an aggregation.
  */
-public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationDefinitionDetails implements Composite {
 
     private static final long serialVersionUID = 1125925693423617L;
     /**
@@ -14,7 +23,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description of the parameter. May be empty.
@@ -26,13 +35,13 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * although the use of a UOctet allows deployment specific extension. Extensions
      * must use values greater than 127.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet category;
+    private UOctet category;
 
     /**
      * The interval between periodic reports on this aggregation. If this aggregation
      * is not periodic, this field must be &quot;0&quot;.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration reportInterval;
+    private Duration reportInterval;
 
     /**
      * If TRUE reports will include all values regardless of whether changed,
@@ -56,7 +65,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * then a report is sent regardless of filtered thresholds. Ignored if not
      * filtered.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration filteredTimeout;
+    private Duration filteredTimeout;
 
     /**
      * Controls whether reports for this aggregation are to be generated.
@@ -66,7 +75,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
     /**
      * List containing the parameter sets which define the aggregation.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSetList parameterSets;
+    private AggregationParameterSetList parameterSets;
 
     /**
      * Default constructor for AggregationDefinitionDetails.
@@ -89,14 +98,14 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * @param parameterSets List containing the parameter sets which define the aggregation.
      */
     public AggregationDefinitionDetails(String description,
-            org.ccsds.moims.mo.mal.structures.UOctet category,
-            org.ccsds.moims.mo.mal.structures.Duration reportInterval,
+            UOctet category,
+            Duration reportInterval,
             Boolean sendUnchanged,
             Boolean sendDefinitions,
             Boolean filterEnabled,
-            org.ccsds.moims.mo.mal.structures.Duration filteredTimeout,
+            Duration filteredTimeout,
             Boolean generationEnabled,
-            org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSetList parameterSets) {
+            AggregationParameterSetList parameterSets) {
         this.description = description;
         this.category = category;
         this.reportInterval = reportInterval;
@@ -109,8 +118,8 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationDefinitionDetails();
+    public Element createElement() {
+        return new AggregationDefinitionDetails();
     }
 
     /**
@@ -127,7 +136,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * 
      * @return The field category
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getCategory() {
+    public UOctet getCategory() {
         return category;
     }
 
@@ -136,7 +145,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * 
      * @return The field reportInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getReportInterval() {
+    public Duration getReportInterval() {
         return reportInterval;
     }
 
@@ -172,7 +181,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * 
      * @return The field filteredTimeout
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getFilteredTimeout() {
+    public Duration getFilteredTimeout() {
         return filteredTimeout;
     }
 
@@ -190,7 +199,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
      * 
      * @return The field parameterSets
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSetList getParameterSets() {
+    public AggregationParameterSetList getParameterSets() {
         return parameterSets;
     }
 
@@ -317,33 +326,33 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (category == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'category' cannot be null!");
+            throw new MALException("The field 'category' cannot be null!");
         }
         if (reportInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reportInterval' cannot be null!");
+            throw new MALException("The field 'reportInterval' cannot be null!");
         }
         if (sendUnchanged == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sendUnchanged' cannot be null!");
+            throw new MALException("The field 'sendUnchanged' cannot be null!");
         }
         if (sendDefinitions == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sendDefinitions' cannot be null!");
+            throw new MALException("The field 'sendDefinitions' cannot be null!");
         }
         if (filterEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'filterEnabled' cannot be null!");
+            throw new MALException("The field 'filterEnabled' cannot be null!");
         }
         if (filteredTimeout == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'filteredTimeout' cannot be null!");
+            throw new MALException("The field 'filteredTimeout' cannot be null!");
         }
         if (generationEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'generationEnabled' cannot be null!");
+            throw new MALException("The field 'generationEnabled' cannot be null!");
         }
         if (parameterSets == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterSets' cannot be null!");
+            throw new MALException("The field 'parameterSets' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeUOctet(category);
@@ -357,7 +366,7 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
         category = decoder.decodeUOctet();
         reportInterval = decoder.decodeDuration();
@@ -366,12 +375,12 @@ public final class AggregationDefinitionDetails implements org.ccsds.moims.mo.ma
         filterEnabled = decoder.decodeBoolean();
         filteredTimeout = decoder.decodeDuration();
         generationEnabled = decoder.decodeBoolean();
-        parameterSets = (org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSetList) decoder.decodeElement(new org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterSetList());
+        parameterSets = (AggregationParameterSetList) decoder.decodeElement(new AggregationParameterSetList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

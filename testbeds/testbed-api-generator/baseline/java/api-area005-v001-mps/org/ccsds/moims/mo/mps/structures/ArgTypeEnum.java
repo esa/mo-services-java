@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ArgTypeEnum.
  */
-public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ArgTypeEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330497L;
     /**
@@ -13,7 +17,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for BLOB.
@@ -23,7 +27,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value BLOB.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum BLOB = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.BLOB_VALUE);
+    public static final ArgTypeEnum BLOB = new ArgTypeEnum(ArgTypeEnum.BLOB_VALUE);
 
     /**
      * Enumeration value for BOOLEAN.
@@ -33,7 +37,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value BOOLEAN.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum BOOLEAN = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.BOOLEAN_VALUE);
+    public static final ArgTypeEnum BOOLEAN = new ArgTypeEnum(ArgTypeEnum.BOOLEAN_VALUE);
 
     /**
      * Enumeration value for DURATION.
@@ -43,7 +47,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value DURATION.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum DURATION = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.DURATION_VALUE);
+    public static final ArgTypeEnum DURATION = new ArgTypeEnum(ArgTypeEnum.DURATION_VALUE);
 
     /**
      * Enumeration value for FLOAT.
@@ -53,7 +57,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value FLOAT.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum FLOAT = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.FLOAT_VALUE);
+    public static final ArgTypeEnum FLOAT = new ArgTypeEnum(ArgTypeEnum.FLOAT_VALUE);
 
     /**
      * Enumeration value for DOUBLE.
@@ -63,7 +67,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value DOUBLE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum DOUBLE = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.DOUBLE_VALUE);
+    public static final ArgTypeEnum DOUBLE = new ArgTypeEnum(ArgTypeEnum.DOUBLE_VALUE);
 
     /**
      * Enumeration value for IDENTIFIER.
@@ -73,7 +77,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value IDENTIFIER.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum IDENTIFIER = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.IDENTIFIER_VALUE);
+    public static final ArgTypeEnum IDENTIFIER = new ArgTypeEnum(ArgTypeEnum.IDENTIFIER_VALUE);
 
     /**
      * Enumeration value for OCTET.
@@ -83,7 +87,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value OCTET.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum OCTET = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.OCTET_VALUE);
+    public static final ArgTypeEnum OCTET = new ArgTypeEnum(ArgTypeEnum.OCTET_VALUE);
 
     /**
      * Enumeration value for UOCTET.
@@ -93,7 +97,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value UOCTET.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum UOCTET = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.UOCTET_VALUE);
+    public static final ArgTypeEnum UOCTET = new ArgTypeEnum(ArgTypeEnum.UOCTET_VALUE);
 
     /**
      * Enumeration value for SHORT.
@@ -103,7 +107,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value SHORT.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum SHORT = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.SHORT_VALUE);
+    public static final ArgTypeEnum SHORT = new ArgTypeEnum(ArgTypeEnum.SHORT_VALUE);
 
     /**
      * Enumeration value for USHORT.
@@ -113,7 +117,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value USHORT.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum USHORT = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.USHORT_VALUE);
+    public static final ArgTypeEnum USHORT = new ArgTypeEnum(ArgTypeEnum.USHORT_VALUE);
 
     /**
      * Enumeration value for INTEGER.
@@ -123,7 +127,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value INTEGER.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum INTEGER = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.INTEGER_VALUE);
+    public static final ArgTypeEnum INTEGER = new ArgTypeEnum(ArgTypeEnum.INTEGER_VALUE);
 
     /**
      * Enumeration value for UINTEGER.
@@ -133,7 +137,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value UINTEGER.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum UINTEGER = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.UINTEGER_VALUE);
+    public static final ArgTypeEnum UINTEGER = new ArgTypeEnum(ArgTypeEnum.UINTEGER_VALUE);
 
     /**
      * Enumeration value for LONG.
@@ -143,7 +147,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value LONG.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum LONG = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.LONG_VALUE);
+    public static final ArgTypeEnum LONG = new ArgTypeEnum(ArgTypeEnum.LONG_VALUE);
 
     /**
      * Enumeration value for ULONG.
@@ -153,7 +157,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value ULONG.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum ULONG = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.ULONG_VALUE);
+    public static final ArgTypeEnum ULONG = new ArgTypeEnum(ArgTypeEnum.ULONG_VALUE);
 
     /**
      * Enumeration value for STRING.
@@ -163,7 +167,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value STRING.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum STRING = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.STRING_VALUE);
+    public static final ArgTypeEnum STRING = new ArgTypeEnum(ArgTypeEnum.STRING_VALUE);
 
     /**
      * Enumeration value for TIME.
@@ -173,7 +177,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value TIME.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum TIME = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.TIME_VALUE);
+    public static final ArgTypeEnum TIME = new ArgTypeEnum(ArgTypeEnum.TIME_VALUE);
 
     /**
      * Enumeration value for FINETIME.
@@ -183,7 +187,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value FINETIME.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum FINETIME = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.FINETIME_VALUE);
+    public static final ArgTypeEnum FINETIME = new ArgTypeEnum(ArgTypeEnum.FINETIME_VALUE);
 
     /**
      * Enumeration value for URI.
@@ -193,7 +197,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value URI.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum URI = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.URI_VALUE);
+    public static final ArgTypeEnum URI = new ArgTypeEnum(ArgTypeEnum.URI_VALUE);
 
     /**
      * Enumeration value for OBJECTREF.
@@ -203,7 +207,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value OBJECTREF.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum OBJECTREF = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.OBJECTREF_VALUE);
+    public static final ArgTypeEnum OBJECTREF = new ArgTypeEnum(ArgTypeEnum.OBJECTREF_VALUE);
 
     /**
      * Enumeration value for POSITION.
@@ -213,7 +217,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value POSITION.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum POSITION = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.POSITION_VALUE);
+    public static final ArgTypeEnum POSITION = new ArgTypeEnum(ArgTypeEnum.POSITION_VALUE);
 
     /**
      * Enumeration value for DIRECTION.
@@ -223,7 +227,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value DIRECTION.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum DIRECTION = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.DIRECTION_VALUE);
+    public static final ArgTypeEnum DIRECTION = new ArgTypeEnum(ArgTypeEnum.DIRECTION_VALUE);
 
     /**
      * Enumeration value for ANGLE.
@@ -233,7 +237,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value ANGLE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum ANGLE = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.ANGLE_VALUE);
+    public static final ArgTypeEnum ANGLE = new ArgTypeEnum(ArgTypeEnum.ANGLE_VALUE);
 
     /**
      * Enumeration value for ANGULAR_RATE.
@@ -243,7 +247,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value ANGULAR_RATE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum ANGULAR_RATE = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.ANGULAR_RATE_VALUE);
+    public static final ArgTypeEnum ANGULAR_RATE = new ArgTypeEnum(ArgTypeEnum.ANGULAR_RATE_VALUE);
 
     /**
      * Enumeration value for DISTANCE.
@@ -253,7 +257,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value DISTANCE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum DISTANCE = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.DISTANCE_VALUE);
+    public static final ArgTypeEnum DISTANCE = new ArgTypeEnum(ArgTypeEnum.DISTANCE_VALUE);
 
     /**
      * Enumeration value for ANY.
@@ -263,12 +267,12 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value ANY.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum ANY = new org.ccsds.moims.mo.mps.structures.ArgTypeEnum(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.ANY_VALUE);
+    public static final ArgTypeEnum ANY = new ArgTypeEnum(ArgTypeEnum.ANY_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.ArgTypeEnum[] _ENUMERATIONS = {
+    private static final ArgTypeEnum[] _ENUMERATIONS = {
         BLOB, BOOLEAN, DURATION, FLOAT, DOUBLE, IDENTIFIER, OCTET, UOCTET, SHORT,
         USHORT, INTEGER, UINTEGER, LONG, ULONG, STRING, TIME, FINETIME, URI, OBJECTREF,
         POSITION, DIRECTION, ANGLE, ANGULAR_RATE, DISTANCE, ANY};
@@ -356,7 +360,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.ArgTypeEnum fromString(String s) {
+    public static ArgTypeEnum fromString(String s) {
         switch (s) {
             case "BLOB":
                 return ArgTypeEnum.BLOB;
@@ -414,7 +418,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case BLOB_VALUE:
                 return ArgTypeEnum.BLOB;
@@ -472,7 +476,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -482,7 +486,7 @@ public final class ArgTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,28 @@
 package org.ccsds.moims.mo.comprototype.archivetest;
 
+import org.ccsds.moims.mo.com.COMObject;
+import org.ccsds.moims.mo.com.COMService;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
+import org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject;
+import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for ArchiveTest service.
  */
-public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
+public class ArchiveTestServiceInfo extends COMService {
 
     /**
      * Service number literal.
@@ -13,17 +32,17 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort ARCHIVETEST_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_ARCHIVETEST_SERVICE_NUMBER);
+    public static final UShort ARCHIVETEST_SERVICE_NUMBER = new UShort(_ARCHIVETEST_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier ARCHIVETEST_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("ArchiveTest");
+    public static final Identifier ARCHIVETEST_SERVICE_NAME = new Identifier("ArchiveTest");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             200, 1, ARCHIVETEST_SERVICE_NUMBER);
 
     /**
@@ -34,27 +53,27 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation RESET.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort RESET_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_RESET_OP_NUMBER);
+    private static final UShort RESET_OP_NUMBER = new UShort(_RESET_OP_NUMBER);
 
     /**
      * Operation instance for operation RESET.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation RESET_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation RESET_OP = new MALSubmitOperation(SERVICE_KEY, 
             RESET_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("reset"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {}, 
+            new Identifier("reset"), 
+            new UShort(100), 
+            new OperationField[] {}, 
             "Resets all values back to their default value.");
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] ARCHIVETEST_SERVICE_ELEMENTS = {};
+    public static final Element[] ARCHIVETEST_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{RESET_OP};
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{RESET_OP};
 
     /**
      * Literal for object TESTOBJECT.
@@ -66,25 +85,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT_OBJECT_NUMBER = new UShort(_TESTOBJECT_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject");
+    public static final Identifier TESTOBJECT_OBJECT_NAME = new Identifier("TestObject");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT_OBJECT_TYPE, TESTOBJECT_OBJECT_NAME, org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload.SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT_OBJECT = new COMObject(TESTOBJECT_OBJECT_TYPE, TESTOBJECT_OBJECT_NAME, TestObjectPayload.SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT2.
@@ -96,25 +115,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT2.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT2_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT2_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT2_OBJECT_NUMBER = new UShort(_TESTOBJECT2_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT2_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject2");
+    public static final Identifier TESTOBJECT2_OBJECT_NAME = new Identifier("TestObject2");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT2_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT2_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT2_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT2_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT2_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT2_OBJECT_TYPE, TESTOBJECT2_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.INTEGER_SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT2_OBJECT = new COMObject(TESTOBJECT2_OBJECT_TYPE, TESTOBJECT2_OBJECT_NAME, Attribute.INTEGER_SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT3.
@@ -126,25 +145,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT3.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT3_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT3_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT3_OBJECT_NUMBER = new UShort(_TESTOBJECT3_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT3_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject3");
+    public static final Identifier TESTOBJECT3_OBJECT_NAME = new Identifier("TestObject3");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT3_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT3_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT3_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT3_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT3_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT3_OBJECT_TYPE, TESTOBJECT3_OBJECT_NAME, org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject.SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT3_OBJECT = new COMObject(TESTOBJECT3_OBJECT_TYPE, TESTOBJECT3_OBJECT_NAME, EnumeratedObject.SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT4.
@@ -156,25 +175,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT4.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT4_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT4_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT4_OBJECT_NUMBER = new UShort(_TESTOBJECT4_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT4_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject4");
+    public static final Identifier TESTOBJECT4_OBJECT_NAME = new Identifier("TestObject4");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT4_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT4_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT4_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT4_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT4_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT4_OBJECT_TYPE, TESTOBJECT4_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.BLOB_SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT4_OBJECT = new COMObject(TESTOBJECT4_OBJECT_TYPE, TESTOBJECT4_OBJECT_NAME, Attribute.BLOB_SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT5.
@@ -186,25 +205,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT5.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT5_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT5_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT5_OBJECT_NUMBER = new UShort(_TESTOBJECT5_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT5_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject5");
+    public static final Identifier TESTOBJECT5_OBJECT_NAME = new Identifier("TestObject5");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT5_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT5_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT5_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT5_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT5_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT5_OBJECT_TYPE, TESTOBJECT5_OBJECT_NAME, null, false, null, false, null, false);
+    public static COMObject TESTOBJECT5_OBJECT = new COMObject(TESTOBJECT5_OBJECT_TYPE, TESTOBJECT5_OBJECT_NAME, null, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT6.
@@ -216,25 +235,25 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT6.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT6_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT6_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT6_OBJECT_NUMBER = new UShort(_TESTOBJECT6_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT6_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject6");
+    public static final Identifier TESTOBJECT6_OBJECT_NAME = new Identifier("TestObject6");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT6_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT6_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT6_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT6_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT6_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT6_OBJECT_TYPE, TESTOBJECT6_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.IDENTIFIER_SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT6_OBJECT = new COMObject(TESTOBJECT6_OBJECT_TYPE, TESTOBJECT6_OBJECT_NAME, Attribute.IDENTIFIER_SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECT7.
@@ -246,30 +265,30 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECT7.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECT7_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECT7_OBJECT_NUMBER);
+    public static final UShort TESTOBJECT7_OBJECT_NUMBER = new UShort(_TESTOBJECT7_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECT7_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObject7");
+    public static final Identifier TESTOBJECT7_OBJECT_NAME = new Identifier("TestObject7");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECT7_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), ARCHIVETEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECT7_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECT7_OBJECT_TYPE = new ObjectType(new UShort(200), ARCHIVETEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECT7_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECT7_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECT7_OBJECT_TYPE, TESTOBJECT7_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.BLOB_SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECT7_OBJECT = new COMObject(TESTOBJECT7_OBJECT_TYPE, TESTOBJECT7_OBJECT_NAME, Attribute.BLOB_SHORT_FORM, false, null, false, null, false);
 
     /**
      * Object instance.
      */
-    public static final org.ccsds.moims.mo.com.COMObject[] COM_OBJECTS = {
+    public static final COMObject[] COM_OBJECTS = {
         TESTOBJECT_OBJECT,
         TESTOBJECT2_OBJECT,
         TESTOBJECT3_OBJECT,
@@ -287,16 +306,16 @@ public class ArchiveTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.comprototype.COMPrototypeHelper.COMPROTOTYPE_AREA;
+    public MALArea getArea() {
+        return COMPrototypeHelper.COMPROTOTYPE_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype.COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

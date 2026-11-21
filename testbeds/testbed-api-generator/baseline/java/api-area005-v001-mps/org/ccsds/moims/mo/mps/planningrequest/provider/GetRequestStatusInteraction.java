@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.mps.planningrequest.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mps.structures.RequestStatusUpdateList;
+
 /**
  * Provider PROGRESS interaction class for PlanningRequest::getRequestStatus
  * operation.
@@ -9,7 +16,7 @@ public class GetRequestStatusInteraction {
     /**
      * The interaction field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProgress interaction;
+    private MALProgress interaction;
 
     /**
      * Wraps the provided MAL interaction object with methods for sending responses
@@ -17,7 +24,7 @@ public class GetRequestStatusInteraction {
      * 
      * @param interaction The MAL interaction action object to use.
      */
-    public GetRequestStatusInteraction(org.ccsds.moims.mo.mal.provider.MALProgress interaction) {
+    public GetRequestStatusInteraction(MALProgress interaction) {
         this.interaction = interaction;
     }
 
@@ -27,7 +34,7 @@ public class GetRequestStatusInteraction {
      * 
      * @return The MAL interaction object provided in the constructor
      */
-    public org.ccsds.moims.mo.mal.provider.MALProgress getInteraction() {
+    public MALProgress getInteraction() {
         return interaction;
     }
 
@@ -35,13 +42,13 @@ public class GetRequestStatusInteraction {
      * Sends a PROGRESS acknowledge to the consumer.
      * 
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendAcknowledgement() throws MALException {
         try {
             return interaction.sendAcknowledgement((Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -50,13 +57,13 @@ public class GetRequestStatusInteraction {
      * 
      * @param requestStatuses The requestStatuses field.
      * @return Returns the MAL message created by the update
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdate(org.ccsds.moims.mo.mps.structures.RequestStatusUpdateList requestStatuses) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendUpdate(RequestStatusUpdateList requestStatuses) throws MALException {
         try {
             return interaction.sendUpdate(requestStatuses);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -64,13 +71,13 @@ public class GetRequestStatusInteraction {
      * Sends a PROGRESS response to the consumer.
      * 
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse() throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendResponse() throws MALException {
         try {
             return interaction.sendResponse((Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -79,13 +86,13 @@ public class GetRequestStatusInteraction {
      * 
      * @param error error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendError(MOErrorException error) throws MALException {
         try {
             return interaction.sendError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -94,13 +101,13 @@ public class GetRequestStatusInteraction {
      * 
      * @param error error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdateError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendUpdateError(MOErrorException error) throws MALException {
         try {
             return interaction.sendUpdateError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 

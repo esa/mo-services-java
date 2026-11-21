@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for TestObjectBase.
  */
-public final class TestObjectBaseList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class TestObjectBaseList extends HeterogeneousList {
 
     /**
      * Default constructor for TestObjectBaseList.
@@ -13,7 +16,7 @@ public final class TestObjectBaseList extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof TestObjectBase)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: TestObjectBase");
         }

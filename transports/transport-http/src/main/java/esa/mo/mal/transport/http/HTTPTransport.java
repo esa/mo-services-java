@@ -36,6 +36,7 @@ import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoEncoding;
 import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoResponse;
 import esa.mo.mal.transport.http.sending.HTTPMessageSenderRequestResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
+import esa.mo.mal.transport.http.util.MALHttpHeaders;
 import esa.mo.mal.transport.http.util.StatusCodeHelper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -587,6 +588,20 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * @return The new message.
      * @throws MALException on Error.
      */
+    /**
+     * Returns the body encoding identifier named by the Content-Type and
+     * X-MAL-Encoding headers.
+     *
+     * @param contentType The Content-Type header, may be null.
+     * @param malEncoding The X-MAL-Encoding header, may be null.
+     * @return the identifier, or -1 if the headers name no known encoding.
+     * @see MALHttpHeaders#bodyEncodingIdOf(String, String, String)
+     */
+    public int bodyEncodingIdOf(String contentType, String malEncoding) {
+        return MALHttpHeaders.bodyEncodingIdOf(contentType, malEncoding,
+                getStreamFactory().getClass().getName());
+    }
+
     @Override
     public GENMessage decodeMessage(HTTPHeaderAndBody messageSource) throws MALException {
         RLOGGER.fine("HTTPTransport.createMessage:\n" + messageSource.toString());
@@ -618,7 +633,10 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         sb.append("Encoded received message:\n");
         sb.append(encodedMsg);
 
-        MALElementStreamFactory encFactory = getStreamFactory();
+        // An error status carries no body of its own: the one built above is in
+        // this transport's encoding.
+        MALElementStreamFactory encFactory = statusCode >= 400
+                ? getStreamFactory() : getStreamFactory(header, messageSource.getBodyEncodingId());
         final ByteArrayInputStream bais = new ByteArrayInputStream(packetData);
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 

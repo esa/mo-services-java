@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The UnsupportedServiceException exception. The destination does not support
  * the selected service.
  */
-public final class UnsupportedServiceException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class UnsupportedServiceException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Unsupported Service";
 

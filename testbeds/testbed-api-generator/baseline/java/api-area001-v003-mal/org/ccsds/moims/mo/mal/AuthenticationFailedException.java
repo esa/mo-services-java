@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The AuthenticationFailedException exception. A failure to authenticate
  * the message correctly.
  */
-public final class AuthenticationFailedException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class AuthenticationFailedException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Authentication Failed";
 

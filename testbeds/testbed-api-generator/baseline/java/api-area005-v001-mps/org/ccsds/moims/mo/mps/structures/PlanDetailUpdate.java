@@ -1,12 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Specifically in the case of reporting the detailed execution status
  * of a plan, updates may be reported for multiple object types: planning
  * activities, planning events, and planning resources.  To support this an
  * abstract type of PlanDetailUpdate is defined as follows.
  */
-public abstract class PlanDetailUpdate implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class PlanDetailUpdate implements Composite {
 
     /**
      * Default constructor for PlanDetailUpdate.
@@ -38,11 +44,11 @@ public abstract class PlanDetailUpdate implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         return this;
     }
 

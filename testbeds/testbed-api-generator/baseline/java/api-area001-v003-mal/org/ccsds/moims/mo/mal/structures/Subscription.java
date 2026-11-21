@@ -1,11 +1,16 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The Subscription structure shall be used when subscribing for updates using
  * the PUBSUB Interaction Pattern. It shall contain a single identifier that
  * identifies the subscription being defined and a set of entities being requested.
  */
-public final class Subscription implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class Subscription implements Composite {
 
     private static final long serialVersionUID = 281475027043305L;
     /**
@@ -15,31 +20,31 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The identifier of this subscription.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subscriptionId;
+    private Identifier subscriptionId;
 
     /**
      * Optional domain identifier. If NULL, the subscription shall match with
      * any domain.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The list of names of the selected Subscription Keys to be transmitted to
      * the consumer. The Subscription Keys that are not in this list will be removed.
      * If NULL, then all Subscription Keys will be transmitted.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys;
+    private IdentifierList selectedKeys;
 
     /**
      * The list of filters for this subscription. The list of filters must be
      * ANDed together. If NULL, the subscription will not filter specific keys.
      */
-    private org.ccsds.moims.mo.mal.structures.SubscriptionFilterList filters;
+    private SubscriptionFilterList filters;
 
     /**
      * Default constructor for Subscription.
@@ -56,10 +61,10 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * @param selectedKeys The list of names of the selected Subscription Keys to be transmitted to the consumer. The Subscription Keys that are not in this list will be removed. If NULL, then all Subscription Keys will be transmitted.
      * @param filters The list of filters for this subscription. The list of filters must be ANDed together. If NULL, the subscription will not filter specific keys.
      */
-    public Subscription(org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys,
-            org.ccsds.moims.mo.mal.structures.SubscriptionFilterList filters) {
+    public Subscription(Identifier subscriptionId,
+            IdentifierList domain,
+            IdentifierList selectedKeys,
+            SubscriptionFilterList filters) {
         this.subscriptionId = subscriptionId;
         this.domain = domain;
         this.selectedKeys = selectedKeys;
@@ -71,7 +76,7 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @param subscriptionId The identifier of this subscription.
      */
-    public Subscription(org.ccsds.moims.mo.mal.structures.Identifier subscriptionId) {
+    public Subscription(Identifier subscriptionId) {
         this.subscriptionId = subscriptionId;
         this.domain = null;
         this.selectedKeys = null;
@@ -79,8 +84,8 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.Subscription();
+    public Element createElement() {
+        return new Subscription();
     }
 
     /**
@@ -88,7 +93,7 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field subscriptionId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubscriptionId() {
+    public Identifier getSubscriptionId() {
         return subscriptionId;
     }
 
@@ -97,7 +102,7 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -106,7 +111,7 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field selectedKeys
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getSelectedKeys() {
+    public IdentifierList getSelectedKeys() {
         return selectedKeys;
     }
 
@@ -115,7 +120,7 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field filters
      */
-    public org.ccsds.moims.mo.mal.structures.SubscriptionFilterList getFilters() {
+    public SubscriptionFilterList getFilters() {
         return filters;
     }
 
@@ -187,9 +192,9 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (subscriptionId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'subscriptionId' cannot be null!");
+            throw new MALException("The field 'subscriptionId' cannot be null!");
         }
         encoder.encodeIdentifier(subscriptionId);
         encoder.encodeNullableElement(domain);
@@ -198,16 +203,16 @@ public final class Subscription implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         subscriptionId = decoder.decodeIdentifier();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        selectedKeys = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        filters = (org.ccsds.moims.mo.mal.structures.SubscriptionFilterList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.SubscriptionFilterList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        selectedKeys = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        filters = (SubscriptionFilterList) decoder.decodeNullableElement(new SubscriptionFilterList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

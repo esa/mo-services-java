@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Multiple planning constraints can be combined using a ConstraintNode.
  * The ConstraintNode specifies the logical operation (AND or OR) to be used
@@ -7,7 +13,7 @@ package org.ccsds.moims.mo.mps.structures;
  * itself defined as a sub-type of Constraint, it is possible to construct
  * a tree of ConstraintNodes using different logical operators.
  */
-public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class ConstraintNode extends Constraint {
 
     private static final long serialVersionUID = 1407374900330525L;
     /**
@@ -17,18 +23,18 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration specifying the logic for combining multiple Boolean conditions
      * together.  One of {AND, OR}. Default = AND.
      */
-    private org.ccsds.moims.mo.mps.structures.LogicOpEnum operator;
+    private LogicOpEnum operator;
 
     /**
      * The set of Constraints to be combined.  Must contain at least one element.
      */
-    private org.ccsds.moims.mo.mps.structures.ConstraintList constraints;
+    private ConstraintList constraints;
 
     /**
      * Default constructor for ConstraintNode.
@@ -45,8 +51,8 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
      * @param constraints The set of Constraints to be combined.  Must contain at least one element.
      */
     public ConstraintNode(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.LogicOpEnum operator,
-            org.ccsds.moims.mo.mps.structures.ConstraintList constraints) {
+            LogicOpEnum operator,
+            ConstraintList constraints) {
         super(negate);
         this.operator = operator;
         this.constraints = constraints;
@@ -57,14 +63,14 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
      * 
      * @param constraints The set of Constraints to be combined.  Must contain at least one element.
      */
-    public ConstraintNode(org.ccsds.moims.mo.mps.structures.ConstraintList constraints) {
+    public ConstraintNode(ConstraintList constraints) {
         this.operator = null;
         this.constraints = constraints;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ConstraintNode();
+    public Element createElement() {
+        return new ConstraintNode();
     }
 
     /**
@@ -72,7 +78,7 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.mps.structures.LogicOpEnum getOperator() {
+    public LogicOpEnum getOperator() {
         return operator;
     }
 
@@ -81,7 +87,7 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
      * 
      * @return The field constraints
      */
-    public org.ccsds.moims.mo.mps.structures.ConstraintList getConstraints() {
+    public ConstraintList getConstraints() {
         return constraints;
     }
 
@@ -135,25 +141,25 @@ public final class ConstraintNode extends org.ccsds.moims.mo.mps.structures.Cons
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (constraints == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'constraints' cannot be null!");
+            throw new MALException("The field 'constraints' cannot be null!");
         }
         encoder.encodeNullableElement(operator);
         encoder.encodeElement(constraints);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        operator = (org.ccsds.moims.mo.mps.structures.LogicOpEnum) decoder.decodeNullableElement(org.ccsds.moims.mo.mps.structures.LogicOpEnum.AND);
-        constraints = (org.ccsds.moims.mo.mps.structures.ConstraintList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.ConstraintList());
+        operator = (LogicOpEnum) decoder.decodeNullableElement(LogicOpEnum.AND);
+        constraints = (ConstraintList) decoder.decodeElement(new ConstraintList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

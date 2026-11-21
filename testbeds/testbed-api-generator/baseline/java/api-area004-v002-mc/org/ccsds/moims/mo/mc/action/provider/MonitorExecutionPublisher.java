@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mc.action.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.provider.MALPublisherSet;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mc.structures.ActionEvent;
+
 /**
  * Publisher class for the monitorExecution operation.
  */
@@ -8,14 +19,14 @@ public final class MonitorExecutionPublisher {
     /**
      * The publisherSet field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALPublisherSet publisherSet;
+    private MALPublisherSet publisherSet;
 
     /**
      * Creates an instance of this class using the supplied publisher set.
      * 
      * @param publisherSet The set of broker connections to use when registering and publishing.
      */
-    public MonitorExecutionPublisher(org.ccsds.moims.mo.mal.provider.MALPublisherSet publisherSet) {
+    public MonitorExecutionPublisher(MALPublisherSet publisherSet) {
         this.publisherSet = publisherSet;
     }
 
@@ -26,12 +37,12 @@ public final class MonitorExecutionPublisher {
      * @param keyTypes The key types to use in the method
      * @param listener The listener object to use for callback from the publisher
      * @throws java.lang.IllegalArgumentException If any supplied argument is invalid
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void register(org.ccsds.moims.mo.mal.structures.IdentifierList keyNames,
-            org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes,
-            org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
+    public void register(IdentifierList keyNames,
+            AttributeTypeList keyTypes,
+            MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         publisherSet.register(keyNames, keyTypes, listener);
     }
 
@@ -40,18 +51,18 @@ public final class MonitorExecutionPublisher {
      * with the default subscription keys.
      * 
      * @param listener The listener object to use for callback from the publisher
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void registerWithDefaultKeys(org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList();
-        org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList();
-        keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier("requestId"));
-        keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType.LONG);
-        keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier("actionKey"));
-        keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType.IDENTIFIER);
-        keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier("actionCategory"));
-        keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType.UOCTET);
+    public void registerWithDefaultKeys(MALPublishInteractionListener listener) throws MALInteractionException, MALException {
+        IdentifierList keyNames = new IdentifierList();
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyNames.add(new Identifier("requestId"));
+        keyTypes.add(AttributeType.LONG);
+        keyNames.add(new Identifier("actionKey"));
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyNames.add(new Identifier("actionCategory"));
+        keyTypes.add(AttributeType.UOCTET);
         publisherSet.register(keyNames, keyTypes, listener);
     }
 
@@ -63,12 +74,12 @@ public final class MonitorExecutionPublisher {
      * @param keyTypes The key types to use in the method
      * @param listener The listener object to use for callback from the publisher
      * @throws java.lang.IllegalArgumentException If any supplied argument is invalid
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void asyncRegister(org.ccsds.moims.mo.mal.structures.IdentifierList keyNames,
-            org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes,
-            org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
+    public void asyncRegister(IdentifierList keyNames,
+            AttributeTypeList keyTypes,
+            MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         publisherSet.asyncRegister(keyNames, keyTypes, listener);
     }
 
@@ -78,21 +89,21 @@ public final class MonitorExecutionPublisher {
      * @param updateHeader The headers of the updates being added
      * @param progressEvent The progressEvent field.
      * @throws java.lang.IllegalArgumentException If any supplied argument is invalid
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void publish(org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
-            org.ccsds.moims.mo.mc.structures.ActionEvent progressEvent) throws java.lang.IllegalArgumentException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
+    public void publish(UpdateHeader updateHeader,
+            ActionEvent progressEvent) throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         publisherSet.publish(updateHeader, progressEvent);
     }
 
     /**
      * Deregisters this provider implementation from the set of broker connections.
      * 
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void deregister() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
+    public void deregister() throws MALInteractionException, MALException {
         publisherSet.deregister();
     }
 
@@ -102,19 +113,19 @@ public final class MonitorExecutionPublisher {
      * 
      * @param listener The listener object to use for callback from the publisher
      * @throws java.lang.IllegalArgumentException If any supplied argument is invalid
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws MALException if there is an implementation exception
      */
-    public void asyncDeregister(org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
+    public void asyncDeregister(MALPublishInteractionListener listener) throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         publisherSet.asyncDeregister(listener);
     }
 
     /**
      * Closes this publisher.
      * 
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALException if there is an implementation exception
      */
-    public void close() throws org.ccsds.moims.mo.mal.MALException {
+    public void close() throws MALException {
         publisherSet.close();
     }
 

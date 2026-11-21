@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The ActivateSubplanFailedException exception. The activateSubPlan operation
  * failed.
  */
-public final class ActivateSubplanFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class ActivateSubplanFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "ACTIVATE_SUBPLAN_FAILED";
 

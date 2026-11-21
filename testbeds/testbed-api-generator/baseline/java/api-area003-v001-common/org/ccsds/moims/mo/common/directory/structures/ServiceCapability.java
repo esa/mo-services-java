@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.common.structures.ServiceKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.UShortList;
+
 /**
  * The ServiceCapability structure holds information about a service and the
  * capabilities offered by a provider.
  */
-public final class ServiceCapability implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ServiceCapability implements Composite {
 
     private static final long serialVersionUID = 844429241876482L;
     /**
@@ -14,23 +24,23 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The area, service, and version fields.
      */
-    private org.ccsds.moims.mo.common.structures.ServiceKey serviceKey;
+    private ServiceKey serviceKey;
 
     /**
      * The supported capability set numbers for this service provider. If NULL
      * then all capability sets supported.
      */
-    private org.ccsds.moims.mo.mal.structures.UShortList supportedCapabilitySets;
+    private UShortList supportedCapabilitySets;
 
     /**
      * Allows the passing of deployment specific service properties.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList serviceProperties;
+    private NamedValueList serviceProperties;
 
     /**
      * Optional set of address details for this specific service which shall be
@@ -38,7 +48,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * information is supplied in the containing ProviderDetails structure field
      * this list should be replaced with a NULL.
      */
-    private org.ccsds.moims.mo.common.directory.structures.AddressDetailsList serviceAddresses;
+    private AddressDetailsList serviceAddresses;
 
     /**
      * Default constructor for ServiceCapability.
@@ -55,10 +65,10 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * @param serviceProperties Allows the passing of deployment specific service properties.
      * @param serviceAddresses Optional set of address details for this specific service which shall be used instead of the provider ones when accessing this service. If all address information is supplied in the containing ProviderDetails structure field this list should be replaced with a NULL.
      */
-    public ServiceCapability(org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.mal.structures.UShortList supportedCapabilitySets,
-            org.ccsds.moims.mo.mal.structures.NamedValueList serviceProperties,
-            org.ccsds.moims.mo.common.directory.structures.AddressDetailsList serviceAddresses) {
+    public ServiceCapability(ServiceKey serviceKey,
+            UShortList supportedCapabilitySets,
+            NamedValueList serviceProperties,
+            AddressDetailsList serviceAddresses) {
         this.serviceKey = serviceKey;
         this.supportedCapabilitySets = supportedCapabilitySets;
         this.serviceProperties = serviceProperties;
@@ -70,7 +80,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * 
      * @param serviceKey The area, service, and version fields.
      */
-    public ServiceCapability(org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) {
+    public ServiceCapability(ServiceKey serviceKey) {
         this.serviceKey = serviceKey;
         this.supportedCapabilitySets = null;
         this.serviceProperties = null;
@@ -78,8 +88,8 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.ServiceCapability();
+    public Element createElement() {
+        return new ServiceCapability();
     }
 
     /**
@@ -87,7 +97,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field serviceKey
      */
-    public org.ccsds.moims.mo.common.structures.ServiceKey getServiceKey() {
+    public ServiceKey getServiceKey() {
         return serviceKey;
     }
 
@@ -96,7 +106,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field supportedCapabilitySets
      */
-    public org.ccsds.moims.mo.mal.structures.UShortList getSupportedCapabilitySets() {
+    public UShortList getSupportedCapabilitySets() {
         return supportedCapabilitySets;
     }
 
@@ -105,7 +115,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field serviceProperties
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getServiceProperties() {
+    public NamedValueList getServiceProperties() {
         return serviceProperties;
     }
 
@@ -114,7 +124,7 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field serviceAddresses
      */
-    public org.ccsds.moims.mo.common.directory.structures.AddressDetailsList getServiceAddresses() {
+    public AddressDetailsList getServiceAddresses() {
         return serviceAddresses;
     }
 
@@ -186,9 +196,9 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (serviceKey == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'serviceKey' cannot be null!");
+            throw new MALException("The field 'serviceKey' cannot be null!");
         }
         encoder.encodeElement(serviceKey);
         encoder.encodeNullableElement(supportedCapabilitySets);
@@ -197,16 +207,16 @@ public final class ServiceCapability implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        serviceKey = (org.ccsds.moims.mo.common.structures.ServiceKey) decoder.decodeElement(new org.ccsds.moims.mo.common.structures.ServiceKey());
-        supportedCapabilitySets = (org.ccsds.moims.mo.mal.structures.UShortList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.UShortList());
-        serviceProperties = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
-        serviceAddresses = (org.ccsds.moims.mo.common.directory.structures.AddressDetailsList) decoder.decodeNullableElement(new org.ccsds.moims.mo.common.directory.structures.AddressDetailsList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        serviceKey = (ServiceKey) decoder.decodeElement(new ServiceKey());
+        supportedCapabilitySets = (UShortList) decoder.decodeNullableElement(new UShortList());
+        serviceProperties = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
+        serviceAddresses = (AddressDetailsList) decoder.decodeNullableElement(new AddressDetailsList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

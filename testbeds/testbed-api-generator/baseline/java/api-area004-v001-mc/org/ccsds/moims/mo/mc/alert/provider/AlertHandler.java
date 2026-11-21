@@ -1,5 +1,17 @@
 package org.ccsds.moims.mo.mc.alert.provider;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.com.structures.InstanceBooleanPairList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mc.alert.structures.AlertCreationRequestList;
+import org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetailsList;
+import org.ccsds.moims.mo.mc.structures.ObjectInstancePairList;
+
 /**
  * Interface that providers of the Alert service must implement to handle
  * the operations of that service.
@@ -23,13 +35,13 @@ If a new AlertDefinition object is created then that new object shall be the cur
      * @param enableInstances enableInstances Argument number 1 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is either not a group of groups or a group of AlertIdentity objects.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested alerts or group objects is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One of the supplied groups is either not a group of groups or a group of AlertIdentity objects.
+     * @throws UnknownException One or more of the requested alerts or group objects is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList enableGeneration(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    LongList enableGeneration(Boolean isGroupIds,
+            InstanceBooleanPairList enableInstances,
+            MALInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Implements the operation listDefinition.
      * 
@@ -39,11 +51,11 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing AlertIdentity object then this operation shall fail with an UNKNOWN error.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mc.structures.ObjectInstancePairList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList alertNames,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    ObjectInstancePairList listDefinition(IdentifierList alertNames,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation addAlert.
      * 
@@ -55,12 +67,12 @@ If the supplied name matches an existing, but removed, AlertIdentity then that A
 The provider shall create a new AlertDefinition object and store it, and any new AlertIdentity objects, in the COM archive.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the AlertIdentity objects being added has supplied an alert name that is already in use in the domain.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied AlertIdentity objects contains an invalid name.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws DuplicateException One or more of the AlertIdentity objects being added has supplied an alert name that is already in use in the domain.
+     * @throws InvalidException One of the supplied AlertIdentity objects contains an invalid name.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addAlert(org.ccsds.moims.mo.mc.alert.structures.AlertCreationRequestList alertDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    ObjectInstancePairList addAlert(AlertCreationRequestList alertDefDetails,
+            MALInteraction interaction) throws DuplicateException, InvalidException, MALException;
     /**
      * Implements the operation updateDefinition.
      * 
@@ -75,14 +87,14 @@ The provider shall create a new AlertDefinition object and store it in the COM a
 The new AlertDefinition object shall be the current AlertDefinition used for the specific AlertIdentity.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied AlertDefinition objects contains an invalid value or the two supplied lists are not the same length.
+     * @throws InvalidException One of the supplied AlertDefinition objects contains an invalid value or the two supplied lists are not the same length.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied AlertIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied AlertIdentity object instance identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList alertObjInstIds,
-            org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetailsList alertDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    LongList updateDefinition(LongList alertObjInstIds,
+            AlertDefinitionDetailsList alertDefDetails,
+            MALInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Implements the operation removeAlert.
      * 
@@ -94,15 +106,15 @@ Matched AlertIdentity objects shall not be removed from the COM archive only the
 If an error is raised then no alerts shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not publish AlertEvent events for the deleted AlertIdentity objects anymore.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied AlertIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied AlertIdentity object instance identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    void removeAlert(org.ccsds.moims.mo.mal.structures.LongList alertInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void removeAlert(LongList alertInstIds,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.alert.provider.AlertSkeleton skeleton);
+    void setSkeleton(AlertSkeleton skeleton);
 }

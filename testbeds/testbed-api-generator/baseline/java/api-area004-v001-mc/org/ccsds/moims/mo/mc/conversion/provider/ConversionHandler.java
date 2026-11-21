@@ -11,5 +11,5 @@ public interface ConversionHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.conversion.provider.ConversionSkeleton skeleton);
+    void setSkeleton(ConversionSkeleton skeleton);
 }

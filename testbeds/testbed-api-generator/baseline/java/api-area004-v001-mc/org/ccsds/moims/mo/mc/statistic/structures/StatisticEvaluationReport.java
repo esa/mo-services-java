@@ -1,9 +1,16 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The StatisticEvaluationReport structure holds the set of statistical results.
  */
-public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StatisticEvaluationReport implements Composite {
 
     private static final long serialVersionUID = 1125921398456326L;
     /**
@@ -13,7 +20,7 @@ public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The statistic link object instance identifier.
@@ -23,7 +30,7 @@ public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.s
     /**
      * The statistical evaluation value.
      */
-    private org.ccsds.moims.mo.mc.statistic.structures.StatisticValue value;
+    private StatisticValue value;
 
     /**
      * Default constructor for StatisticEvaluationReport.
@@ -39,14 +46,14 @@ public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.s
      * @param value The statistical evaluation value.
      */
     public StatisticEvaluationReport(Long linkId,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticValue value) {
+            StatisticValue value) {
         this.linkId = linkId;
         this.value = value;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReport();
+    public Element createElement() {
+        return new StatisticEvaluationReport();
     }
 
     /**
@@ -63,7 +70,7 @@ public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mc.statistic.structures.StatisticValue getValue() {
+    public StatisticValue getValue() {
         return value;
     }
 
@@ -113,26 +120,26 @@ public final class StatisticEvaluationReport implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (linkId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'linkId' cannot be null!");
+            throw new MALException("The field 'linkId' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeLong(linkId);
         encoder.encodeElement(value);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         linkId = decoder.decodeLong();
-        value = (org.ccsds.moims.mo.mc.statistic.structures.StatisticValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.statistic.structures.StatisticValue());
+        value = (StatisticValue) decoder.decodeElement(new StatisticValue());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

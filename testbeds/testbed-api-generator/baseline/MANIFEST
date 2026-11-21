@@ -4,4 +4,5 @@ branch:    v14.2
 java files: 1198 (950 apis, 248 test-apis added 2026-09-26 from the 14.2 generator)
 provider:  handlers and interactions without MALInteractionException, 2026-09-26
 consumer:  stubs throw the declared errors and MALStandardError, errors resolved per operation, 2026-09-27
+imports:   qualified type names shortened and imported, 2026-10-06
 docx documents: 18

@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for RevisionStatusEnum.
  */
-public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class RevisionStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900331003L;
     /**
@@ -13,7 +17,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for NEW.
@@ -23,7 +27,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value NEW.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RevisionStatusEnum NEW = new org.ccsds.moims.mo.mps.structures.RevisionStatusEnum(org.ccsds.moims.mo.mps.structures.RevisionStatusEnum.NEW_VALUE);
+    public static final RevisionStatusEnum NEW = new RevisionStatusEnum(RevisionStatusEnum.NEW_VALUE);
 
     /**
      * Enumeration value for MODIFIED.
@@ -33,7 +37,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value MODIFIED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RevisionStatusEnum MODIFIED = new org.ccsds.moims.mo.mps.structures.RevisionStatusEnum(org.ccsds.moims.mo.mps.structures.RevisionStatusEnum.MODIFIED_VALUE);
+    public static final RevisionStatusEnum MODIFIED = new RevisionStatusEnum(RevisionStatusEnum.MODIFIED_VALUE);
 
     /**
      * Enumeration value for DELETED.
@@ -43,7 +47,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value DELETED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RevisionStatusEnum DELETED = new org.ccsds.moims.mo.mps.structures.RevisionStatusEnum(org.ccsds.moims.mo.mps.structures.RevisionStatusEnum.DELETED_VALUE);
+    public static final RevisionStatusEnum DELETED = new RevisionStatusEnum(RevisionStatusEnum.DELETED_VALUE);
 
     /**
      * Enumeration value for UNDEFINED.
@@ -53,12 +57,12 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value UNDEFINED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RevisionStatusEnum UNDEFINED = new org.ccsds.moims.mo.mps.structures.RevisionStatusEnum(org.ccsds.moims.mo.mps.structures.RevisionStatusEnum.UNDEFINED_VALUE);
+    public static final RevisionStatusEnum UNDEFINED = new RevisionStatusEnum(RevisionStatusEnum.UNDEFINED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.RevisionStatusEnum[] _ENUMERATIONS = {
+    private static final RevisionStatusEnum[] _ENUMERATIONS = {
         NEW, MODIFIED, DELETED, UNDEFINED};
 
     /**
@@ -101,7 +105,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.RevisionStatusEnum fromString(String s) {
+    public static RevisionStatusEnum fromString(String s) {
         switch (s) {
             case "NEW":
                 return RevisionStatusEnum.NEW;
@@ -117,7 +121,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case NEW_VALUE:
                 return RevisionStatusEnum.NEW;
@@ -133,7 +137,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -143,7 +147,7 @@ public final class RevisionStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

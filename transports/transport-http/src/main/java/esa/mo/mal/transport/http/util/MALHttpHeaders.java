@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.transport.http.util;
 
+import esa.mo.mal.transport.gen.BodyEncoding;
+
 /**
  * Helpers for reading the MAL header fields carried over HTTP headers.
  */
@@ -51,5 +53,41 @@ public abstract class MALHttpHeaders {
         }
 
         return headerValue;
+    }
+
+    /**
+     * Returns the body encoding identifier named by the Content-Type and
+     * X-MAL-Encoding headers (CCSDS 524.3-B-1, 3.6.3 and 3.6.5). A message
+     * without a MAL content type is taken to be in the receiver's own
+     * encoding, and an X-MAL-Encoding holding a factory class name, as sent
+     * before version 15.1, is still understood.
+     *
+     * @param contentType The Content-Type header, may be null.
+     * @param malEncoding The X-MAL-Encoding header, may be null.
+     * @param ownFactoryClassName The class of the receiver's stream factory.
+     * @return the identifier, or -1 if the headers name no known encoding.
+     */
+    public static int bodyEncodingIdOf(final String contentType, final String malEncoding,
+            final String ownFactoryClassName) {
+        BodyEncoding own = BodyEncoding.ofFactoryClass(ownFactoryClassName);
+        int ownId = own == null ? -1 : own.getId();
+        String type = contentType == null ? "" : contentType.split(";")[0].trim();
+
+        if ("application/mal-xml".equalsIgnoreCase(type)) {
+            return BodyEncoding.XML.getId();
+        }
+        if (!"application/mal".equalsIgnoreCase(type) || malEncoding == null) {
+            return ownId;
+        }
+        String value = malEncoding.trim();
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            if (value.equals(ownFactoryClassName)) {
+                return ownId;
+            }
+            BodyEncoding named = BodyEncoding.ofFactoryClass(value);
+            return named == null ? -1 : named.getId();
+        }
     }
 }

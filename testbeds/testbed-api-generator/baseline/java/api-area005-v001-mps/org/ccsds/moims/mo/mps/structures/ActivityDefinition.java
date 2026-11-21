@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * E1: An ActivityDefinition is an MO object that contains static configuration
  * data relating to multiple occurrences of a planning activity.  Its identity
@@ -7,7 +17,7 @@ package org.ccsds.moims.mo.mps.structures;
  * version that is updated each time the definition is revised.  ActivityDefinitions
  * form part of the planning configuration data.
  */
-public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class ActivityDefinition extends MOObject {
 
     private static final long serialVersionUID = 1407374900330597L;
     /**
@@ -17,7 +27,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Description of the Activity.
@@ -27,35 +37,35 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
     /**
      * List of Argument Definitions.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgDefList argDefs;
+    private ArgDefList argDefs;
 
     /**
      * A single constraint or a constraint node that may contain multiple constraints,
      * applicable to all instances of the Activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Constraint constraints;
+    private Constraint constraints;
 
     /**
      * Set of Effects applicable to all instances of the Activity.
      */
-    private org.ccsds.moims.mo.mps.structures.EffectList effects;
+    private EffectList effects;
 
     /**
      * Reference to the definition of an executable body for the Activity (procedure,
      * action sequence, etc.).  The manner in which this reference is interpreted
      * is implementation specific.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier executionDefinition;
+    private Identifier executionDefinition;
 
     /**
      * Supports calculation of an estimated duration of an Activity Instance.
      */
-    private org.ccsds.moims.mo.mal.structures.Element durationSpec;
+    private Element durationSpec;
 
     /**
      * Set of activity details specifying child activities.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityDetailsList children;
+    private ActivityDetailsList children;
 
     /**
      * Free-text field that can be used to categorize an activity into one of
@@ -70,7 +80,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * grouping activities by operational responsibility (controller/group/system)
      * or other criteria.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList defaultTags;
+    private StringList defaultTags;
 
     /**
      * Default constructor for ActivityDefinition.
@@ -93,16 +103,16 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * @param activityType Free-text field that can be used to categorize an activity into one of several arbitrary categories.  Enables a planning system to customize behavior for activities, such as their presentation in displays, based on the specified value.
      * @param defaultTags Default set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.
      */
-    public ActivityDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ActivityDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgDefList argDefs,
-            org.ccsds.moims.mo.mps.structures.Constraint constraints,
-            org.ccsds.moims.mo.mps.structures.EffectList effects,
-            org.ccsds.moims.mo.mal.structures.Identifier executionDefinition,
-            org.ccsds.moims.mo.mal.structures.Element durationSpec,
-            org.ccsds.moims.mo.mps.structures.ActivityDetailsList children,
+            ArgDefList argDefs,
+            Constraint constraints,
+            EffectList effects,
+            Identifier executionDefinition,
+            Element durationSpec,
+            ActivityDetailsList children,
             String activityType,
-            org.ccsds.moims.mo.mal.structures.StringList defaultTags) {
+            StringList defaultTags) {
         super(objectIdentity);
         this.description = description;
         this.argDefs = argDefs;
@@ -121,7 +131,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * @param objectIdentity The identity of the MO Object.
      * @param description Description of the Activity.
      */
-    public ActivityDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ActivityDefinition(ObjectIdentity objectIdentity,
             String description) {
         super(objectIdentity);
         this.description = description;
@@ -136,8 +146,8 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ActivityDefinition();
+    public Element createElement() {
+        return new ActivityDefinition();
     }
 
     /**
@@ -154,7 +164,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field argDefs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgDefList getArgDefs() {
+    public ArgDefList getArgDefs() {
         return argDefs;
     }
 
@@ -163,7 +173,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field constraints
      */
-    public org.ccsds.moims.mo.mps.structures.Constraint getConstraints() {
+    public Constraint getConstraints() {
         return constraints;
     }
 
@@ -172,7 +182,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field effects
      */
-    public org.ccsds.moims.mo.mps.structures.EffectList getEffects() {
+    public EffectList getEffects() {
         return effects;
     }
 
@@ -181,7 +191,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field executionDefinition
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getExecutionDefinition() {
+    public Identifier getExecutionDefinition() {
         return executionDefinition;
     }
 
@@ -190,7 +200,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field durationSpec
      */
-    public org.ccsds.moims.mo.mal.structures.Element getDurationSpec() {
+    public Element getDurationSpec() {
         return durationSpec;
     }
 
@@ -199,7 +209,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field children
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityDetailsList getChildren() {
+    public ActivityDetailsList getChildren() {
         return children;
     }
 
@@ -217,7 +227,7 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field defaultTags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getDefaultTags() {
+    public StringList getDefaultTags() {
         return defaultTags;
     }
 
@@ -348,10 +358,10 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeNullableElement(argDefs);
@@ -365,22 +375,22 @@ public final class ActivityDefinition extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        argDefs = (org.ccsds.moims.mo.mps.structures.ArgDefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgDefList());
-        constraints = (org.ccsds.moims.mo.mps.structures.Constraint) decoder.decodeNullableAbstractElement();
-        effects = (org.ccsds.moims.mo.mps.structures.EffectList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EffectList());
+        argDefs = (ArgDefList) decoder.decodeNullableElement(new ArgDefList());
+        constraints = (Constraint) decoder.decodeNullableAbstractElement();
+        effects = (EffectList) decoder.decodeNullableElement(new EffectList());
         executionDefinition = decoder.decodeNullableIdentifier();
-        durationSpec = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        children = (org.ccsds.moims.mo.mps.structures.ActivityDetailsList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ActivityDetailsList());
+        durationSpec = (Element) decoder.decodeNullableAbstractElement();
+        children = (ActivityDetailsList) decoder.decodeNullableElement(new ActivityDetailsList());
         activityType = decoder.decodeNullableString();
-        defaultTags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
+        defaultTags = (StringList) decoder.decodeNullableElement(new StringList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

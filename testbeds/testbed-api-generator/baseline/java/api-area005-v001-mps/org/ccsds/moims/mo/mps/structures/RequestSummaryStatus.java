@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: RequestSummaryStatus is a data structure used in the context of the
  * MPS Planning Request service getRequestSummaries operation, where a list
@@ -7,7 +18,7 @@ package org.ccsds.moims.mo.mps.structures;
  * request and its status, but not the request content (arguments, activities
  * and constraints).
  */
-public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class RequestSummaryStatus implements Composite {
 
     private static final long serialVersionUID = 1407374900330903L;
     /**
@@ -17,56 +28,56 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the RequestInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> requestInstance;
+    private ObjectRef<RequestInstance> requestInstance;
 
     /**
      * Optional user supplied reference for the planning request.  This is distinct
      * from the identity of the RequestInstance that is assigned by the planning
      * function.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier userReference;
+    private Identifier userReference;
 
     /**
      * Creation date and time of the RequestInstance version.
      */
-    private org.ccsds.moims.mo.mal.structures.Time creationTime;
+    private Time creationTime;
 
     /**
      * Reference to the RequestDefinition from which the RequestInstance was created,
      * if a planning request template was used.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definition;
+    private ObjectRef<RequestDefinition> definition;
 
     /**
      * Specifies which planning period the planning request applies to.  Planning
      * period IDs are mission specific, but can be used to indicate mission phase;
      * planning cycle; or ‘semester’ in observatory missions.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier planningPeriod;
+    private Identifier planningPeriod;
 
     /**
      * Validity period for the planning request, expressed as one or more time
      * windows.  The planning request must be satisfied within this period. Only
      * one of validityTime or validityEvent should be present in a planning request.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindowList validityTimes;
+    private TimeWindowList validityTimes;
 
     /**
      * Validity period for the planning request, expressed as one or more event
      * windows.  The planning request must be satisfied within this period. Only
      * one of validityTime or validityEvent should be present in a planning request.
      */
-    private org.ccsds.moims.mo.mps.structures.EventWindowList validityEvents;
+    private EventWindowList validityEvents;
 
     /**
      * The User ID for the person or organization raising the planning request.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user;
+    private ObjectRef<PlanningUser> user;
 
     /**
      * Description of the request.
@@ -89,13 +100,13 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * Current status of the RequestInstance (see planning request state model
      * in 4.5.5.2).
      */
-    private org.ccsds.moims.mo.mps.structures.RequestStatusEnum status;
+    private RequestStatusEnum status;
 
     /**
      * References to output Plan(s) that contains the activities resulting from
      * the planning request.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs;
+    private ObjectRefList outputPlanRefs;
 
     /**
      * StatusInfo provides the reason for termination and is customizable, but
@@ -132,19 +143,19 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * @param outputPlanRefs References to output Plan(s) that contains the activities resulting from the planning request.
      * @param statusInfo StatusInfo provides the reason for termination and is customizable, but includes: - Completed (all constituent activities completed successfully); - Expired (constituent activities expired prior to execution); - Failed (constituent activities failed during execution); - Deleted (constituent activities were deleted); - PartiallyCompleted. It may also be used to provide the reason for rejection.
      */
-    public RequestSummaryStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> requestInstance,
-            org.ccsds.moims.mo.mal.structures.Identifier userReference,
-            org.ccsds.moims.mo.mal.structures.Time creationTime,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definition,
-            org.ccsds.moims.mo.mal.structures.Identifier planningPeriod,
-            org.ccsds.moims.mo.mps.structures.TimeWindowList validityTimes,
-            org.ccsds.moims.mo.mps.structures.EventWindowList validityEvents,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user,
+    public RequestSummaryStatus(ObjectRef<RequestInstance> requestInstance,
+            Identifier userReference,
+            Time creationTime,
+            ObjectRef<RequestDefinition> definition,
+            Identifier planningPeriod,
+            TimeWindowList validityTimes,
+            EventWindowList validityEvents,
+            ObjectRef<PlanningUser> user,
             String description,
             Boolean standingOrder,
             String comments,
-            org.ccsds.moims.mo.mps.structures.RequestStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs,
+            RequestStatusEnum status,
+            ObjectRefList outputPlanRefs,
             String statusInfo) {
         this.requestInstance = requestInstance;
         this.userReference = userReference;
@@ -173,13 +184,13 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * @param standingOrder A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.
      * @param status Current status of the RequestInstance (see planning request state model in 4.5.5.2).
      */
-    public RequestSummaryStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> requestInstance,
-            org.ccsds.moims.mo.mal.structures.Time creationTime,
-            org.ccsds.moims.mo.mal.structures.Identifier planningPeriod,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user,
+    public RequestSummaryStatus(ObjectRef<RequestInstance> requestInstance,
+            Time creationTime,
+            Identifier planningPeriod,
+            ObjectRef<PlanningUser> user,
             String description,
             Boolean standingOrder,
-            org.ccsds.moims.mo.mps.structures.RequestStatusEnum status) {
+            RequestStatusEnum status) {
         this.requestInstance = requestInstance;
         this.userReference = null;
         this.creationTime = creationTime;
@@ -197,8 +208,8 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RequestSummaryStatus();
+    public Element createElement() {
+        return new RequestSummaryStatus();
     }
 
     /**
@@ -206,7 +217,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field requestInstance
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> getRequestInstance() {
+    public ObjectRef<RequestInstance> getRequestInstance() {
         return requestInstance;
     }
 
@@ -215,7 +226,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field userReference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserReference() {
+    public Identifier getUserReference() {
         return userReference;
     }
 
@@ -224,7 +235,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field creationTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getCreationTime() {
+    public Time getCreationTime() {
         return creationTime;
     }
 
@@ -233,7 +244,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field definition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> getDefinition() {
+    public ObjectRef<RequestDefinition> getDefinition() {
         return definition;
     }
 
@@ -242,7 +253,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field planningPeriod
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getPlanningPeriod() {
+    public Identifier getPlanningPeriod() {
         return planningPeriod;
     }
 
@@ -251,7 +262,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field validityTimes
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindowList getValidityTimes() {
+    public TimeWindowList getValidityTimes() {
         return validityTimes;
     }
 
@@ -260,7 +271,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field validityEvents
      */
-    public org.ccsds.moims.mo.mps.structures.EventWindowList getValidityEvents() {
+    public EventWindowList getValidityEvents() {
         return validityEvents;
     }
 
@@ -269,7 +280,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field user
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> getUser() {
+    public ObjectRef<PlanningUser> getUser() {
         return user;
     }
 
@@ -305,7 +316,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.RequestStatusEnum getStatus() {
+    public RequestStatusEnum getStatus() {
         return status;
     }
 
@@ -314,7 +325,7 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field outputPlanRefs
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutputPlanRefs() {
+    public ObjectRefList getOutputPlanRefs() {
         return outputPlanRefs;
     }
 
@@ -505,27 +516,27 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (requestInstance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'requestInstance' cannot be null!");
+            throw new MALException("The field 'requestInstance' cannot be null!");
         }
         if (creationTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'creationTime' cannot be null!");
+            throw new MALException("The field 'creationTime' cannot be null!");
         }
         if (planningPeriod == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'planningPeriod' cannot be null!");
+            throw new MALException("The field 'planningPeriod' cannot be null!");
         }
         if (user == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'user' cannot be null!");
+            throw new MALException("The field 'user' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (standingOrder == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'standingOrder' cannot be null!");
+            throw new MALException("The field 'standingOrder' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(requestInstance);
         encoder.encodeNullableIdentifier(userReference);
@@ -544,26 +555,26 @@ public final class RequestSummaryStatus implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        requestInstance = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        requestInstance = (ObjectRef<RequestInstance>) decoder.decodeElement(new ObjectRef<RequestInstance>());
         userReference = decoder.decodeNullableIdentifier();
         creationTime = decoder.decodeTime();
-        definition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>());
+        definition = (ObjectRef<RequestDefinition>) decoder.decodeNullableElement(new ObjectRef<RequestDefinition>());
         planningPeriod = decoder.decodeIdentifier();
-        validityTimes = (org.ccsds.moims.mo.mps.structures.TimeWindowList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindowList());
-        validityEvents = (org.ccsds.moims.mo.mps.structures.EventWindowList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EventWindowList());
-        user = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>());
+        validityTimes = (TimeWindowList) decoder.decodeNullableElement(new TimeWindowList());
+        validityEvents = (EventWindowList) decoder.decodeNullableElement(new EventWindowList());
+        user = (ObjectRef<PlanningUser>) decoder.decodeElement(new ObjectRef<PlanningUser>());
         description = decoder.decodeString();
         standingOrder = decoder.decodeBoolean();
         comments = decoder.decodeNullableString();
-        status = (org.ccsds.moims.mo.mps.structures.RequestStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.REQUESTED);
-        outputPlanRefs = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        status = (RequestStatusEnum) decoder.decodeElement(RequestStatusEnum.REQUESTED);
+        outputPlanRefs = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         statusInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

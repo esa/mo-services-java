@@ -1,9 +1,24 @@
 package org.ccsds.moims.mo.comprototype2.test2;
 
+import org.ccsds.moims.mo.com.COMObject;
+import org.ccsds.moims.mo.com.COMService;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.comprototype2.COMPrototype2Helper;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for Test2 service.
  */
-public class Test2ServiceInfo extends org.ccsds.moims.mo.com.COMService {
+public class Test2ServiceInfo extends COMService {
 
     /**
      * Service number literal.
@@ -13,28 +28,28 @@ public class Test2ServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort TEST2_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TEST2_SERVICE_NUMBER);
+    public static final UShort TEST2_SERVICE_NUMBER = new UShort(_TEST2_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TEST2_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Test2");
+    public static final Identifier TEST2_SERVICE_NAME = new Identifier("Test2");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             202, 1, TEST2_SERVICE_NUMBER);
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] TEST2_SERVICE_ELEMENTS = {};
+    public static final Element[] TEST2_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{};
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{};
 
     /**
      * Literal for object TESTOBJECTA.
@@ -46,30 +61,30 @@ public class Test2ServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTA.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTA_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTA_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTA_OBJECT_NUMBER = new UShort(_TESTOBJECTA_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTA_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectA");
+    public static final Identifier TESTOBJECTA_OBJECT_NAME = new Identifier("TestObjectA");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTA_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(202), TEST2_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTA_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTA_OBJECT_TYPE = new ObjectType(new UShort(202), TEST2_SERVICE_NUMBER, new UOctet(1), TESTOBJECTA_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTA_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTA_OBJECT_TYPE, TESTOBJECTA_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.BOOLEAN_SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECTA_OBJECT = new COMObject(TESTOBJECTA_OBJECT_TYPE, TESTOBJECTA_OBJECT_NAME, Attribute.BOOLEAN_SHORT_FORM, false, null, false, null, false);
 
     /**
      * Object instance.
      */
-    public static final org.ccsds.moims.mo.com.COMObject[] COM_OBJECTS = {
+    public static final COMObject[] COM_OBJECTS = {
         TESTOBJECTA_OBJECT,};
 
     /**
@@ -81,16 +96,16 @@ public class Test2ServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.comprototype2.COMPrototype2Helper.COMPROTOTYPE2_AREA;
+    public MALArea getArea() {
+        return COMPrototype2Helper.COMPROTOTYPE2_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype2.COMPrototype2Helper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = COMPrototype2Helper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

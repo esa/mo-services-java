@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * A ValueSet is a concrete subtype of AttributeFilter that allows the specification
  * of a set of allowed (or disallowed) values for a metadata attribute.
  */
-public final class ValueSet extends org.ccsds.moims.mo.mpd.structures.AttributeFilter {
+public final class ValueSet extends AttributeFilter {
 
     private static final long serialVersionUID = 2533274807173130L;
     /**
@@ -14,12 +22,12 @@ public final class ValueSet extends org.ccsds.moims.mo.mpd.structures.AttributeF
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The set of allowed (or disallowed) values for the metadata attribute.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeList values;
+    private AttributeList values;
 
     /**
      * Default constructor for ValueSet.
@@ -35,17 +43,17 @@ public final class ValueSet extends org.ccsds.moims.mo.mpd.structures.AttributeF
      * @param include Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.
      * @param values The set of allowed (or disallowed) values for the metadata attribute.
      */
-    public ValueSet(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public ValueSet(Identifier name,
             Boolean include,
-            org.ccsds.moims.mo.mal.structures.AttributeList values) {
+            AttributeList values) {
         super(name,
             include);
         this.values = values;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.ValueSet();
+    public Element createElement() {
+        return new ValueSet();
     }
 
     /**
@@ -53,7 +61,7 @@ public final class ValueSet extends org.ccsds.moims.mo.mpd.structures.AttributeF
      * 
      * @return The field values
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeList getValues() {
+    public AttributeList getValues() {
         return values;
     }
 
@@ -96,23 +104,23 @@ public final class ValueSet extends org.ccsds.moims.mo.mpd.structures.AttributeF
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (values == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'values' cannot be null!");
+            throw new MALException("The field 'values' cannot be null!");
         }
         encoder.encodeElement(values);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        values = (org.ccsds.moims.mo.mal.structures.AttributeList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.AttributeList());
+        values = (AttributeList) decoder.decodeElement(new AttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

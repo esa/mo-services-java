@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mpd.productorderdelivery.consumer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+
 /**
  * Typed accessors for the Subscription Keys of the notifyProductDelivery
  * PubSub operation.
@@ -9,17 +18,17 @@ public final class NotifyProductDeliverySubscriptionKeys {
     /**
      * The key values as received in the UpdateHeader.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * The effective key names for the received key values.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList keyNames;
+    private IdentifierList keyNames;
 
     /**
      * The Subscription Key names defined by the operation, in order.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList CANONICAL_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(new org.ccsds.moims.mo.mal.structures.Identifier("user"), new org.ccsds.moims.mo.mal.structures.Identifier("orderID"))));
+    private static final IdentifierList CANONICAL_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(new Identifier("user"), new Identifier("orderID"))));
 
     /**
      * Creates an instance from the received UpdateHeader and the subscription
@@ -28,8 +37,8 @@ public final class NotifyProductDeliverySubscriptionKeys {
      * @param updateHeader The UpdateHeader received in the NOTIFY message
      * @param selectedKeys The selectedKeys of the subscription, or null if trimming was not enabled
      */
-    public NotifyProductDeliverySubscriptionKeys(org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys) {
+    public NotifyProductDeliverySubscriptionKeys(UpdateHeader updateHeader,
+            IdentifierList selectedKeys) {
         this.keyValues = (updateHeader == null) ? null : updateHeader.getKeyValues();
         this.keyNames = (selectedKeys != null) ? selectedKeys : CANONICAL_KEY_NAMES;
     }
@@ -39,8 +48,8 @@ public final class NotifyProductDeliverySubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUser() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("user");
+    public Identifier getUser() {
+        return (Identifier) valueByName("user");
     }
 
     /**
@@ -49,8 +58,8 @@ public final class NotifyProductDeliverySubscriptionKeys {
      * @return The key value, or null if not present
      */
     public Long getOrderID() {
-        org.ccsds.moims.mo.mal.structures.Attribute v = valueByName("orderID");
-        return (v == null) ? null : (Long) org.ccsds.moims.mo.mal.structures.Attribute.attribute2JavaType(v);
+        Attribute v = valueByName("orderID");
+        return (v == null) ? null : (Long) Attribute.attribute2JavaType(v);
     }
 
     /**
@@ -61,7 +70,7 @@ public final class NotifyProductDeliverySubscriptionKeys {
      * @param name The Subscription Key name
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getByName(String name) {
+    public Attribute getByName(String name) {
         return valueByName(name);
     }
 
@@ -69,7 +78,7 @@ public final class NotifyProductDeliverySubscriptionKeys {
      * 
      * @param name The Subscription Key name
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute valueByName(String name) {
+    private Attribute valueByName(String name) {
         if (keyNames == null || keyValues == null) {
             return null;
         }
@@ -78,7 +87,7 @@ public final class NotifyProductDeliverySubscriptionKeys {
                 if (i >= keyValues.size()) {
                     return null;
                 }
-                org.ccsds.moims.mo.mal.structures.NullableAttribute na = keyValues.get(i);
+                NullableAttribute na = keyValues.get(i);
                 return (na == null) ? null : na.getValue();
             }
         }

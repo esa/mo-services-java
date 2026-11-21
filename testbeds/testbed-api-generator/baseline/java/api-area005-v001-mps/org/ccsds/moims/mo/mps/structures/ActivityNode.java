@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: A concrete sub-type of ActivityDetails, an ActivityNode is a container
  * node for a set of ActivityDetails together with an optional Repetition
  * specification.
  */
-public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.ActivityDetails {
+public final class ActivityNode extends ActivityDetails {
 
     private static final long serialVersionUID = 1407374900330600L;
     /**
@@ -15,17 +21,17 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Optional Repetition specification.
      */
-    private org.ccsds.moims.mo.mps.structures.Repetition repetition;
+    private Repetition repetition;
 
     /**
      * Set of ActivityDetails.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities;
+    private ActivityDetailsList activities;
 
     /**
      * Default constructor for ActivityNode.
@@ -44,12 +50,12 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
      * @param repetition Optional Repetition specification.
      * @param activities Set of ActivityDetails.
      */
-    public ActivityNode(org.ccsds.moims.mo.mps.structures.Slider activityRef,
-            org.ccsds.moims.mo.mal.structures.Element activityOffset,
-            org.ccsds.moims.mo.mal.structures.Element relatedEvent,
+    public ActivityNode(Slider activityRef,
+            Element activityOffset,
+            Element relatedEvent,
             String comments,
-            org.ccsds.moims.mo.mps.structures.Repetition repetition,
-            org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities) {
+            Repetition repetition,
+            ActivityDetailsList activities) {
         super(activityRef,
             activityOffset,
             relatedEvent,
@@ -59,8 +65,8 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ActivityNode();
+    public Element createElement() {
+        return new ActivityNode();
     }
 
     /**
@@ -68,7 +74,7 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
      * 
      * @return The field repetition
      */
-    public org.ccsds.moims.mo.mps.structures.Repetition getRepetition() {
+    public Repetition getRepetition() {
         return repetition;
     }
 
@@ -77,7 +83,7 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
      * 
      * @return The field activities
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityDetailsList getActivities() {
+    public ActivityDetailsList getActivities() {
         return activities;
     }
 
@@ -131,22 +137,22 @@ public final class ActivityNode extends org.ccsds.moims.mo.mps.structures.Activi
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableAbstractElement(repetition);
         encoder.encodeNullableElement(activities);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        repetition = (org.ccsds.moims.mo.mps.structures.Repetition) decoder.decodeNullableAbstractElement();
-        activities = (org.ccsds.moims.mo.mps.structures.ActivityDetailsList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ActivityDetailsList());
+        repetition = (Repetition) decoder.decodeNullableAbstractElement();
+        activities = (ActivityDetailsList) decoder.decodeNullableElement(new ActivityDetailsList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

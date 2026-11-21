@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Used to indicate a relative position with respect to an MPS object,
  * such as a planning activity where 0 represents the start and 1 the end
  * of the activity.  The slider is a real number that can represent any point
  * between these two extremes.
  */
-public final class Slider implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class Slider implements Composite {
 
     private static final long serialVersionUID = 1407374900330499L;
     /**
@@ -16,7 +23,7 @@ public final class Slider implements org.ccsds.moims.mo.mal.structures.Composite
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Relative point between the start and end of an MPS object, where 0 represents
@@ -41,8 +48,8 @@ public final class Slider implements org.ccsds.moims.mo.mal.structures.Composite
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.Slider();
+    public Element createElement() {
+        return new Slider();
     }
 
     /**
@@ -89,21 +96,21 @@ public final class Slider implements org.ccsds.moims.mo.mal.structures.Composite
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (position == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'position' cannot be null!");
+            throw new MALException("The field 'position' cannot be null!");
         }
         encoder.encodeFloat(position);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         position = decoder.decodeFloat();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

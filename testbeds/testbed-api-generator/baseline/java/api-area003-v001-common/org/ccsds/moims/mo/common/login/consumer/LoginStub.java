@@ -1,5 +1,27 @@
 package org.ccsds.moims.mo.common.login.consumer;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.common.login.LoginServiceInfo;
+import org.ccsds.moims.mo.common.login.body.HandoverResponse;
+import org.ccsds.moims.mo.common.login.body.LoginResponse;
+import org.ccsds.moims.mo.common.login.structures.Profile;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.TooManyException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+
 /**
  * Consumer stub for Login service.
  */
@@ -8,7 +30,7 @@ public class LoginStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +38,7 @@ public class LoginStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public LoginStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public LoginStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +48,7 @@ public class LoginStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -50,35 +72,35 @@ The related link of the new LoginInstance COM object shall be set to the request
 A LoginEvent COM event shall be generated at this point.
      * @param password password Argument number 1 as defined by the service operation
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.DuplicateException Username/role combination currently in use.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values. No further information is provided as it may compromise security.
-     * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/role/password combination.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws DuplicateException Username/role combination currently in use.
+     * @throws InvalidException Submitted profile contains invalid values. No further information is provided as it may compromise security.
+     * @throws TooManyException Role concurrent session limit count exceeded.
+     * @throws UnknownException Unknown username/role/password combination.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.common.login.body.LoginResponse login(org.ccsds.moims.mo.common.login.structures.Profile userDetails,
-            String password) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public LoginResponse login(Profile userDetails,
+            String password) throws DuplicateException, InvalidException, TooManyException, UnknownException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGIN_OP, userDetails, (password == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(password));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Blob());
-            Object body1 = (Object) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE));
-            return new org.ccsds.moims.mo.common.login.body.LoginResponse((org.ccsds.moims.mo.mal.structures.Blob) body0, (body1 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body1).getLongValue());
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
-                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            MALMessageBody body = consumer.request(LoginServiceInfo.LOGIN_OP, userDetails, (password == null) ? null : new Union(password));
+            Object body0 = (Object) body.getBodyElement(0, new Blob());
+            Object body1 = (Object) body.getBodyElement(1, new Union(Long.MAX_VALUE));
+            return new LoginResponse((Blob) body0, (body1 == null) ? null : ((Union) body1).getLongValue());
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof DuplicateException) {
+                throw (DuplicateException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.TooManyException) {
-                throw (org.ccsds.moims.mo.mal.TooManyException) error;
+            if (error instanceof TooManyException) {
+                throw (TooManyException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -100,16 +122,16 @@ A LoginEvent COM event shall be generated at this point.
      * @param password password Argument number 1 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncLogin(org.ccsds.moims.mo.common.login.structures.Profile userDetails,
+    public MALMessage asyncLogin(Profile userDetails,
             String password,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGIN_OP, adapter, userDetails, (password == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(password));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(LoginServiceInfo.LOGIN_OP, adapter, userDetails, (password == null) ? null : new Union(password));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -120,17 +142,17 @@ A LoginEvent COM event shall be generated at this point.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueLogin(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueLogin(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGIN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(LoginServiceInfo.LOGIN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -139,14 +161,14 @@ A LoginEvent COM event shall be generated at this point.
      * is passed in the message as the MAL authentication Id is enough to identify
      * the login.
      * 
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void logout() throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void logout() throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGOUT_OP, (Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(LoginServiceInfo.LOGOUT_OP, (Object[]) null);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -155,14 +177,14 @@ A LoginEvent COM event shall be generated at this point.
      * 
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncLogout(org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncLogout(LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGOUT_OP, adapter, (Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(LoginServiceInfo.LOGOUT_OP, adapter, (Object[]) null);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -173,17 +195,17 @@ A LoginEvent COM event shall be generated at this point.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueLogout(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueLogout(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.login.LoginServiceInfo.LOGOUT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(LoginServiceInfo.LOGOUT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -200,26 +222,26 @@ A LoginEvent COM event shall be generated at this point.
 If the username field is either the wildcard '*', NULL or empty an INVALID error shall be returned.
      * @param password An UNKNOWN error shall be returned if the username and password combination are not correct for the system i.e. unknown user or incorrect password.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/password combination.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Unknown username/password combination.
+     * @throws InvalidException Submitted profile contains invalid values.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.structures.LongList listRoles(org.ccsds.moims.mo.mal.structures.Identifier username,
-            String password) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public LongList listRoles(Identifier username,
+            String password) throws UnknownException, InvalidException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.login.LoginServiceInfo.LISTROLES_OP, username, (password == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(password));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(LoginServiceInfo.LISTROLES_OP, username, (password == null) ? null : new Union(password));
+            Object body0 = (Object) body.getBodyElement(0, new LongList());
+            return (LongList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -231,16 +253,16 @@ If the username field is either the wildcard '*', NULL or empty an INVALID error
      * @param password An UNKNOWN error shall be returned if the username and password combination are not correct for the system i.e. unknown user or incorrect password.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncListRoles(org.ccsds.moims.mo.mal.structures.Identifier username,
+    public MALMessage asyncListRoles(Identifier username,
             String password,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.login.LoginServiceInfo.LISTROLES_OP, adapter, username, (password == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(password));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(LoginServiceInfo.LISTROLES_OP, adapter, username, (password == null) ? null : new Union(password));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -251,17 +273,17 @@ If the username field is either the wildcard '*', NULL or empty an INVALID error
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueListRoles(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueListRoles(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.login.LoginServiceInfo.LISTROLES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(LoginServiceInfo.LISTROLES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -286,35 +308,35 @@ The source link of the new LoginInstance COM object shall be set to the LoginIns
 If the handover operation is successful a LogoutEvent COM event shall be generated for the previous login and a LoginEvent COM event shall be generated for the new login.
      * @param newUserPassword newUserPassword Argument number 1 as defined by the service operation
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/role/password combination.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
-     * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
-     * @throws org.ccsds.moims.mo.com.DuplicateException Username/role combination currently in use.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Unknown username/role/password combination.
+     * @throws InvalidException Submitted profile contains invalid values.
+     * @throws TooManyException Role concurrent session limit count exceeded.
+     * @throws DuplicateException Username/role combination currently in use.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.common.login.body.HandoverResponse handover(org.ccsds.moims.mo.common.login.structures.Profile newUserDetails,
-            String newUserPassword) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public HandoverResponse handover(Profile newUserDetails,
+            String newUserPassword) throws UnknownException, InvalidException, TooManyException, DuplicateException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.login.LoginServiceInfo.HANDOVER_OP, newUserDetails, (newUserPassword == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(newUserPassword));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Blob());
-            Object body1 = (Object) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE));
-            return new org.ccsds.moims.mo.common.login.body.HandoverResponse((org.ccsds.moims.mo.mal.structures.Blob) body0, (body1 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body1).getLongValue());
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            MALMessageBody body = consumer.request(LoginServiceInfo.HANDOVER_OP, newUserDetails, (newUserPassword == null) ? null : new Union(newUserPassword));
+            Object body0 = (Object) body.getBodyElement(0, new Blob());
+            Object body1 = (Object) body.getBodyElement(1, new Union(Long.MAX_VALUE));
+            return new HandoverResponse((Blob) body0, (body1 == null) ? null : ((Union) body1).getLongValue());
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.TooManyException) {
-                throw (org.ccsds.moims.mo.mal.TooManyException) error;
+            if (error instanceof TooManyException) {
+                throw (TooManyException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
-                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            if (error instanceof DuplicateException) {
+                throw (DuplicateException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -337,16 +359,16 @@ If the handover operation is successful a LogoutEvent COM event shall be generat
      * @param newUserPassword newUserPassword Argument number 1 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncHandover(org.ccsds.moims.mo.common.login.structures.Profile newUserDetails,
+    public MALMessage asyncHandover(Profile newUserDetails,
             String newUserPassword,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.login.LoginServiceInfo.HANDOVER_OP, adapter, newUserDetails, (newUserPassword == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(newUserPassword));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(LoginServiceInfo.HANDOVER_OP, adapter, newUserDetails, (newUserPassword == null) ? null : new Union(newUserPassword));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -357,17 +379,17 @@ If the handover operation is successful a LogoutEvent COM event shall be generat
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueHandover(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueHandover(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.login.consumer.LoginAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            LoginAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.login.LoginServiceInfo.HANDOVER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(LoginServiceInfo.HANDOVER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

@@ -92,14 +92,14 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
         Identifier uriFrom = new Identifier(client.getResponseReferer());
         // should be "001" according to 3.4.2 in recommended standard:
         String versionNumber = client.getResponseHeader("X-MAL-Version-Number");
-        // should be "text/xml; charset=utf-8" according to 3.4.3 in recommended standard:
-        String contentType = client.getResponseHeader("Content-Type");
+        int bodyEncodingId = transport.bodyEncodingIdOf(client.getResponseHeader("Content-Type"),
+                client.getResponseHeader("X-MAL-Encoding"));
 
         MALMessageHeader malMessageHeader = createMALHeaderFromHttp(client, uriTo, uriFrom);
 
         byte[] responseData = client.readFullResponseBody();
 
-        HTTPMessageReceiver receiver = new HTTPMessageReceiver(transport, malMessageHeader, statusCode);
+        HTTPMessageReceiver receiver = new HTTPMessageReceiver(transport, malMessageHeader, statusCode, bodyEncodingId);
         receiver.receive(responseData);
     }
 

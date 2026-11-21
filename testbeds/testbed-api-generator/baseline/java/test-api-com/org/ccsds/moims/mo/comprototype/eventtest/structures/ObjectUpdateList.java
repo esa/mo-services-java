@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.comprototype.eventtest.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for ObjectUpdate.
  */
-public final class ObjectUpdateList extends java.util.ArrayList<org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate> {
+public final class ObjectUpdateList extends ArrayList<ObjectUpdate> implements HomogeneousList<ObjectUpdate> {
 
     private static final long serialVersionUID = 56295003965620221L;
     /**
@@ -13,7 +21,7 @@ public final class ObjectUpdateList extends java.util.ArrayList<org.ccsds.moims.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for ObjectUpdateList.
@@ -36,14 +44,14 @@ public final class ObjectUpdateList extends java.util.ArrayList<org.ccsds.moims.
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public ObjectUpdateList(java.util.ArrayList<org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate> elementList) {
-        for(org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate element : elementList) {
+    public ObjectUpdateList(ArrayList<ObjectUpdate> elementList) {
+        for(ObjectUpdate element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate element) {
+    public boolean add(ObjectUpdate element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class ObjectUpdateList extends java.util.ArrayList<org.ccsds.moims.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new ObjectUpdateList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate();
+    public Element createTypedElement() {
+        return new ObjectUpdate();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

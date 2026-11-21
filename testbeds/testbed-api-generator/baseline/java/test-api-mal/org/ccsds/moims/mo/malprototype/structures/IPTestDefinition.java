@@ -1,9 +1,25 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * This abstract structure is inherited by all the IP test definition structures.
  */
-public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class IPTestDefinition implements Composite {
 
     private static final long serialVersionUID = 28147497687842820L;
     /**
@@ -13,7 +29,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of the test procedure.
@@ -23,57 +39,57 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
     /**
      * The consumer&quot;s URI.
      */
-    private org.ccsds.moims.mo.mal.structures.URI consumerURI;
+    private URI consumerURI;
 
     /**
      * The authentication identifier used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob authenticationId;
+    private Blob authenticationId;
 
     /**
      * The QoS level required by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.QoSLevel Qos;
+    private QoSLevel Qos;
 
     /**
      * The priority level required by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger Priority;
+    private UInteger Priority;
 
     /**
      * The domain used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList Domain;
+    private IdentifierList Domain;
 
     /**
      * The network zone used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier networkZone;
+    private Identifier networkZone;
 
     /**
      * The type of the session used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.SessionType Session;
+    private SessionType Session;
 
     /**
      * The identifier of the session used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sessionName;
+    private Identifier sessionName;
 
     /**
      * The supplements field used by the consumer.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList supplements;
+    private NamedValueList supplements;
 
     /**
      * The transitions that are requested by the consumer.
      */
-    private org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList transitions;
+    private IPTestTransitionList transitions;
 
     /**
      * The time the consumer initiated the interaction.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * Default constructor for IPTestDefinition.
@@ -99,17 +115,17 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * @param timestamp The time the consumer initiated the interaction.
      */
     public IPTestDefinition(String procedureName,
-            org.ccsds.moims.mo.mal.structures.URI consumerURI,
-            org.ccsds.moims.mo.mal.structures.Blob authenticationId,
-            org.ccsds.moims.mo.mal.structures.QoSLevel Qos,
-            org.ccsds.moims.mo.mal.structures.UInteger Priority,
-            org.ccsds.moims.mo.mal.structures.IdentifierList Domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType Session,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.NamedValueList supplements,
-            org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList transitions,
-            org.ccsds.moims.mo.mal.structures.Time timestamp) {
+            URI consumerURI,
+            Blob authenticationId,
+            QoSLevel Qos,
+            UInteger Priority,
+            IdentifierList Domain,
+            Identifier networkZone,
+            SessionType Session,
+            Identifier sessionName,
+            NamedValueList supplements,
+            IPTestTransitionList transitions,
+            Time timestamp) {
         this.procedureName = procedureName;
         this.consumerURI = consumerURI;
         this.authenticationId = authenticationId;
@@ -125,8 +141,8 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition();
+    public Element createElement() {
+        return new IPTestDefinition();
     }
 
     /**
@@ -143,7 +159,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field consumerURI
      */
-    public org.ccsds.moims.mo.mal.structures.URI getConsumerURI() {
+    public URI getConsumerURI() {
         return consumerURI;
     }
 
@@ -152,7 +168,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field authenticationId
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getAuthenticationId() {
+    public Blob getAuthenticationId() {
         return authenticationId;
     }
 
@@ -161,7 +177,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field Qos
      */
-    public org.ccsds.moims.mo.mal.structures.QoSLevel getQos() {
+    public QoSLevel getQos() {
         return Qos;
     }
 
@@ -170,7 +186,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field Priority
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getPriority() {
+    public UInteger getPriority() {
         return Priority;
     }
 
@@ -179,7 +195,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field Domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return Domain;
     }
 
@@ -188,7 +204,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field networkZone
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone() {
+    public Identifier getNetworkZone() {
         return networkZone;
     }
 
@@ -197,7 +213,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field Session
      */
-    public org.ccsds.moims.mo.mal.structures.SessionType getSession() {
+    public SessionType getSession() {
         return Session;
     }
 
@@ -206,7 +222,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field sessionName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSessionName() {
+    public Identifier getSessionName() {
         return sessionName;
     }
 
@@ -215,7 +231,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field supplements
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getSupplements() {
+    public NamedValueList getSupplements() {
         return supplements;
     }
 
@@ -224,7 +240,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field transitions
      */
-    public org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList getTransitions() {
+    public IPTestTransitionList getTransitions() {
         return transitions;
     }
 
@@ -233,7 +249,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -393,7 +409,7 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableString(procedureName);
         encoder.encodeNullableURI(consumerURI);
         encoder.encodeNullableBlob(authenticationId);
@@ -409,24 +425,24 @@ public final class IPTestDefinition implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         procedureName = decoder.decodeNullableString();
         consumerURI = decoder.decodeNullableURI();
         authenticationId = decoder.decodeNullableBlob();
-        Qos = (org.ccsds.moims.mo.mal.structures.QoSLevel) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.QoSLevel.BESTEFFORT);
+        Qos = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
         Priority = decoder.decodeNullableUInteger();
-        Domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+        Domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         networkZone = decoder.decodeNullableIdentifier();
-        Session = (org.ccsds.moims.mo.mal.structures.SessionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.SessionType.LIVE);
+        Session = (SessionType) decoder.decodeNullableElement(SessionType.LIVE);
         sessionName = decoder.decodeNullableIdentifier();
-        supplements = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
-        transitions = (org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList());
+        supplements = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
+        transitions = (IPTestTransitionList) decoder.decodeNullableElement(new IPTestTransitionList());
         timestamp = decoder.decodeNullableTime();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * A concrete MO Object structure which does not extend directly the MAL Object
  * type.
  */
-public final class TestObject extends org.ccsds.moims.mo.malprototype.structures.TestObjectBase {
+public final class TestObject extends TestObjectBase {
 
     private static final long serialVersionUID = 28147497687842836L;
     /**
@@ -14,7 +21,7 @@ public final class TestObject extends org.ccsds.moims.mo.malprototype.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Another example String item.
@@ -42,7 +49,7 @@ public final class TestObject extends org.ccsds.moims.mo.malprototype.structures
      * @param thirdItem Another example String item.
      * @param fourthItem Example Boolean item.
      */
-    public TestObject(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public TestObject(ObjectIdentity objectIdentity,
             String firstItem,
             Integer secondItem,
             String thirdItem,
@@ -59,15 +66,15 @@ public final class TestObject extends org.ccsds.moims.mo.malprototype.structures
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public TestObject(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public TestObject(ObjectIdentity objectIdentity) {
         super(objectIdentity);
         this.thirdItem = null;
         this.fourthItem = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.TestObject();
+    public Element createElement() {
+        return new TestObject();
     }
 
     /**
@@ -138,14 +145,14 @@ public final class TestObject extends org.ccsds.moims.mo.malprototype.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableString(thirdItem);
         encoder.encodeNullableBoolean(fourthItem);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         thirdItem = decoder.decodeNullableString();
         fourthItem = decoder.decodeNullableBoolean();
@@ -153,7 +160,7 @@ public final class TestObject extends org.ccsds.moims.mo.malprototype.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

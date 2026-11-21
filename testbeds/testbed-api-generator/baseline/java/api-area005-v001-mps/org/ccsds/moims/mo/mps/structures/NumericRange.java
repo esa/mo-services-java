@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Concrete sub-type of ValidationDetails that provides additional fields
  * to support data validation for numeric data types.
  */
-public final class NumericRange extends org.ccsds.moims.mo.mps.structures.ValidationDetails {
+public final class NumericRange extends ValidationDetails {
 
     private static final long serialVersionUID = 1407374900330522L;
     /**
@@ -14,7 +20,7 @@ public final class NumericRange extends org.ccsds.moims.mo.mps.structures.Valida
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Minimum value of the argument; if omitted, no minimum value is considered.
@@ -46,8 +52,8 @@ public final class NumericRange extends org.ccsds.moims.mo.mps.structures.Valida
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.NumericRange();
+    public Element createElement() {
+        return new NumericRange();
     }
 
     /**
@@ -118,14 +124,14 @@ public final class NumericRange extends org.ccsds.moims.mo.mps.structures.Valida
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableDouble(min);
         encoder.encodeNullableDouble(max);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         min = decoder.decodeNullableDouble();
         max = decoder.decodeNullableDouble();
@@ -133,7 +139,7 @@ public final class NumericRange extends org.ccsds.moims.mo.mps.structures.Valida
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

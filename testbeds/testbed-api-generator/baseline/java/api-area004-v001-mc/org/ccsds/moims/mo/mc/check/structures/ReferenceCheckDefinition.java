@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The ReferenceCheckDefinition structure holds the key to another entity
  * to compare against for a consistency check.
  */
-public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetails {
+public final class ReferenceCheckDefinition extends CheckDefinitionDetails {
 
     private static final long serialVersionUID = 1125917103489033L;
     /**
@@ -14,17 +24,17 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The operator to be used to perform the check.
      */
-    private org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator;
+    private ExpressionOperator operator;
 
     /**
      * The value to check against.
      */
-    private org.ccsds.moims.mo.mc.check.structures.ReferenceValue checkReference;
+    private ReferenceValue checkReference;
 
     /**
      * Default constructor for ReferenceCheckDefinition.
@@ -47,14 +57,14 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
      * @param checkReference The value to check against.
      */
     public ReferenceCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator,
-            org.ccsds.moims.mo.mc.check.structures.ReferenceValue checkReference) {
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
+            ExpressionOperator operator,
+            ReferenceValue checkReference) {
         super(description,
             checkSeverity,
             maxReportingInterval,
@@ -67,8 +77,8 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.ReferenceCheckDefinition();
+    public Element createElement() {
+        return new ReferenceCheckDefinition();
     }
 
     /**
@@ -76,7 +86,7 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.com.archive.structures.ExpressionOperator getOperator() {
+    public ExpressionOperator getOperator() {
         return operator;
     }
 
@@ -85,7 +95,7 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
      * 
      * @return The field checkReference
      */
-    public org.ccsds.moims.mo.mc.check.structures.ReferenceValue getCheckReference() {
+    public ReferenceValue getCheckReference() {
         return checkReference;
     }
 
@@ -139,28 +149,28 @@ public final class ReferenceCheckDefinition extends org.ccsds.moims.mo.mc.check.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (operator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'operator' cannot be null!");
+            throw new MALException("The field 'operator' cannot be null!");
         }
         if (checkReference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkReference' cannot be null!");
+            throw new MALException("The field 'checkReference' cannot be null!");
         }
         encoder.encodeElement(operator);
         encoder.encodeElement(checkReference);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        operator = (org.ccsds.moims.mo.com.archive.structures.ExpressionOperator) decoder.decodeElement(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.EQUAL);
-        checkReference = (org.ccsds.moims.mo.mc.check.structures.ReferenceValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.check.structures.ReferenceValue());
+        operator = (ExpressionOperator) decoder.decodeElement(ExpressionOperator.EQUAL);
+        checkReference = (ReferenceValue) decoder.decodeElement(new ReferenceValue());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

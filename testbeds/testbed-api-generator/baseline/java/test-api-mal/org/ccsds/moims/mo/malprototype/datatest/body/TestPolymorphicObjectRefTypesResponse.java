@@ -1,5 +1,8 @@
 package org.ccsds.moims.mo.malprototype.datatest.body;
 
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.malprototype.structures.Garage;
+
 /**
  * Multi body return class for TestPolymorphicObjectRefTypesResponse.
  */
@@ -8,22 +11,22 @@ public final class TestPolymorphicObjectRefTypesResponse {
     /**
      * output1: .
      */
-    private org.ccsds.moims.mo.malprototype.structures.Garage output1;
+    private Garage output1;
 
     /**
      * output2: .
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList output2;
+    private ObjectRefList output2;
 
     /**
      * output3: .
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList output3;
+    private ObjectRefList output3;
 
     /**
      * output4: .
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList output4;
+    private ObjectRefList output4;
 
     /**
      * Default constructor for TestPolymorphicObjectRefTypesResponse.
@@ -40,10 +43,10 @@ public final class TestPolymorphicObjectRefTypesResponse {
      * @param output3 The output3 field.
      * @param output4 The output4 field.
      */
-    public TestPolymorphicObjectRefTypesResponse(org.ccsds.moims.mo.malprototype.structures.Garage output1,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList output2,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList output3,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList output4) {
+    public TestPolymorphicObjectRefTypesResponse(Garage output1,
+            ObjectRefList output2,
+            ObjectRefList output3,
+            ObjectRefList output4) {
         this.output1 = output1;
         this.output2 = output2;
         this.output3 = output3;
@@ -55,7 +58,7 @@ public final class TestPolymorphicObjectRefTypesResponse {
      * 
      * @return The field output1
      */
-    public org.ccsds.moims.mo.malprototype.structures.Garage getOutput1() {
+    public Garage getOutput1() {
         return output1;
     }
 
@@ -64,7 +67,7 @@ public final class TestPolymorphicObjectRefTypesResponse {
      * 
      * @return The field output2
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutput2() {
+    public ObjectRefList getOutput2() {
         return output2;
     }
 
@@ -73,7 +76,7 @@ public final class TestPolymorphicObjectRefTypesResponse {
      * 
      * @return The field output3
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutput3() {
+    public ObjectRefList getOutput3() {
         return output3;
     }
 
@@ -82,7 +85,7 @@ public final class TestPolymorphicObjectRefTypesResponse {
      * 
      * @return The field output4
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutput4() {
+    public ObjectRefList getOutput4() {
         return output4;
     }
 

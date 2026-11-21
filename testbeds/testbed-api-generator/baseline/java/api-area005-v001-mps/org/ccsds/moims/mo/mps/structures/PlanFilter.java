@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: PlanFilter is a data structure used in the context of MPS Plan Distribution
  * Service operations to specify a filtered set of Plans.  .
  */
-public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanFilter implements Composite {
 
     private static final long serialVersionUID = 1407374900331012L;
     /**
@@ -14,38 +24,38 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Domain of the Plan. An ordered list representing a domain hierarchy, ‘*’
      * can be used to represent a wildcard at that level.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Reference to the Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planID;
+    private ObjectRef<Plan> planID;
 
     /**
      * Reference to the precursor Plan of the Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan;
+    private ObjectRef<Plan> precursorPlan;
 
     /**
      * Current status (enum) of the Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanStatusEnum status;
+    private PlanStatusEnum status;
 
     /**
      * Originator of the Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier originator;
+    private Identifier originator;
 
     /**
      * Period of time with which the validity period of the Plan overlaps.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindow validityPeriod;
+    private TimeWindow validityPeriod;
 
     /**
      * Default constructor for PlanFilter.
@@ -64,12 +74,12 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * @param originator Originator of the Plan.
      * @param validityPeriod Period of time with which the validity period of the Plan overlaps.
      */
-    public PlanFilter(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planID,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.Identifier originator,
-            org.ccsds.moims.mo.mps.structures.TimeWindow validityPeriod) {
+    public PlanFilter(IdentifierList domain,
+            ObjectRef<Plan> planID,
+            ObjectRef<Plan> precursorPlan,
+            PlanStatusEnum status,
+            Identifier originator,
+            TimeWindow validityPeriod) {
         this.domain = domain;
         this.planID = planID;
         this.precursorPlan = precursorPlan;
@@ -79,8 +89,8 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanFilter();
+    public Element createElement() {
+        return new PlanFilter();
     }
 
     /**
@@ -88,7 +98,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -97,7 +107,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field planID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlanID() {
+    public ObjectRef<Plan> getPlanID() {
         return planID;
     }
 
@@ -106,7 +116,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field precursorPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPrecursorPlan() {
+    public ObjectRef<Plan> getPrecursorPlan() {
         return precursorPlan;
     }
 
@@ -115,7 +125,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.PlanStatusEnum getStatus() {
+    public PlanStatusEnum getStatus() {
         return status;
     }
 
@@ -124,7 +134,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field originator
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOriginator() {
+    public Identifier getOriginator() {
         return originator;
     }
 
@@ -133,7 +143,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field validityPeriod
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindow getValidityPeriod() {
+    public TimeWindow getValidityPeriod() {
         return validityPeriod;
     }
 
@@ -227,7 +237,7 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableElement(planID);
         encoder.encodeNullableElement(precursorPlan);
@@ -237,18 +247,18 @@ public final class PlanFilter implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        planID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        precursorPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        status = (org.ccsds.moims.mo.mps.structures.PlanStatusEnum) decoder.decodeNullableElement(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.DRAFT);
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        planID = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        precursorPlan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        status = (PlanStatusEnum) decoder.decodeNullableElement(PlanStatusEnum.DRAFT);
         originator = decoder.decodeNullableIdentifier();
-        validityPeriod = (org.ccsds.moims.mo.mps.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindow());
+        validityPeriod = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

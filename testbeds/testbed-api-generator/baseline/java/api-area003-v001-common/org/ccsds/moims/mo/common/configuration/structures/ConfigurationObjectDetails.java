@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.common.configuration.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ConfigurationObjectDetails composite holds a zero to many ConfigurationObjectSet
  * structures. It allows a configuration to reference COM objects from more
  * than one domain or of more than one COM object type.
  */
-public final class ConfigurationObjectDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ConfigurationObjectDetails implements Composite {
 
     private static final long serialVersionUID = 844446421745666L;
     /**
@@ -15,12 +22,12 @@ public final class ConfigurationObjectDetails implements org.ccsds.moims.mo.mal.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The list of configuration objects.
      */
-    private org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSetList configObjects;
+    private ConfigurationObjectSetList configObjects;
 
     /**
      * Default constructor for ConfigurationObjectDetails.
@@ -34,13 +41,13 @@ public final class ConfigurationObjectDetails implements org.ccsds.moims.mo.mal.
      * 
      * @param configObjects The list of configuration objects.
      */
-    public ConfigurationObjectDetails(org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSetList configObjects) {
+    public ConfigurationObjectDetails(ConfigurationObjectSetList configObjects) {
         this.configObjects = configObjects;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectDetails();
+    public Element createElement() {
+        return new ConfigurationObjectDetails();
     }
 
     /**
@@ -48,7 +55,7 @@ public final class ConfigurationObjectDetails implements org.ccsds.moims.mo.mal.
      * 
      * @return The field configObjects
      */
-    public org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSetList getConfigObjects() {
+    public ConfigurationObjectSetList getConfigObjects() {
         return configObjects;
     }
 
@@ -87,21 +94,21 @@ public final class ConfigurationObjectDetails implements org.ccsds.moims.mo.mal.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (configObjects == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'configObjects' cannot be null!");
+            throw new MALException("The field 'configObjects' cannot be null!");
         }
         encoder.encodeElement(configObjects);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        configObjects = (org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSetList) decoder.decodeElement(new org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSetList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        configObjects = (ConfigurationObjectSetList) decoder.decodeElement(new ConfigurationObjectSetList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

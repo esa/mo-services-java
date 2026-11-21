@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.com;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DuplicateException exception. Operation specific.
  */
-public final class DuplicateException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DuplicateException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "DUPLICATE";
 

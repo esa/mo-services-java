@@ -1,5 +1,7 @@
 package org.ccsds.moims.mo.com.activitytracking.consumer;
 
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+
 /**
  * Consumer stub for ActivityTracking service.
  */
@@ -8,7 +10,7 @@ public class ActivityTrackingStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +18,7 @@ public class ActivityTrackingStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public ActivityTrackingStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public ActivityTrackingStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +28,7 @@ public class ActivityTrackingStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 

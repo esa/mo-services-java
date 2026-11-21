@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * A concrete composite example extending an Abstract composite with no field.
  */
-public final class BasicAbstractComposite extends org.ccsds.moims.mo.malprototype.structures.AbstractComposite {
+public final class BasicAbstractComposite extends AbstractComposite {
 
     private static final long serialVersionUID = 28147497687843162L;
     /**
@@ -13,7 +19,7 @@ public final class BasicAbstractComposite extends org.ccsds.moims.mo.malprototyp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for BasicAbstractComposite.
@@ -35,8 +41,8 @@ public final class BasicAbstractComposite extends org.ccsds.moims.mo.malprototyp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.BasicAbstractComposite();
+    public Element createElement() {
+        return new BasicAbstractComposite();
     }
 
     @Override
@@ -66,18 +72,18 @@ public final class BasicAbstractComposite extends org.ccsds.moims.mo.malprototyp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

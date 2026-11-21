@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Represents a specific period of time, specified as two Expressions
  * of type Time defining the start and end of the TimeWindow.
  */
-public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class TimeWindow implements Composite {
 
     private static final long serialVersionUID = 1407374900330501L;
     /**
@@ -14,18 +21,18 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Start time of the time window.
      */
-    private org.ccsds.moims.mo.mal.structures.Element start;
+    private Element start;
 
     /**
      * End time of the time window.  Shall not be earlier in time than the start
      * of the time window.
      */
-    private org.ccsds.moims.mo.mal.structures.Element end;
+    private Element end;
 
     /**
      * Default constructor for TimeWindow.
@@ -40,15 +47,15 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * @param start Start time of the time window.
      * @param end End time of the time window.  Shall not be earlier in time than the start of the time window.
      */
-    public TimeWindow(org.ccsds.moims.mo.mal.structures.Element start,
-            org.ccsds.moims.mo.mal.structures.Element end) {
+    public TimeWindow(Element start,
+            Element end) {
         this.start = start;
         this.end = end;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.TimeWindow();
+    public Element createElement() {
+        return new TimeWindow();
     }
 
     /**
@@ -56,7 +63,7 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStart() {
+    public Element getStart() {
         return start;
     }
 
@@ -65,7 +72,7 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEnd() {
+    public Element getEnd() {
         return end;
     }
 
@@ -115,26 +122,26 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (start == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'start' cannot be null!");
+            throw new MALException("The field 'start' cannot be null!");
         }
         if (end == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'end' cannot be null!");
+            throw new MALException("The field 'end' cannot be null!");
         }
         encoder.encodeAbstractElement(start);
         encoder.encodeAbstractElement(end);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        start = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        end = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+    public Element decode(MALDecoder decoder) throws MALException {
+        start = (Element) decoder.decodeAbstractElement();
+        end = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

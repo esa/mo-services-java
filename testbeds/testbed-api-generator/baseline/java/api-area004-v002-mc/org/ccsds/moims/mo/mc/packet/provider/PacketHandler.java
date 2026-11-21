@@ -11,5 +11,5 @@ public interface PacketHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.packet.provider.PacketSkeleton skeleton);
+    void setSkeleton(PacketSkeleton skeleton);
 }

@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mc.parameter.structures.ParameterValue;
+
 /**
  * The structure holds a single parameter value with its definition instance
  * identifier.
  */
-public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationParameterValue implements Composite {
 
     private static final long serialVersionUID = 1125925693423621L;
     /**
@@ -14,12 +22,12 @@ public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The parameter value.
      */
-    private org.ccsds.moims.mo.mc.parameter.structures.ParameterValue value;
+    private ParameterValue value;
 
     /**
      * The object instance identifier of the ParameterDefinition. NULL if sendDefinitions
@@ -40,7 +48,7 @@ public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.s
      * @param value The parameter value.
      * @param paramDefInstId The object instance identifier of the ParameterDefinition. NULL if sendDefinitions in the AggregationDefinitionDetails is FALSE.
      */
-    public AggregationParameterValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterValue value,
+    public AggregationParameterValue(ParameterValue value,
             Long paramDefInstId) {
         this.value = value;
         this.paramDefInstId = paramDefInstId;
@@ -51,14 +59,14 @@ public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.s
      * 
      * @param value The parameter value.
      */
-    public AggregationParameterValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterValue value) {
+    public AggregationParameterValue(ParameterValue value) {
         this.value = value;
         this.paramDefInstId = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValue();
+    public Element createElement() {
+        return new AggregationParameterValue();
     }
 
     /**
@@ -66,7 +74,7 @@ public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mc.parameter.structures.ParameterValue getValue() {
+    public ParameterValue getValue() {
         return value;
     }
 
@@ -125,23 +133,23 @@ public final class AggregationParameterValue implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeElement(value);
         encoder.encodeNullableLong(paramDefInstId);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        value = (org.ccsds.moims.mo.mc.parameter.structures.ParameterValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.parameter.structures.ParameterValue());
+    public Element decode(MALDecoder decoder) throws MALException {
+        value = (ParameterValue) decoder.decodeElement(new ParameterValue());
         paramDefInstId = decoder.decodeNullableLong();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

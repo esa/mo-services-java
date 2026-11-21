@@ -1,12 +1,21 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * A StandingOrder is a data structure that holds the details of a standing
  * order. This includes the orderID, the user who owns the product order,
  * the product filter, how the products are to be delivered, the target URI
  * where to deliver the files, and additional comments.
  */
-public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StandingOrder implements Composite {
 
     private static final long serialVersionUID = 2533274807173123L;
     /**
@@ -16,7 +25,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The orderID of the standing order. It shall be NULL when the order is being
@@ -27,30 +36,30 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The user that is the owner of the product order.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier user;
+    private Identifier user;
 
     /**
      * Specifies the filter criteria for the standing order, including the product
      * type and optional filters on product source and metadata attributes.
      */
-    private org.ccsds.moims.mo.mpd.structures.ProductFilter productFilter;
+    private ProductFilter productFilter;
 
     /**
      * Period of time over which the standing order is required to be active.
      */
-    private org.ccsds.moims.mo.mpd.structures.TimeWindow validityPeriod;
+    private TimeWindow validityPeriod;
 
     /**
      * Specifies how the product is to be delivered: via the service interface
      * or by file transfer.
      */
-    private org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum deliveryMethod;
+    private DeliveryMethodEnum deliveryMethod;
 
     /**
      * The delivery address for file transfer. Not required if deliveryMethod
      * is SERVICE.
      */
-    private org.ccsds.moims.mo.mal.structures.URI deliverTo;
+    private URI deliverTo;
 
     /**
      * Any optional notes or comments.
@@ -76,11 +85,11 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * @param comments Any optional notes or comments.
      */
     public StandingOrder(Long orderID,
-            org.ccsds.moims.mo.mal.structures.Identifier user,
-            org.ccsds.moims.mo.mpd.structures.ProductFilter productFilter,
-            org.ccsds.moims.mo.mpd.structures.TimeWindow validityPeriod,
-            org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum deliveryMethod,
-            org.ccsds.moims.mo.mal.structures.URI deliverTo,
+            Identifier user,
+            ProductFilter productFilter,
+            TimeWindow validityPeriod,
+            DeliveryMethodEnum deliveryMethod,
+            URI deliverTo,
             String comments) {
         this.orderID = orderID;
         this.user = user;
@@ -97,8 +106,8 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * @param user The user that is the owner of the product order.
      * @param deliveryMethod Specifies how the product is to be delivered: via the service interface or by file transfer.
      */
-    public StandingOrder(org.ccsds.moims.mo.mal.structures.Identifier user,
-            org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum deliveryMethod) {
+    public StandingOrder(Identifier user,
+            DeliveryMethodEnum deliveryMethod) {
         this.orderID = null;
         this.user = user;
         this.productFilter = null;
@@ -109,8 +118,8 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.StandingOrder();
+    public Element createElement() {
+        return new StandingOrder();
     }
 
     /**
@@ -127,7 +136,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field user
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUser() {
+    public Identifier getUser() {
         return user;
     }
 
@@ -136,7 +145,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field productFilter
      */
-    public org.ccsds.moims.mo.mpd.structures.ProductFilter getProductFilter() {
+    public ProductFilter getProductFilter() {
         return productFilter;
     }
 
@@ -145,7 +154,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field validityPeriod
      */
-    public org.ccsds.moims.mo.mpd.structures.TimeWindow getValidityPeriod() {
+    public TimeWindow getValidityPeriod() {
         return validityPeriod;
     }
 
@@ -154,7 +163,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field deliveryMethod
      */
-    public org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum getDeliveryMethod() {
+    public DeliveryMethodEnum getDeliveryMethod() {
         return deliveryMethod;
     }
 
@@ -163,7 +172,7 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field deliverTo
      */
-    public org.ccsds.moims.mo.mal.structures.URI getDeliverTo() {
+    public URI getDeliverTo() {
         return deliverTo;
     }
 
@@ -277,12 +286,12 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (user == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'user' cannot be null!");
+            throw new MALException("The field 'user' cannot be null!");
         }
         if (deliveryMethod == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'deliveryMethod' cannot be null!");
+            throw new MALException("The field 'deliveryMethod' cannot be null!");
         }
         encoder.encodeNullableLong(orderID);
         encoder.encodeIdentifier(user);
@@ -294,19 +303,19 @@ public final class StandingOrder implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         orderID = decoder.decodeNullableLong();
         user = decoder.decodeIdentifier();
-        productFilter = (org.ccsds.moims.mo.mpd.structures.ProductFilter) decoder.decodeNullableElement(new org.ccsds.moims.mo.mpd.structures.ProductFilter());
-        validityPeriod = (org.ccsds.moims.mo.mpd.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mpd.structures.TimeWindow());
-        deliveryMethod = (org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum) decoder.decodeElement(org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum.SERVICE_COMPLETE);
+        productFilter = (ProductFilter) decoder.decodeNullableElement(new ProductFilter());
+        validityPeriod = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
+        deliveryMethod = (DeliveryMethodEnum) decoder.decodeElement(DeliveryMethodEnum.SERVICE_COMPLETE);
         deliverTo = decoder.decodeNullableURI();
         comments = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

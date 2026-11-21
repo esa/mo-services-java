@@ -1,9 +1,23 @@
 package org.ccsds.moims.mo.malprototype2.iptest.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype2.MALPrototype2Helper;
+import org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo;
+
 /**
  * Consumer adapter for IPTest service.
  */
-public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class IPTestAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a PubSub register acknowledgement is received from
@@ -12,8 +26,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorRegisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +38,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorRegisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -36,8 +50,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorDeregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -51,12 +65,12 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param pub The pub field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorNotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
-            org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+    public void monitorNotifyReceived(MALMessageHeader msgHeader,
+            Identifier subscriptionId,
+            UpdateHeader updateHeader,
             MonitorSubscriptionKeys keys,
-            org.ccsds.moims.mo.malprototype.structures.TestUpdate pub,
-            java.util.Map qosProperties) {
+            TestUpdate pub,
+            Map qosProperties) {
     }
 
     /**
@@ -67,9 +81,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorNotifyErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -79,8 +93,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitor2RegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitor2RegisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -91,9 +105,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitor2RegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitor2RegisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -103,8 +117,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitor2DeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitor2DeregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -118,12 +132,12 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param pub The pub field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitor2NotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
-            org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+    public void monitor2NotifyReceived(MALMessageHeader msgHeader,
+            Identifier subscriptionId,
+            UpdateHeader updateHeader,
             Monitor2SubscriptionKeys keys,
-            org.ccsds.moims.mo.malprototype.structures.TestUpdate pub,
-            java.util.Map qosProperties) {
+            TestUpdate pub,
+            Map qosProperties) {
     }
 
     /**
@@ -134,9 +148,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitor2NotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitor2NotifyErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -146,8 +160,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishUpdatesAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void publishUpdatesAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -158,9 +172,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishUpdatesErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void publishUpdatesErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -170,8 +184,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void publishRegisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -182,9 +196,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void publishRegisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -194,8 +208,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void publishDeregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -206,9 +220,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishDeregisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void publishDeregisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -218,8 +232,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testMultipleNotifyAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void testMultipleNotifyAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -230,9 +244,9 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testMultipleNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void testMultipleNotifyErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -242,8 +256,8 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testObjectRefSubmitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void testObjectRefSubmitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -254,114 +268,114 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void testObjectRefSubmitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void testObjectRefSubmitErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
             publishUpdatesAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
             publishRegisterAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
             publishDeregisterAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
+          case IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
             testMultipleNotifyAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._TESTOBJECTREFSUBMIT_OP_NUMBER:
+          case IPTestServiceInfo._TESTOBJECTREFSUBMIT_OP_NUMBER:
             testObjectRefSubmitAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
             publishUpdatesErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
             publishRegisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
+          case IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
             publishDeregisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
+          case IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
             testMultipleNotifyErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._TESTOBJECTREFSUBMIT_OP_NUMBER:
+          case IPTestServiceInfo._TESTOBJECTREFSUBMIT_OP_NUMBER:
             testObjectRefSubmitErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR_OP_NUMBER:
             monitorRegisterAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR2_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR2_OP_NUMBER:
             monitor2RegisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR_OP_NUMBER:
             monitorRegisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR2_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR2_OP_NUMBER:
             monitor2RegisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void notifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
-        if ((org.ccsds.moims.mo.malprototype2.MALPrototype2Helper.MALPROTOTYPE2_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo.IPTEST_SERVICE_NUMBER.equals(msgHeader.getService()))) {
+    public final void notifyReceived(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            IdentifierList selectedKeys,
+            Map qosProperties) throws MALException {
+        if ((MALPrototype2Helper.MALPROTOTYPE2_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (IPTestServiceInfo.IPTEST_SERVICE_NUMBER.equals(msgHeader.getService()))) {
           switch (msgHeader.getOperation().getValue()) {
-            case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR_OP_NUMBER:
+            case IPTestServiceInfo._MONITOR_OP_NUMBER:
               monitorNotifyReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Identifier) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Identifier()),
-                (org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()),
-                new MonitorSubscriptionKeys((org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()), selectedKeys),
-                (org.ccsds.moims.mo.malprototype.structures.TestUpdate) body.getBodyElement(2, new org.ccsds.moims.mo.malprototype.structures.TestUpdate()), qosProperties);
+                (Identifier) body.getBodyElement(0, new Identifier()),
+                (UpdateHeader) body.getBodyElement(1, new UpdateHeader()),
+                new MonitorSubscriptionKeys((UpdateHeader) body.getBodyElement(1, new UpdateHeader()), selectedKeys),
+                (TestUpdate) body.getBodyElement(2, new TestUpdate()), qosProperties);
               break;
-            case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR2_OP_NUMBER:
+            case IPTestServiceInfo._MONITOR2_OP_NUMBER:
               monitor2NotifyReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Identifier) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Identifier()),
-                (org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()),
-                new Monitor2SubscriptionKeys((org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()), selectedKeys),
-                (org.ccsds.moims.mo.malprototype.structures.TestUpdate) body.getBodyElement(2, new org.ccsds.moims.mo.malprototype.structures.TestUpdate()), qosProperties);
+                (Identifier) body.getBodyElement(0, new Identifier()),
+                (UpdateHeader) body.getBodyElement(1, new UpdateHeader()),
+                new Monitor2SubscriptionKeys((UpdateHeader) body.getBodyElement(1, new UpdateHeader()), selectedKeys),
+                (TestUpdate) body.getBodyElement(2, new TestUpdate()), qosProperties);
               break;
             default:
-              throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+              throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
           }
         }
         else {
@@ -370,33 +384,33 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
     }
 
     @Override
-    public final void notifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void notifyErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR_OP_NUMBER:
             monitorNotifyErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR2_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR2_OP_NUMBER:
             monitor2NotifyErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void deregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void deregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR_OP_NUMBER:
             monitorDeregisterAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.malprototype2.iptest.IPTestServiceInfo._MONITOR2_OP_NUMBER:
+          case IPTestServiceInfo._MONITOR2_OP_NUMBER:
             monitor2DeregisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
@@ -407,11 +421,11 @@ public abstract class IPTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALI
      * @param msgHeader msgHeader The header of the received message
      * @param body body The body of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
-     * @throws org.ccsds.moims.mo.mal.MALException if an error is detected processing the message.
+     * @throws MALException if an error is detected processing the message.
      */
-    public void notifyReceivedFromOtherService(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public void notifyReceivedFromOtherService(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            Map qosProperties) throws MALException {
     }
 
 }

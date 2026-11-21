@@ -1,9 +1,36 @@
 package org.ccsds.moims.mo.mc.parameter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.AmbiguousException;
+import org.ccsds.moims.mo.mc.InvalidException;
+import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.ReadOnlyException;
+import org.ccsds.moims.mo.mc.structures.ParameterValueData;
+import org.ccsds.moims.mo.mc.structures.ParameterValueList;
+import org.ccsds.moims.mo.mc.structures.ReportConfigurationList;
+
 /**
  * Helper class for Parameter service.
  */
-public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
+public class ParameterServiceInfo extends ServiceInfo {
 
     /**
      * Service number literal.
@@ -13,17 +40,17 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort PARAMETER_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_PARAMETER_SERVICE_NUMBER);
+    public static final UShort PARAMETER_SERVICE_NUMBER = new UShort(_PARAMETER_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier PARAMETER_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Parameter");
+    public static final Identifier PARAMETER_SERVICE_NAME = new Identifier("Parameter");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             4, 2, PARAMETER_SERVICE_NUMBER);
 
     /**
@@ -34,31 +61,31 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation MONITORVALUE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort MONITORVALUE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MONITORVALUE_OP_NUMBER);
+    private static final UShort MONITORVALUE_OP_NUMBER = new UShort(_MONITORVALUE_OP_NUMBER);
 
     /**
      * Operation instance for operation MONITORVALUE.
      */
-    public static final org.ccsds.moims.mo.mal.MALPubSubOperation MONITORVALUE_OP = new org.ccsds.moims.mo.mal.MALPubSubOperation(SERVICE_KEY, 
+    public static final MALPubSubOperation MONITORVALUE_OP = new MALPubSubOperation(SERVICE_KEY, 
             MONITORVALUE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("monitorValue"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(1), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("timestamp", false, org.ccsds.moims.mo.mal.structures.Attribute.TIME_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("samplingTime", true, org.ccsds.moims.mo.mal.structures.Attribute.TIME_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("newValue", false, org.ccsds.moims.mo.mc.structures.ParameterValueData.SHORT_FORM, "")}, 
+            new Identifier("monitorValue"), 
+            new UShort(1), 
+            new OperationField[] {
+                new OperationField("timestamp", false, Attribute.TIME_SHORT_FORM, ""),
+                new OperationField("samplingTime", true, Attribute.TIME_SHORT_FORM, ""),
+                new OperationField("newValue", false, ParameterValueData.SHORT_FORM, "")}, 
             "The monitorValue operation allows a consumer to subscribe for parameter value reports.");
 
     /**
      * Key names instance for MONITORVALUE operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.Identifier [] _MONITORVALUE_OP_KEY_NAMES = {new org.ccsds.moims.mo.mal.structures.Identifier("parameterKey"),
-            new org.ccsds.moims.mo.mal.structures.Identifier("parameterVersion")};
+    private static final Identifier [] _MONITORVALUE_OP_KEY_NAMES = {new Identifier("parameterKey"),
+            new Identifier("parameterVersion")};
 
     /**
      * Key names instance for MONITORVALUE operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList MONITORVALUE_OP_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_MONITORVALUE_OP_KEY_NAMES)));
+    private static final IdentifierList MONITORVALUE_OP_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(_MONITORVALUE_OP_KEY_NAMES)));
 
     /**
      * Operation number literal for operation GETVALUE.
@@ -68,20 +95,20 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation GETVALUE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort GETVALUE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GETVALUE_OP_NUMBER);
+    private static final UShort GETVALUE_OP_NUMBER = new UShort(_GETVALUE_OP_NUMBER);
 
     /**
      * Operation instance for operation GETVALUE.
      */
-    public static final org.ccsds.moims.mo.mal.MALRequestOperation GETVALUE_OP = new org.ccsds.moims.mo.mal.MALRequestOperation(SERVICE_KEY, 
+    public static final MALRequestOperation GETVALUE_OP = new MALRequestOperation(SERVICE_KEY, 
             GETVALUE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("getValue"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(2), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", false, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("parameterValues", false, org.ccsds.moims.mo.mc.structures.ParameterValueList.SHORT_FORM, "")}, 
+            new Identifier("getValue"), 
+            new UShort(2), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", false, IdentifierList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("parameterValues", false, ParameterValueList.SHORT_FORM, "")}, 
             "The getValue operation returns the latest received value for a requested parameter.");
 
     /**
@@ -92,19 +119,19 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation SETVALUE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort SETVALUE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_SETVALUE_OP_NUMBER);
+    private static final UShort SETVALUE_OP_NUMBER = new UShort(_SETVALUE_OP_NUMBER);
 
     /**
      * Operation instance for operation SETVALUE.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation SETVALUE_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation SETVALUE_OP = new MALSubmitOperation(SERVICE_KEY, 
             SETVALUE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("setValue"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(3), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", false, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("newRawValues", false, org.ccsds.moims.mo.mal.structures.NullableAttributeList.SHORT_FORM, "")}, 
+            new Identifier("setValue"), 
+            new UShort(3), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", false, IdentifierList.SHORT_FORM, ""),
+                new OperationField("newRawValues", false, NullableAttributeList.SHORT_FORM, "")}, 
             "The setValue operation allows a consumer to set the raw value for one or more parameters.");
 
     /**
@@ -115,20 +142,20 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation GETREPORTINGCONFIGURATION.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort GETREPORTINGCONFIGURATION_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GETREPORTINGCONFIGURATION_OP_NUMBER);
+    private static final UShort GETREPORTINGCONFIGURATION_OP_NUMBER = new UShort(_GETREPORTINGCONFIGURATION_OP_NUMBER);
 
     /**
      * Operation instance for operation GETREPORTINGCONFIGURATION.
      */
-    public static final org.ccsds.moims.mo.mal.MALRequestOperation GETREPORTINGCONFIGURATION_OP = new org.ccsds.moims.mo.mal.MALRequestOperation(SERVICE_KEY, 
+    public static final MALRequestOperation GETREPORTINGCONFIGURATION_OP = new MALRequestOperation(SERVICE_KEY, 
             GETREPORTINGCONFIGURATION_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("getReportingConfiguration"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(4), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", false, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("reportConfigs", false, org.ccsds.moims.mo.mc.structures.ReportConfigurationList.SHORT_FORM, "")}, 
+            new Identifier("getReportingConfiguration"), 
+            new UShort(4), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", false, IdentifierList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("reportConfigs", false, ReportConfigurationList.SHORT_FORM, "")}, 
             "The getReportingConfiguration operation allows a consumer to retrieve the current configuration for the generation of reports for a parameter.");
 
     /**
@@ -139,18 +166,18 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation ENABLEREPORTING.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort ENABLEREPORTING_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_ENABLEREPORTING_OP_NUMBER);
+    private static final UShort ENABLEREPORTING_OP_NUMBER = new UShort(_ENABLEREPORTING_OP_NUMBER);
 
     /**
      * Operation instance for operation ENABLEREPORTING.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation ENABLEREPORTING_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation ENABLEREPORTING_OP = new MALSubmitOperation(SERVICE_KEY, 
             ENABLEREPORTING_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("enableReporting"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(4), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
+            new Identifier("enableReporting"), 
+            new UShort(4), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", true, IdentifierList.SHORT_FORM, "")}, 
             "The enableReporting operation allows a consumer to request the generation of reports for specific parameters.");
 
     /**
@@ -161,18 +188,18 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation DISABLEREPORTING.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort DISABLEREPORTING_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_DISABLEREPORTING_OP_NUMBER);
+    private static final UShort DISABLEREPORTING_OP_NUMBER = new UShort(_DISABLEREPORTING_OP_NUMBER);
 
     /**
      * Operation instance for operation DISABLEREPORTING.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation DISABLEREPORTING_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation DISABLEREPORTING_OP = new MALSubmitOperation(SERVICE_KEY, 
             DISABLEREPORTING_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("disableReporting"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(4), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
+            new Identifier("disableReporting"), 
+            new UShort(4), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", true, IdentifierList.SHORT_FORM, "")}, 
             "The disableReporting operation allows a consumer to stop the generation of reports for specific parameters.");
 
     /**
@@ -183,30 +210,30 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation SETREPORTINGPERIOD.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort SETREPORTINGPERIOD_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_SETREPORTINGPERIOD_OP_NUMBER);
+    private static final UShort SETREPORTINGPERIOD_OP_NUMBER = new UShort(_SETREPORTINGPERIOD_OP_NUMBER);
 
     /**
      * Operation instance for operation SETREPORTINGPERIOD.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation SETREPORTINGPERIOD_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation SETREPORTINGPERIOD_OP = new MALSubmitOperation(SERVICE_KEY, 
             SETREPORTINGPERIOD_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("setReportingPeriod"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(4), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", false, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("reportInterval", false, org.ccsds.moims.mo.mal.structures.Attribute.DURATION_SHORT_FORM, "")}, 
+            new Identifier("setReportingPeriod"), 
+            new UShort(4), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", false, IdentifierList.SHORT_FORM, ""),
+                new OperationField("reportInterval", false, Attribute.DURATION_SHORT_FORM, "")}, 
             "The setReportingPeriod operation allows a consumer to set the reporting interval for specific parameters.");
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] PARAMETER_SERVICE_ELEMENTS = {};
+    public static final Element[] PARAMETER_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{MONITORVALUE_OP,
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{MONITORVALUE_OP,
         GETVALUE_OP,
         SETVALUE_OP,
         GETREPORTINGCONFIGURATION_OP,
@@ -223,72 +250,72 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.mc.MCHelper.MC_AREA;
+    public MALArea getArea() {
+        return MCHelper.MC_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
         switch (operationNumber) {
             case 2:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 3:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 3:
-                        return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                        return new InvalidException(extraInfo);
                     case 1:
-                        return new org.ccsds.moims.mo.mc.ReadOnlyException(extraInfo);
+                        return new ReadOnlyException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 4:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 5:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 6:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 7:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 3:
-                        return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                        return new InvalidException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
         }
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

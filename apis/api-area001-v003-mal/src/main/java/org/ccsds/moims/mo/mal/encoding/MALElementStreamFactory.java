@@ -22,8 +22,8 @@ package org.ccsds.moims.mo.mal.encoding;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -39,7 +39,7 @@ public abstract class MALElementStreamFactory {
      * class name.
      */
     public static final String FACTORY_PROP_NAME_PREFIX = "org.ccsds.moims.mo.mal.encoding.protocol";
-    private static final Map<String, Class> FACTORIES = new HashMap<>();
+    private static final Map<String, Class> FACTORIES = new ConcurrentHashMap<>();
 
     /**
      * The method allows an implementation to register the class of a specific
@@ -86,32 +86,47 @@ public abstract class MALElementStreamFactory {
         final String propName = FACTORY_PROP_NAME_PREFIX + '.' + protocol;
         final String className = System.getProperty(propName);
         if (null != className) {
-            try {
-                Class factoryClass;
-
-                if (FACTORIES.containsKey(className)) {
-                    factoryClass = (Class) FACTORIES.get(className);
-                } else {
-                    factoryClass = Class.forName(className);
-                    registerFactoryClass(factoryClass);
-                    Logger.getLogger(MALElementStreamFactory.class.getName()).log(
-                            Level.INFO,
-                            "New encoding factory registered with classname: {0}",
-                            className);
-                }
-
-                MALElementStreamFactory factory = (MALElementStreamFactory) factoryClass.newInstance();
-                factory.init(qosProperties);
-                return factory;
-            } catch (ClassNotFoundException exc) {
-                throw new MALException(exc.getLocalizedMessage(), exc);
-            } catch (InstantiationException exc) {
-                throw new MALException(exc.getLocalizedMessage(), exc);
-            } catch (IllegalAccessException exc) {
-                throw new MALException(exc.getLocalizedMessage(), exc);
-            }
+            return newFactoryForClass(className, qosProperties);
         } else {
             throw new MALException("Unknown encoding factory for protocol: " + protocol);
+        }
+    }
+
+    /**
+     * The method returns a MALElementStreamFactory instance of the named
+     * class, independently of any protocol property.
+     *
+     * @param className Fully qualified name of a class extending
+     * MALElementStreamFactory
+     * @param qosProperties Configuration properties
+     * @return The new factory.
+     * @throws MALException If an error detected during instantiation.
+     */
+    public static MALElementStreamFactory newFactoryForClass(final String className,
+            final Map qosProperties) throws MALException {
+        try {
+            Class factoryClass;
+
+            if (FACTORIES.containsKey(className)) {
+                factoryClass = (Class) FACTORIES.get(className);
+            } else {
+                factoryClass = Class.forName(className);
+                registerFactoryClass(factoryClass);
+                Logger.getLogger(MALElementStreamFactory.class.getName()).log(
+                        Level.INFO,
+                        "New encoding factory registered with classname: {0}",
+                        className);
+            }
+
+            MALElementStreamFactory factory = (MALElementStreamFactory) factoryClass.newInstance();
+            factory.init(qosProperties);
+            return factory;
+        } catch (ClassNotFoundException exc) {
+            throw new MALException(exc.getLocalizedMessage(), exc);
+        } catch (InstantiationException exc) {
+            throw new MALException(exc.getLocalizedMessage(), exc);
+        } catch (IllegalAccessException exc) {
+            throw new MALException(exc.getLocalizedMessage(), exc);
         }
     }
 

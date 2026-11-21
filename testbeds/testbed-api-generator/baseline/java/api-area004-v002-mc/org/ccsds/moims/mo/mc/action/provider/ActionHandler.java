@@ -1,5 +1,13 @@
 package org.ccsds.moims.mo.mc.action.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mc.DuplicateException;
+import org.ccsds.moims.mo.mc.InvalidException;
+import org.ccsds.moims.mo.mc.RejectedException;
+import org.ccsds.moims.mo.mc.structures.ActionExecutionRequest;
+
 /**
  * Interface that providers of the Action service must implement to handle
  * the operations of that service.
@@ -11,18 +19,18 @@ public interface ActionHandler {
      * 
      * @param executionRequest The executionRequest field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mc.DuplicateException The entry or operation is a duplicate of an existing record, violating uniqueness.
-     * @throws org.ccsds.moims.mo.mc.InvalidException The input data or operation format is invalid and does not meet required criteria.
-     * @throws org.ccsds.moims.mo.mc.RejectedException The operation has been rejected due to policy or validation rules.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws DuplicateException The entry or operation is a duplicate of an existing record, violating uniqueness.
+     * @throws InvalidException The input data or operation format is invalid and does not meet required criteria.
+     * @throws RejectedException The operation has been rejected due to policy or validation rules.
+     * @throws UnknownException Operation specific.
+     * @throws MALException if there is an implementation exception
      */
-    void execute(org.ccsds.moims.mo.mc.structures.ActionExecutionRequest executionRequest,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mc.DuplicateException, org.ccsds.moims.mo.mc.InvalidException, org.ccsds.moims.mo.mc.RejectedException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void execute(ActionExecutionRequest executionRequest,
+            MALInteraction interaction) throws DuplicateException, InvalidException, RejectedException, UnknownException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.action.provider.ActionSkeleton skeleton);
+    void setSkeleton(ActionSkeleton skeleton);
 }

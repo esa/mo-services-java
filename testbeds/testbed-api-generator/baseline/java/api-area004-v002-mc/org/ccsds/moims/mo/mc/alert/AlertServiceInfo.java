@@ -1,9 +1,32 @@
 package org.ccsds.moims.mo.mc.alert;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.AmbiguousException;
+import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.structures.AlertConfigurationList;
+
 /**
  * Helper class for Alert service.
  */
-public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
+public class AlertServiceInfo extends ServiceInfo {
 
     /**
      * Service number literal.
@@ -13,17 +36,17 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort ALERT_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_ALERT_SERVICE_NUMBER);
+    public static final UShort ALERT_SERVICE_NUMBER = new UShort(_ALERT_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier ALERT_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Alert");
+    public static final Identifier ALERT_SERVICE_NAME = new Identifier("Alert");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             4, 2, ALERT_SERVICE_NUMBER);
 
     /**
@@ -34,31 +57,31 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation MONITORALERT.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort MONITORALERT_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MONITORALERT_OP_NUMBER);
+    private static final UShort MONITORALERT_OP_NUMBER = new UShort(_MONITORALERT_OP_NUMBER);
 
     /**
      * Operation instance for operation MONITORALERT.
      */
-    public static final org.ccsds.moims.mo.mal.MALPubSubOperation MONITORALERT_OP = new org.ccsds.moims.mo.mal.MALPubSubOperation(SERVICE_KEY, 
+    public static final MALPubSubOperation MONITORALERT_OP = new MALPubSubOperation(SERVICE_KEY, 
             MONITORALERT_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("monitorAlert"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(1), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("timestamp", false, org.ccsds.moims.mo.mal.structures.Attribute.TIME_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("arguments", true, org.ccsds.moims.mo.mal.structures.NullableAttributeList.SHORT_FORM, "")}, 
+            new Identifier("monitorAlert"), 
+            new UShort(1), 
+            new OperationField[] {
+                new OperationField("timestamp", false, Attribute.TIME_SHORT_FORM, ""),
+                new OperationField("arguments", true, NullableAttributeList.SHORT_FORM, "")}, 
             "The monitorAlert operation allows a consumer to subscribe for alerts.");
 
     /**
      * Key names instance for MONITORALERT operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.Identifier [] _MONITORALERT_OP_KEY_NAMES = {new org.ccsds.moims.mo.mal.structures.Identifier("alertKey"),
-            new org.ccsds.moims.mo.mal.structures.Identifier("alertVersion"),
-            new org.ccsds.moims.mo.mal.structures.Identifier("alertSeverity")};
+    private static final Identifier [] _MONITORALERT_OP_KEY_NAMES = {new Identifier("alertKey"),
+            new Identifier("alertVersion"),
+            new Identifier("alertSeverity")};
 
     /**
      * Key names instance for MONITORALERT operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList MONITORALERT_OP_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_MONITORALERT_OP_KEY_NAMES)));
+    private static final IdentifierList MONITORALERT_OP_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(_MONITORALERT_OP_KEY_NAMES)));
 
     /**
      * Operation number literal for operation GETALERTCONFIGURATION.
@@ -68,20 +91,20 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation GETALERTCONFIGURATION.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort GETALERTCONFIGURATION_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GETALERTCONFIGURATION_OP_NUMBER);
+    private static final UShort GETALERTCONFIGURATION_OP_NUMBER = new UShort(_GETALERTCONFIGURATION_OP_NUMBER);
 
     /**
      * Operation instance for operation GETALERTCONFIGURATION.
      */
-    public static final org.ccsds.moims.mo.mal.MALRequestOperation GETALERTCONFIGURATION_OP = new org.ccsds.moims.mo.mal.MALRequestOperation(SERVICE_KEY, 
+    public static final MALRequestOperation GETALERTCONFIGURATION_OP = new MALRequestOperation(SERVICE_KEY, 
             GETALERTCONFIGURATION_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("getAlertConfiguration"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(2), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", false, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("alertConfigs", false, org.ccsds.moims.mo.mc.structures.AlertConfigurationList.SHORT_FORM, "")}, 
+            new Identifier("getAlertConfiguration"), 
+            new UShort(2), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", false, IdentifierList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("alertConfigs", false, AlertConfigurationList.SHORT_FORM, "")}, 
             "The getAlertConfiguration operation allows a consumer to retrieve the current configuration for the generation of an alert.");
 
     /**
@@ -92,18 +115,18 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation ENABLEGENERATION.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort ENABLEGENERATION_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_ENABLEGENERATION_OP_NUMBER);
+    private static final UShort ENABLEGENERATION_OP_NUMBER = new UShort(_ENABLEGENERATION_OP_NUMBER);
 
     /**
      * Operation instance for operation ENABLEGENERATION.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation ENABLEGENERATION_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation ENABLEGENERATION_OP = new MALSubmitOperation(SERVICE_KEY, 
             ENABLEGENERATION_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("enableGeneration"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(2), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
+            new Identifier("enableGeneration"), 
+            new UShort(2), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", true, IdentifierList.SHORT_FORM, "")}, 
             "The enableGeneration operation allows a consumer to control whether instances of specific alerts are generated or not.");
 
     /**
@@ -114,29 +137,29 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation DISABLEGENERATION.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort DISABLEGENERATION_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_DISABLEGENERATION_OP_NUMBER);
+    private static final UShort DISABLEGENERATION_OP_NUMBER = new UShort(_DISABLEGENERATION_OP_NUMBER);
 
     /**
      * Operation instance for operation DISABLEGENERATION.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation DISABLEGENERATION_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation DISABLEGENERATION_OP = new MALSubmitOperation(SERVICE_KEY, 
             DISABLEGENERATION_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("disableGeneration"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(2), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("domain", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("keys", true, org.ccsds.moims.mo.mal.structures.IdentifierList.SHORT_FORM, "")}, 
+            new Identifier("disableGeneration"), 
+            new UShort(2), 
+            new OperationField[] {
+                new OperationField("domain", true, IdentifierList.SHORT_FORM, ""),
+                new OperationField("keys", true, IdentifierList.SHORT_FORM, "")}, 
             "The disableGeneration operation allows a consumer to stop the generation of instances of specific alerts.");
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] ALERT_SERVICE_ELEMENTS = {};
+    public static final Element[] ALERT_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{MONITORALERT_OP,
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{MONITORALERT_OP,
         GETALERTCONFIGURATION_OP,
         ENABLEGENERATION_OP,
         DISABLEGENERATION_OP};
@@ -150,42 +173,42 @@ public class AlertServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.mc.MCHelper.MC_AREA;
+    public MALArea getArea() {
+        return MCHelper.MC_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
         switch (operationNumber) {
             case 2:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 3:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
             case 4:
                 switch (errorNumber) {
                     case 65551:
-                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                        return new UnknownException(extraInfo);
                     case 5:
-                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                        return new AmbiguousException(extraInfo);
                 }
                 break;
         }
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

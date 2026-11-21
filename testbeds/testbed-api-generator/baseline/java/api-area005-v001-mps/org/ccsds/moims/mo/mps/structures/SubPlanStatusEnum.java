@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for SubPlanStatusEnum.
  */
-public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class SubPlanStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900331008L;
     /**
@@ -13,7 +17,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for ACTIVATED.
@@ -23,7 +27,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value ACTIVATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum ACTIVATED = new org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum(org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum.ACTIVATED_VALUE);
+    public static final SubPlanStatusEnum ACTIVATED = new SubPlanStatusEnum(SubPlanStatusEnum.ACTIVATED_VALUE);
 
     /**
      * Enumeration value for DEACTIVATED.
@@ -33,12 +37,12 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value DEACTIVATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum DEACTIVATED = new org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum(org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum.DEACTIVATED_VALUE);
+    public static final SubPlanStatusEnum DEACTIVATED = new SubPlanStatusEnum(SubPlanStatusEnum.DEACTIVATED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum[] _ENUMERATIONS = {
+    private static final SubPlanStatusEnum[] _ENUMERATIONS = {
         ACTIVATED, DEACTIVATED};
 
     /**
@@ -77,7 +81,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum fromString(String s) {
+    public static SubPlanStatusEnum fromString(String s) {
         switch (s) {
             case "ACTIVATED":
                 return SubPlanStatusEnum.ACTIVATED;
@@ -89,7 +93,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case ACTIVATED_VALUE:
                 return SubPlanStatusEnum.ACTIVATED;
@@ -101,7 +105,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class SubPlanStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

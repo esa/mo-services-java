@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.alert.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The AlertCreationRequest contains all the fields required when creating
  * a new alert in a provider.
  */
-public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AlertCreationRequest implements Composite {
 
     private static final long serialVersionUID = 1125912808521731L;
     /**
@@ -14,17 +22,17 @@ public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Alert name. Must not be empty or wildcard value.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The alert definition details.
      */
-    private org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetails alertDefDetails;
+    private AlertDefinitionDetails alertDefDetails;
 
     /**
      * Default constructor for AlertCreationRequest.
@@ -39,15 +47,15 @@ public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.struct
      * @param name Alert name. Must not be empty or wildcard value.
      * @param alertDefDetails The alert definition details.
      */
-    public AlertCreationRequest(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetails alertDefDetails) {
+    public AlertCreationRequest(Identifier name,
+            AlertDefinitionDetails alertDefDetails) {
         this.name = name;
         this.alertDefDetails = alertDefDetails;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.alert.structures.AlertCreationRequest();
+    public Element createElement() {
+        return new AlertCreationRequest();
     }
 
     /**
@@ -55,7 +63,7 @@ public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -64,7 +72,7 @@ public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field alertDefDetails
      */
-    public org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetails getAlertDefDetails() {
+    public AlertDefinitionDetails getAlertDefDetails() {
         return alertDefDetails;
     }
 
@@ -114,26 +122,26 @@ public final class AlertCreationRequest implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (alertDefDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'alertDefDetails' cannot be null!");
+            throw new MALException("The field 'alertDefDetails' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeElement(alertDefDetails);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        alertDefDetails = (org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetails) decoder.decodeElement(new org.ccsds.moims.mo.mc.alert.structures.AlertDefinitionDetails());
+        alertDefDetails = (AlertDefinitionDetails) decoder.decodeElement(new AlertDefinitionDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

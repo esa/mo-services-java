@@ -1,11 +1,23 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.common.structures.ServiceKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UShortList;
+
 /**
  * The ServiceFilter structure holds all information required by the Directory
  * service for service lookup operation. The field filters are AND&quot;d
  * together.
  */
-public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ServiceFilter implements Composite {
 
     private static final long serialVersionUID = 844429241876487L;
     /**
@@ -15,42 +27,42 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The required service provider. Can be NULL in which case matches all values.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier serviceProviderId;
+    private Identifier serviceProviderId;
 
     /**
      * The domain to query. Can be NULL in which case matches all values.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The network to match. Can be NULL in which case matches all values.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier network;
+    private Identifier network;
 
     /**
      * The session type to match. Can be NULL in which case matches all values.
      */
-    private org.ccsds.moims.mo.mal.structures.SessionType sessionType;
+    private SessionType sessionType;
 
     /**
      * The session name to match. Can be NULL in which case matches all values.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sessionName;
+    private Identifier sessionName;
 
     /**
      * The service to filter on, values can be NULL which matches all values.
      */
-    private org.ccsds.moims.mo.common.structures.ServiceKey serviceKey;
+    private ServiceKey serviceKey;
 
     /**
      * List of required capability sets. If NULL then matches any.
      */
-    private org.ccsds.moims.mo.mal.structures.UShortList requiredCapabilitySets;
+    private UShortList requiredCapabilitySets;
 
     /**
      * Default constructor for ServiceFilter.
@@ -70,13 +82,13 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * @param serviceKey The service to filter on, values can be NULL which matches all values.
      * @param requiredCapabilitySets List of required capability sets. If NULL then matches any.
      */
-    public ServiceFilter(org.ccsds.moims.mo.mal.structures.Identifier serviceProviderId,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier network,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.mal.structures.UShortList requiredCapabilitySets) {
+    public ServiceFilter(Identifier serviceProviderId,
+            IdentifierList domain,
+            Identifier network,
+            SessionType sessionType,
+            Identifier sessionName,
+            ServiceKey serviceKey,
+            UShortList requiredCapabilitySets) {
         this.serviceProviderId = serviceProviderId;
         this.domain = domain;
         this.network = network;
@@ -87,8 +99,8 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.ServiceFilter();
+    public Element createElement() {
+        return new ServiceFilter();
     }
 
     /**
@@ -96,7 +108,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field serviceProviderId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getServiceProviderId() {
+    public Identifier getServiceProviderId() {
         return serviceProviderId;
     }
 
@@ -105,7 +117,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -114,7 +126,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field network
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetwork() {
+    public Identifier getNetwork() {
         return network;
     }
 
@@ -123,7 +135,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field sessionType
      */
-    public org.ccsds.moims.mo.mal.structures.SessionType getSessionType() {
+    public SessionType getSessionType() {
         return sessionType;
     }
 
@@ -132,7 +144,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field sessionName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSessionName() {
+    public Identifier getSessionName() {
         return sessionName;
     }
 
@@ -141,7 +153,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field serviceKey
      */
-    public org.ccsds.moims.mo.common.structures.ServiceKey getServiceKey() {
+    public ServiceKey getServiceKey() {
         return serviceKey;
     }
 
@@ -150,7 +162,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field requiredCapabilitySets
      */
-    public org.ccsds.moims.mo.mal.structures.UShortList getRequiredCapabilitySets() {
+    public UShortList getRequiredCapabilitySets() {
         return requiredCapabilitySets;
     }
 
@@ -255,7 +267,7 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableIdentifier(serviceProviderId);
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableIdentifier(network);
@@ -266,19 +278,19 @@ public final class ServiceFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         serviceProviderId = decoder.decodeNullableIdentifier();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         network = decoder.decodeNullableIdentifier();
-        sessionType = (org.ccsds.moims.mo.mal.structures.SessionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.SessionType.LIVE);
+        sessionType = (SessionType) decoder.decodeNullableElement(SessionType.LIVE);
         sessionName = decoder.decodeNullableIdentifier();
-        serviceKey = (org.ccsds.moims.mo.common.structures.ServiceKey) decoder.decodeNullableElement(new org.ccsds.moims.mo.common.structures.ServiceKey());
-        requiredCapabilitySets = (org.ccsds.moims.mo.mal.structures.UShortList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.UShortList());
+        serviceKey = (ServiceKey) decoder.decodeNullableElement(new ServiceKey());
+        requiredCapabilitySets = (UShortList) decoder.decodeNullableElement(new UShortList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

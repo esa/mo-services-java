@@ -1,18 +1,25 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * An AttributeFilter is an abstract data structure that enables three types
  * of filters: ValueRange, ValueSet, and StringPattern. It is used in the
  * context of selecting a subset of mission data products.
  */
-public abstract class AttributeFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class AttributeFilter implements Composite {
 
     /**
      * The name of the metadata attribute to filter. If the product metadata being
      * evaluated does not contain an attribute with this name, then the evaluation
      * of the filter shall be false.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute
@@ -33,7 +40,7 @@ public abstract class AttributeFilter implements org.ccsds.moims.mo.mal.structur
      * @param name The name of the metadata attribute to filter. If the product metadata being evaluated does not contain an attribute with this name, then the evaluation of the filter shall be false.
      * @param include Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.
      */
-    public AttributeFilter(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public AttributeFilter(Identifier name,
             Boolean include) {
         this.name = name;
         this.include = include;
@@ -44,7 +51,7 @@ public abstract class AttributeFilter implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -103,19 +110,19 @@ public abstract class AttributeFilter implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (include == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'include' cannot be null!");
+            throw new MALException("The field 'include' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeBoolean(include);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
         include = decoder.decodeBoolean();
         return this;

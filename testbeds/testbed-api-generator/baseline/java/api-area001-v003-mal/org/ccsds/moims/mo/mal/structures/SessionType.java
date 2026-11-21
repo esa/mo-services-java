@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * Enumeration class for SessionType.
  */
-public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class SessionType extends Enumeration {
 
     private static final long serialVersionUID = 281475027042406L;
     /**
@@ -13,7 +15,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for LIVE.
@@ -23,7 +25,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value LIVE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.SessionType LIVE = new org.ccsds.moims.mo.mal.structures.SessionType(org.ccsds.moims.mo.mal.structures.SessionType.LIVE_VALUE);
+    public static final SessionType LIVE = new SessionType(SessionType.LIVE_VALUE);
 
     /**
      * Enumeration value for SIMULATION.
@@ -33,7 +35,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value SIMULATION.
      */
-    public static final org.ccsds.moims.mo.mal.structures.SessionType SIMULATION = new org.ccsds.moims.mo.mal.structures.SessionType(org.ccsds.moims.mo.mal.structures.SessionType.SIMULATION_VALUE);
+    public static final SessionType SIMULATION = new SessionType(SessionType.SIMULATION_VALUE);
 
     /**
      * Enumeration value for REPLAY.
@@ -43,12 +45,12 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value REPLAY.
      */
-    public static final org.ccsds.moims.mo.mal.structures.SessionType REPLAY = new org.ccsds.moims.mo.mal.structures.SessionType(org.ccsds.moims.mo.mal.structures.SessionType.REPLAY_VALUE);
+    public static final SessionType REPLAY = new SessionType(SessionType.REPLAY_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mal.structures.SessionType[] _ENUMERATIONS = {
+    private static final SessionType[] _ENUMERATIONS = {
         LIVE, SIMULATION, REPLAY};
 
     /**
@@ -89,7 +91,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mal.structures.SessionType fromString(String s) {
+    public static SessionType fromString(String s) {
         switch (s) {
             case "LIVE":
                 return SessionType.LIVE;
@@ -103,7 +105,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case LIVE_VALUE:
                 return SessionType.LIVE;
@@ -117,7 +119,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -127,7 +129,7 @@ public final class SessionType extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

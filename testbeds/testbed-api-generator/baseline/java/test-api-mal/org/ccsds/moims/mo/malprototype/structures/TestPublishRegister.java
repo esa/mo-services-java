@@ -1,9 +1,21 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * This data structure specifies how the IPTest provider shall register.
  */
-public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.structures.TestPublish {
+public final class TestPublishRegister extends TestPublish {
 
     private static final long serialVersionUID = 28147497687842823L;
     /**
@@ -13,23 +25,23 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The names of the keys to be used by the broker.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList keyNames;
+    private IdentifierList keyNames;
 
     /**
      * The types of the keys to be used by the broker.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes;
+    private AttributeTypeList keyTypes;
 
     /**
      * The code of the Publish Register error expected to be received.-1 if no
      * Publish Register error is expected.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger errorCode;
+    private UInteger errorCode;
 
     /**
      * Default constructor for TestPublishRegister.
@@ -52,16 +64,16 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
      * @param keyTypes The types of the keys to be used by the broker.
      * @param errorCode The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.
      */
-    public TestPublishRegister(org.ccsds.moims.mo.mal.structures.QoSLevel Qos,
-            org.ccsds.moims.mo.mal.structures.UInteger Priority,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType Session,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
+    public TestPublishRegister(QoSLevel Qos,
+            UInteger Priority,
+            IdentifierList domain,
+            Identifier networkZone,
+            SessionType Session,
+            Identifier sessionName,
             Boolean testMultiType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList keyNames,
-            org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes,
-            org.ccsds.moims.mo.mal.structures.UInteger errorCode) {
+            IdentifierList keyNames,
+            AttributeTypeList keyTypes,
+            UInteger errorCode) {
         super(Qos,
             Priority,
             domain,
@@ -75,8 +87,8 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.TestPublishRegister();
+    public Element createElement() {
+        return new TestPublishRegister();
     }
 
     /**
@@ -84,7 +96,7 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
      * 
      * @return The field keyNames
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getKeyNames() {
+    public IdentifierList getKeyNames() {
         return keyNames;
     }
 
@@ -93,7 +105,7 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
      * 
      * @return The field keyTypes
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeTypeList getKeyTypes() {
+    public AttributeTypeList getKeyTypes() {
         return keyTypes;
     }
 
@@ -102,7 +114,7 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
      * 
      * @return The field errorCode
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getErrorCode() {
+    public UInteger getErrorCode() {
         return errorCode;
     }
 
@@ -167,7 +179,7 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableElement(keyNames);
         encoder.encodeNullableElement(keyTypes);
@@ -175,16 +187,16 @@ public final class TestPublishRegister extends org.ccsds.moims.mo.malprototype.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        keyNames = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        keyTypes = (org.ccsds.moims.mo.mal.structures.AttributeTypeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.AttributeTypeList());
+        keyNames = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        keyTypes = (AttributeTypeList) decoder.decodeNullableElement(new AttributeTypeList());
         errorCode = decoder.decodeNullableUInteger();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

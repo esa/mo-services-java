@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.mc.action.consumer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+
 /**
  * Typed accessors for the Subscription Keys of the monitorExecution PubSub
  * operation.
@@ -9,17 +19,17 @@ public final class MonitorExecutionSubscriptionKeys {
     /**
      * The key values as received in the UpdateHeader.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * The effective key names for the received key values.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList keyNames;
+    private IdentifierList keyNames;
 
     /**
      * The Subscription Key names defined by the operation, in order.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList CANONICAL_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(new org.ccsds.moims.mo.mal.structures.Identifier("requestId"), new org.ccsds.moims.mo.mal.structures.Identifier("actionKey"), new org.ccsds.moims.mo.mal.structures.Identifier("actionCategory"))));
+    private static final IdentifierList CANONICAL_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(new Identifier("requestId"), new Identifier("actionKey"), new Identifier("actionCategory"))));
 
     /**
      * Creates an instance from the received UpdateHeader and the subscription
@@ -28,8 +38,8 @@ public final class MonitorExecutionSubscriptionKeys {
      * @param updateHeader The UpdateHeader received in the NOTIFY message
      * @param selectedKeys The selectedKeys of the subscription, or null if trimming was not enabled
      */
-    public MonitorExecutionSubscriptionKeys(org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys) {
+    public MonitorExecutionSubscriptionKeys(UpdateHeader updateHeader,
+            IdentifierList selectedKeys) {
         this.keyValues = (updateHeader == null) ? null : updateHeader.getKeyValues();
         this.keyNames = (selectedKeys != null) ? selectedKeys : CANONICAL_KEY_NAMES;
     }
@@ -40,8 +50,8 @@ public final class MonitorExecutionSubscriptionKeys {
      * @return The key value, or null if not present
      */
     public Long getRequestId() {
-        org.ccsds.moims.mo.mal.structures.Attribute v = valueByName("requestId");
-        return (v == null) ? null : (Long) org.ccsds.moims.mo.mal.structures.Attribute.attribute2JavaType(v);
+        Attribute v = valueByName("requestId");
+        return (v == null) ? null : (Long) Attribute.attribute2JavaType(v);
     }
 
     /**
@@ -49,8 +59,8 @@ public final class MonitorExecutionSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getActionKey() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("actionKey");
+    public Identifier getActionKey() {
+        return (Identifier) valueByName("actionKey");
     }
 
     /**
@@ -59,8 +69,8 @@ public final class MonitorExecutionSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getActionCategory() {
-        return (org.ccsds.moims.mo.mal.structures.UOctet) valueByName("actionCategory");
+    public UOctet getActionCategory() {
+        return (UOctet) valueByName("actionCategory");
     }
 
     /**
@@ -71,7 +81,7 @@ public final class MonitorExecutionSubscriptionKeys {
      * @param name The Subscription Key name
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getByName(String name) {
+    public Attribute getByName(String name) {
         return valueByName(name);
     }
 
@@ -79,7 +89,7 @@ public final class MonitorExecutionSubscriptionKeys {
      * 
      * @param name The Subscription Key name
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute valueByName(String name) {
+    private Attribute valueByName(String name) {
         if (keyNames == null || keyValues == null) {
             return null;
         }
@@ -88,7 +98,7 @@ public final class MonitorExecutionSubscriptionKeys {
                 if (i >= keyValues.size()) {
                     return null;
                 }
-                org.ccsds.moims.mo.mal.structures.NullableAttribute na = keyValues.get(i);
+                NullableAttribute na = keyValues.get(i);
                 return (na == null) ? null : na.getValue();
             }
         }

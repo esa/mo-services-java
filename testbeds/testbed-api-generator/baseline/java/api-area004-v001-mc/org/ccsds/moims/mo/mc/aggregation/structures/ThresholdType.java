@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ThresholdType.
  */
-public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ThresholdType extends Enumeration {
 
     private static final long serialVersionUID = 1125925693423624L;
     /**
@@ -13,7 +17,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for PERCENTAGE.
@@ -23,7 +27,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value PERCENTAGE.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType PERCENTAGE = new org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType(org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType.PERCENTAGE_VALUE);
+    public static final ThresholdType PERCENTAGE = new ThresholdType(ThresholdType.PERCENTAGE_VALUE);
 
     /**
      * Enumeration value for DELTA.
@@ -33,12 +37,12 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value DELTA.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType DELTA = new org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType(org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType.DELTA_VALUE);
+    public static final ThresholdType DELTA = new ThresholdType(ThresholdType.DELTA_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType[] _ENUMERATIONS = {
+    private static final ThresholdType[] _ENUMERATIONS = {
         PERCENTAGE, DELTA};
 
     /**
@@ -77,7 +81,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType fromString(String s) {
+    public static ThresholdType fromString(String s) {
         switch (s) {
             case "PERCENTAGE":
                 return ThresholdType.PERCENTAGE;
@@ -89,7 +93,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case PERCENTAGE_VALUE:
                 return ThresholdType.PERCENTAGE;
@@ -101,7 +105,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class ThresholdType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

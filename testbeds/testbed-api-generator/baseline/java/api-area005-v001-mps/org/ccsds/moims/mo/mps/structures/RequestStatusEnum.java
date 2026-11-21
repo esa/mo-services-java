@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for RequestStatusEnum.
  */
-public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class RequestStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330899L;
     /**
@@ -13,7 +17,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for REQUESTED.
@@ -23,7 +27,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value REQUESTED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum REQUESTED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.REQUESTED_VALUE);
+    public static final RequestStatusEnum REQUESTED = new RequestStatusEnum(RequestStatusEnum.REQUESTED_VALUE);
 
     /**
      * Enumeration value for ACCEPTED.
@@ -33,7 +37,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value ACCEPTED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum ACCEPTED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.ACCEPTED_VALUE);
+    public static final RequestStatusEnum ACCEPTED = new RequestStatusEnum(RequestStatusEnum.ACCEPTED_VALUE);
 
     /**
      * Enumeration value for REJECTED.
@@ -43,7 +47,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value REJECTED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum REJECTED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.REJECTED_VALUE);
+    public static final RequestStatusEnum REJECTED = new RequestStatusEnum(RequestStatusEnum.REJECTED_VALUE);
 
     /**
      * Enumeration value for CANCELLED.
@@ -53,7 +57,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value CANCELLED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum CANCELLED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.CANCELLED_VALUE);
+    public static final RequestStatusEnum CANCELLED = new RequestStatusEnum(RequestStatusEnum.CANCELLED_VALUE);
 
     /**
      * Enumeration value for PLANNED.
@@ -63,7 +67,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value PLANNED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum PLANNED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.PLANNED_VALUE);
+    public static final RequestStatusEnum PLANNED = new RequestStatusEnum(RequestStatusEnum.PLANNED_VALUE);
 
     /**
      * Enumeration value for PROCESSING.
@@ -73,7 +77,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value PROCESSING.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum PROCESSING = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.PROCESSING_VALUE);
+    public static final RequestStatusEnum PROCESSING = new RequestStatusEnum(RequestStatusEnum.PROCESSING_VALUE);
 
     /**
      * Enumeration value for PROCESSED.
@@ -83,7 +87,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value PROCESSED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum PROCESSED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.PROCESSED_VALUE);
+    public static final RequestStatusEnum PROCESSED = new RequestStatusEnum(RequestStatusEnum.PROCESSED_VALUE);
 
     /**
      * Enumeration value for TERMINATED.
@@ -93,12 +97,12 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     /**
      * Enumeration singleton for value TERMINATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum TERMINATED = new org.ccsds.moims.mo.mps.structures.RequestStatusEnum(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.TERMINATED_VALUE);
+    public static final RequestStatusEnum TERMINATED = new RequestStatusEnum(RequestStatusEnum.TERMINATED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.RequestStatusEnum[] _ENUMERATIONS = {
+    private static final RequestStatusEnum[] _ENUMERATIONS = {
         REQUESTED, ACCEPTED, REJECTED, CANCELLED, PLANNED, PROCESSING, PROCESSED,
         TERMINATED};
 
@@ -150,7 +154,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.RequestStatusEnum fromString(String s) {
+    public static RequestStatusEnum fromString(String s) {
         switch (s) {
             case "REQUESTED":
                 return RequestStatusEnum.REQUESTED;
@@ -174,7 +178,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case REQUESTED_VALUE:
                 return RequestStatusEnum.REQUESTED;
@@ -198,7 +202,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -208,7 +212,7 @@ public final class RequestStatusEnum extends org.ccsds.moims.mo.mal.structures.E
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

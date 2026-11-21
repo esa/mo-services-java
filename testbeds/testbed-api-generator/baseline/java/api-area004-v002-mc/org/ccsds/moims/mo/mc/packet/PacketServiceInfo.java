@@ -1,9 +1,26 @@
 package org.ccsds.moims.mo.mc.packet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.MCHelper;
+
 /**
  * Helper class for Packet service.
  */
-public class PacketServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
+public class PacketServiceInfo extends ServiceInfo {
 
     /**
      * Service number literal.
@@ -13,17 +30,17 @@ public class PacketServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort PACKET_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_PACKET_SERVICE_NUMBER);
+    public static final UShort PACKET_SERVICE_NUMBER = new UShort(_PACKET_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier PACKET_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Packet");
+    public static final Identifier PACKET_SERVICE_NAME = new Identifier("Packet");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             4, 2, PACKET_SERVICE_NUMBER);
 
     /**
@@ -34,39 +51,39 @@ public class PacketServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     /**
      * Operation number instance for operation DELIVERPACKET.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort DELIVERPACKET_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_DELIVERPACKET_OP_NUMBER);
+    private static final UShort DELIVERPACKET_OP_NUMBER = new UShort(_DELIVERPACKET_OP_NUMBER);
 
     /**
      * Operation instance for operation DELIVERPACKET.
      */
-    public static final org.ccsds.moims.mo.mal.MALPubSubOperation DELIVERPACKET_OP = new org.ccsds.moims.mo.mal.MALPubSubOperation(SERVICE_KEY, 
+    public static final MALPubSubOperation DELIVERPACKET_OP = new MALPubSubOperation(SERVICE_KEY, 
             DELIVERPACKET_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("deliverPacket"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(1), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("timestamp", false, org.ccsds.moims.mo.mal.structures.Attribute.TIME_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("spacePacket", false, org.ccsds.moims.mo.mal.structures.Attribute.BLOB_SHORT_FORM, "")}, 
+            new Identifier("deliverPacket"), 
+            new UShort(1), 
+            new OperationField[] {
+                new OperationField("timestamp", false, Attribute.TIME_SHORT_FORM, ""),
+                new OperationField("spacePacket", false, Attribute.BLOB_SHORT_FORM, "")}, 
             "The deliverPacket operation allows a provider to publish space packets with associated metadata, and a consumer to receive a filtered set of those packets.");
 
     /**
      * Key names instance for DELIVERPACKET operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.Identifier [] _DELIVERPACKET_OP_KEY_NAMES = {new org.ccsds.moims.mo.mal.structures.Identifier("apid")};
+    private static final Identifier [] _DELIVERPACKET_OP_KEY_NAMES = {new Identifier("apid")};
 
     /**
      * Key names instance for DELIVERPACKET operation of pubsub interaction pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList DELIVERPACKET_OP_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_DELIVERPACKET_OP_KEY_NAMES)));
+    private static final IdentifierList DELIVERPACKET_OP_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(_DELIVERPACKET_OP_KEY_NAMES)));
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] PACKET_SERVICE_ELEMENTS = {};
+    public static final Element[] PACKET_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{DELIVERPACKET_OP};
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{DELIVERPACKET_OP};
 
     /**
      * Creates an instance of the Packet ServiceInfo.
@@ -77,16 +94,16 @@ public class PacketServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.mc.MCHelper.MC_AREA;
+    public MALArea getArea() {
+        return MCHelper.MC_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

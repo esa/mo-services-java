@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mc.structures.ParameterExpression;
+
 /**
  * The CheckLinkDetails structure represents the link from a check definition
  * to a check result for a specific parameter.
  */
-public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckLinkDetails implements Composite {
 
     private static final long serialVersionUID = 1125917103489025L;
     /**
@@ -14,7 +23,7 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * TRUE if the check instance is enabled.
@@ -40,12 +49,12 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
      * and a check will be triggered by another mechanism. Ignored for Compound
      * checks.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration checkInterval;
+    private Duration checkInterval;
 
     /**
      * Should this check be applied, if NULL then always applied.
      */
-    private org.ccsds.moims.mo.mc.structures.ParameterExpression condition;
+    private ParameterExpression condition;
 
     /**
      * Default constructor for CheckLinkDetails.
@@ -66,8 +75,8 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     public CheckLinkDetails(Boolean checkEnabled,
             Boolean checkOnChange,
             Boolean useConverted,
-            org.ccsds.moims.mo.mal.structures.Duration checkInterval,
-            org.ccsds.moims.mo.mc.structures.ParameterExpression condition) {
+            Duration checkInterval,
+            ParameterExpression condition) {
         this.checkEnabled = checkEnabled;
         this.checkOnChange = checkOnChange;
         this.useConverted = useConverted;
@@ -86,7 +95,7 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     public CheckLinkDetails(Boolean checkEnabled,
             Boolean checkOnChange,
             Boolean useConverted,
-            org.ccsds.moims.mo.mal.structures.Duration checkInterval) {
+            Duration checkInterval) {
         this.checkEnabled = checkEnabled;
         this.checkOnChange = checkOnChange;
         this.useConverted = useConverted;
@@ -95,8 +104,8 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckLinkDetails();
+    public Element createElement() {
+        return new CheckLinkDetails();
     }
 
     /**
@@ -131,7 +140,7 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field checkInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getCheckInterval() {
+    public Duration getCheckInterval() {
         return checkInterval;
     }
 
@@ -140,7 +149,7 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field condition
      */
-    public org.ccsds.moims.mo.mc.structures.ParameterExpression getCondition() {
+    public ParameterExpression getCondition() {
         return condition;
     }
 
@@ -223,18 +232,18 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (checkEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkEnabled' cannot be null!");
+            throw new MALException("The field 'checkEnabled' cannot be null!");
         }
         if (checkOnChange == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkOnChange' cannot be null!");
+            throw new MALException("The field 'checkOnChange' cannot be null!");
         }
         if (useConverted == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'useConverted' cannot be null!");
+            throw new MALException("The field 'useConverted' cannot be null!");
         }
         if (checkInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkInterval' cannot be null!");
+            throw new MALException("The field 'checkInterval' cannot be null!");
         }
         encoder.encodeBoolean(checkEnabled);
         encoder.encodeBoolean(checkOnChange);
@@ -244,17 +253,17 @@ public final class CheckLinkDetails implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         checkEnabled = decoder.decodeBoolean();
         checkOnChange = decoder.decodeBoolean();
         useConverted = decoder.decodeBoolean();
         checkInterval = decoder.decodeDuration();
-        condition = (org.ccsds.moims.mo.mc.structures.ParameterExpression) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ParameterExpression());
+        condition = (ParameterExpression) decoder.decodeNullableElement(new ParameterExpression());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

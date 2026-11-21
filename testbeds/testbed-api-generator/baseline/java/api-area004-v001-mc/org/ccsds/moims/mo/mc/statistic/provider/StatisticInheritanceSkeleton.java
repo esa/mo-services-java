@@ -1,164 +1,194 @@
 package org.ccsds.moims.mo.mc.statistic.provider;
 
+import java.io.IOException;
+import java.util.Map;
+import org.ccsds.moims.mo.com.structures.InstanceBooleanPairList;
+import org.ccsds.moims.mo.com.structures.ObjectKeyList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALProviderSet;
+import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.provider.MALSubmit;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mc.statistic.StatisticHelper;
+import org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList;
+
 /**
  * Provider Inheritance skeleton for StatisticInheritanceSkeleton service.
  */
-public abstract class StatisticInheritanceSkeleton implements org.ccsds.moims.mo.mal.provider.MALInteractionHandler, org.ccsds.moims.mo.mc.statistic.provider.StatisticSkeleton, org.ccsds.moims.mo.mc.statistic.provider.StatisticHandler {
+public abstract class StatisticInheritanceSkeleton implements MALInteractionHandler, StatisticSkeleton, StatisticHandler {
 
     /**
      * The providerSet field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProviderSet providerSet = new org.ccsds.moims.mo.mal.provider.MALProviderSet(org.ccsds.moims.mo.mc.statistic.StatisticHelper.STATISTIC_SERVICE);
+    private MALProviderSet providerSet = new MALProviderSet(StatisticHelper.STATISTIC_SERVICE);
 
     /**
      * Returns the connection object for this provider.
      * 
      * @return the connection object for this provider
-     * @throws java.io.IOException if the method was not implemented yet.
+     * @throws IOException if the method was not implemented yet.
      */
-    public org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider getConnection() throws java.io.IOException {
-        throw new java.io.IOException("This method needs to be overridden!");
+    public ConnectionProvider getConnection() throws IOException {
+        throw new IOException("This method needs to be overridden!");
     }
 
     @Override
-    public void setSkeleton(org.ccsds.moims.mo.mc.statistic.provider.StatisticSkeleton skeleton) {
+    public void setSkeleton(StatisticSkeleton skeleton) {
         // Not used in the inheritance pattern (the skeleton is 'this');
     }
 
     @Override
-    public void malInitialize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malInitialize(MALProvider provider) throws MALException {
         providerSet.addProvider(provider);
     }
 
     @Override
-    public void malFinalize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malFinalize(MALProvider provider) throws MALException {
         providerSet.removeProvider(provider);
     }
 
     @Override
-    public org.ccsds.moims.mo.mc.statistic.provider.MonitorStatisticsPublisher createMonitorStatisticsPublisher(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.QoSLevel qos,
-            java.util.Map qosProps,
-            org.ccsds.moims.mo.mal.structures.UInteger priority) throws org.ccsds.moims.mo.mal.MALException {
-        return new org.ccsds.moims.mo.mc.statistic.provider.MonitorStatisticsPublisher(providerSet.createPublisherSet(org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.MONITORSTATISTICS_OP, domain, sessionType, sessionName, qos, qosProps, null));
+    public MonitorStatisticsPublisher createMonitorStatisticsPublisher(IdentifierList domain,
+            Identifier networkZone,
+            SessionType sessionType,
+            Identifier sessionName,
+            QoSLevel qos,
+            Map qosProps,
+            UInteger priority) throws MALException {
+        return new MonitorStatisticsPublisher(providerSet.createPublisherSet(StatisticServiceInfo.MONITORSTATISTICS_OP, domain, sessionType, sessionName, qos, qosProps, null));
     }
 
     @Override
-    public void handleSend(org.ccsds.moims.mo.mal.provider.MALInteraction interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSend(MALInteraction interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleSubmit(org.ccsds.moims.mo.mal.provider.MALSubmit interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSubmit(MALSubmit interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
-            enableService((body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(),
+          case StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
+            enableService((body.getBodyElement(0, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Boolean.FALSE))).getBooleanValue(),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
-            enableReporting((body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(),
-                (org.ccsds.moims.mo.com.structures.InstanceBooleanPairList) body.getBodyElement(1, new org.ccsds.moims.mo.com.structures.InstanceBooleanPairList()),
+          case StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
+            enableReporting((body.getBodyElement(0, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Boolean.FALSE))).getBooleanValue(),
+                (InstanceBooleanPairList) body.getBodyElement(1, new InstanceBooleanPairList()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
-            removeParameterEvaluation((org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()),
+          case StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
+            removeParameterEvaluation((LongList) body.getBodyElement(0, new LongList()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleRequest(org.ccsds.moims.mo.mal.provider.MALRequest interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleRequest(MALRequest interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
-            interaction.sendResponse(getStatistics((org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()),
-                (body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(),
-                (org.ccsds.moims.mo.com.structures.ObjectKeyList) body.getBodyElement(2, new org.ccsds.moims.mo.com.structures.ObjectKeyList()),
+          case StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
+            interaction.sendResponse(getStatistics((LongList) body.getBodyElement(0, new LongList()),
+                (body.getBodyElement(1, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(1, new Union(Boolean.FALSE))).getBooleanValue(),
+                (ObjectKeyList) body.getBodyElement(2, new ObjectKeyList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
-            interaction.sendResponse(resetEvaluation((body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(),
-                (org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.LongList()),
-                (body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(),
+          case StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
+            interaction.sendResponse(resetEvaluation((body.getBodyElement(0, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Boolean.FALSE))).getBooleanValue(),
+                (LongList) body.getBodyElement(1, new LongList()),
+                (body.getBodyElement(2, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(2, new Union(Boolean.FALSE))).getBooleanValue(),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
+          case StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
             Boolean getServiceStatusRt = getServiceStatus(interaction);
-            interaction.sendResponse((getServiceStatusRt == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(getServiceStatusRt));
+            interaction.sendResponse((getServiceStatusRt == null) ? null : new Union(getServiceStatusRt));
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
-            interaction.sendResponse(listParameterEvaluations((org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()),
+          case StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
+            interaction.sendResponse(listParameterEvaluations((LongList) body.getBodyElement(0, new LongList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
-            interaction.sendResponse(addParameterEvaluation((org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList()),
+          case StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
+            interaction.sendResponse(addParameterEvaluation((StatisticCreationRequestList) body.getBodyElement(0, new StatisticCreationRequestList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
-            interaction.sendResponse(updateParameterEvaluation((org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()),
-                (org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList) body.getBodyElement(1, new org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList()),
+          case StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
+            interaction.sendResponse(updateParameterEvaluation((LongList) body.getBodyElement(0, new LongList()),
+                (StatisticLinkDetailsList) body.getBodyElement(1, new StatisticLinkDetailsList()),
                 interaction));
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
-        }
-    }
-
-    @Override
-    public void handleInvoke(org.ccsds.moims.mo.mal.provider.MALInvoke interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
-        int opNumber = interaction.getOperation().getNumber().getValue();
-        switch (opNumber) {
-          default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleProgress(org.ccsds.moims.mo.mal.provider.MALProgress interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleInvoke(MALInvoke interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+        }
+    }
+
+    @Override
+    public void handleProgress(MALProgress interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
+        int opNumber = interaction.getOperation().getNumber().getValue();
+        switch (opNumber) {
+          default:
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 

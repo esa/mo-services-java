@@ -1,10 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The NamedValue structure shall represent a simple pair type of an identifier
  * and abstract Attribute value.
  */
-public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class NamedValue implements Composite {
 
     private static final long serialVersionUID = 281475027043310L;
     /**
@@ -14,17 +19,17 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The Identifier value.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The Attribute value.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Default constructor for NamedValue.
@@ -39,8 +44,8 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
      * @param name The Identifier value.
      * @param value The Attribute value.
      */
-    public NamedValue(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+    public NamedValue(Identifier name,
+            Attribute value) {
         this.name = name;
         this.value = value;
     }
@@ -50,14 +55,14 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @param name The Identifier value.
      */
-    public NamedValue(org.ccsds.moims.mo.mal.structures.Identifier name) {
+    public NamedValue(Identifier name) {
         this.name = name;
         this.value = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.NamedValue();
+    public Element createElement() {
+        return new NamedValue();
     }
 
     /**
@@ -65,7 +70,7 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -74,7 +79,7 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -124,23 +129,23 @@ public final class NamedValue implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeNullableAttribute(value);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        value = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

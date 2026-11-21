@@ -1,11 +1,21 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The LimitCheckDefinition defines a high and low limit check. It is valid
  * to supply only one limit; the other limit is assumed to be the relevant
  * maximum supported by the type being checked in this case.
  */
-public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetails {
+public final class LimitCheckDefinition extends CheckDefinitionDetails {
 
     private static final long serialVersionUID = 1125917103489035L;
     /**
@@ -15,7 +25,7 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * If TRUE, then the safe (non violating) values lie outside the specified
@@ -27,13 +37,13 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * The lower limit of the value. Must be of the correct type for the entity
      * being checked.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute lowerLimit;
+    private Attribute lowerLimit;
 
     /**
      * The upper limit of the value. Must be of the correct type for the entity
      * being checked.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute upperLimit;
+    private Attribute upperLimit;
 
     /**
      * Default constructor for LimitCheckDefinition.
@@ -57,15 +67,15 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * @param upperLimit The upper limit of the value. Must be of the correct type for the entity being checked.
      */
     public LimitCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
             Boolean violateInRange,
-            org.ccsds.moims.mo.mal.structures.Attribute lowerLimit,
-            org.ccsds.moims.mo.mal.structures.Attribute upperLimit) {
+            Attribute lowerLimit,
+            Attribute upperLimit) {
         super(description,
             checkSeverity,
             maxReportingInterval,
@@ -91,12 +101,12 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * @param violateInRange If TRUE, then the safe (non violating) values lie outside the specified limits range.
      */
     public LimitCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
             Boolean violateInRange) {
         super(description,
             checkSeverity,
@@ -111,8 +121,8 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.LimitCheckDefinition();
+    public Element createElement() {
+        return new LimitCheckDefinition();
     }
 
     /**
@@ -129,7 +139,7 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * 
      * @return The field lowerLimit
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getLowerLimit() {
+    public Attribute getLowerLimit() {
         return lowerLimit;
     }
 
@@ -138,7 +148,7 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
      * 
      * @return The field upperLimit
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getUpperLimit() {
+    public Attribute getUpperLimit() {
         return upperLimit;
     }
 
@@ -203,10 +213,10 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (violateInRange == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'violateInRange' cannot be null!");
+            throw new MALException("The field 'violateInRange' cannot be null!");
         }
         encoder.encodeBoolean(violateInRange);
         encoder.encodeNullableAttribute(lowerLimit);
@@ -214,16 +224,16 @@ public final class LimitCheckDefinition extends org.ccsds.moims.mo.mc.check.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         violateInRange = decoder.decodeBoolean();
-        lowerLimit = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
-        upperLimit = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        lowerLimit = (Attribute) decoder.decodeNullableAttribute();
+        upperLimit = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * E1: A PartialPlan is a data structure returned from the getPartialPlan
  * operation of the Plan Distribution Service that contains a reference to
@@ -11,7 +22,7 @@ package org.ccsds.moims.mo.mps.structures;
  * it might be assumed that any events and resources related to the selected
  * ActivityInstances would be included in the returned partial plan.
  */
-public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PartialPlan implements Composite {
 
     private static final long serialVersionUID = 1407374900331011L;
     /**
@@ -21,46 +32,46 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan of which the partial plan is a selected subset.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan;
+    private ObjectRef<Plan> sourcePlan;
 
     /**
      * Selection criterion based on the domain of contained ActivityInstances.
      * An ordered list representing a domain hierarchy, ‘*’ can be used to represent
      * a wildcard at that level.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Selection criterion based on the subPlan of contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Selection criterion based on tags associated with contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList tags;
+    private StringList tags;
 
     /**
      * Selection criterion indicating the start of a range of time, position,
      * or events associated with contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger partialPlanStart;
+    private Trigger partialPlanStart;
 
     /**
      * Selection criterion indicating the end of a range of time, position, or
      * events associated with contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger partialPlanEnd;
+    private Trigger partialPlanEnd;
 
     /**
      * The returned partial plan.
      */
-    private org.ccsds.moims.mo.mps.structures.Plan partialPlan;
+    private Plan partialPlan;
 
     /**
      * Default constructor for PartialPlan.
@@ -80,13 +91,13 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * @param partialPlanEnd Selection criterion indicating the end of a range of time, position, or events associated with contained ActivityInstances.
      * @param partialPlan The returned partial plan.
      */
-    public PartialPlan(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mps.structures.Trigger partialPlanStart,
-            org.ccsds.moims.mo.mps.structures.Trigger partialPlanEnd,
-            org.ccsds.moims.mo.mps.structures.Plan partialPlan) {
+    public PartialPlan(ObjectRef<Plan> sourcePlan,
+            IdentifierList domain,
+            Identifier subPlan,
+            StringList tags,
+            Trigger partialPlanStart,
+            Trigger partialPlanEnd,
+            Plan partialPlan) {
         this.sourcePlan = sourcePlan;
         this.domain = domain;
         this.subPlan = subPlan;
@@ -102,8 +113,8 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * @param sourcePlan Reference to the Plan of which the partial plan is a selected subset.
      * @param partialPlan The returned partial plan.
      */
-    public PartialPlan(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan,
-            org.ccsds.moims.mo.mps.structures.Plan partialPlan) {
+    public PartialPlan(ObjectRef<Plan> sourcePlan,
+            Plan partialPlan) {
         this.sourcePlan = sourcePlan;
         this.domain = null;
         this.subPlan = null;
@@ -114,8 +125,8 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PartialPlan();
+    public Element createElement() {
+        return new PartialPlan();
     }
 
     /**
@@ -123,7 +134,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field sourcePlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getSourcePlan() {
+    public ObjectRef<Plan> getSourcePlan() {
         return sourcePlan;
     }
 
@@ -132,7 +143,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -141,7 +152,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -150,7 +161,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field tags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getTags() {
+    public StringList getTags() {
         return tags;
     }
 
@@ -159,7 +170,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field partialPlanStart
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPartialPlanStart() {
+    public Trigger getPartialPlanStart() {
         return partialPlanStart;
     }
 
@@ -168,7 +179,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field partialPlanEnd
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPartialPlanEnd() {
+    public Trigger getPartialPlanEnd() {
         return partialPlanEnd;
     }
 
@@ -177,7 +188,7 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field partialPlan
      */
-    public org.ccsds.moims.mo.mps.structures.Plan getPartialPlan() {
+    public Plan getPartialPlan() {
         return partialPlan;
     }
 
@@ -282,12 +293,12 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (sourcePlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sourcePlan' cannot be null!");
+            throw new MALException("The field 'sourcePlan' cannot be null!");
         }
         if (partialPlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'partialPlan' cannot be null!");
+            throw new MALException("The field 'partialPlan' cannot be null!");
         }
         encoder.encodeElement(sourcePlan);
         encoder.encodeNullableElement(domain);
@@ -299,19 +310,19 @@ public final class PartialPlan implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        sourcePlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        sourcePlan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         subPlan = decoder.decodeNullableIdentifier();
-        tags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
-        partialPlanStart = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        partialPlanEnd = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        partialPlan = (org.ccsds.moims.mo.mps.structures.Plan) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Plan());
+        tags = (StringList) decoder.decodeNullableElement(new StringList());
+        partialPlanStart = (Trigger) decoder.decodeNullableAbstractElement();
+        partialPlanEnd = (Trigger) decoder.decodeNullableAbstractElement();
+        partialPlan = (Plan) decoder.decodeElement(new Plan());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

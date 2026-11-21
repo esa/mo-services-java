@@ -1,5 +1,10 @@
 package org.ccsds.moims.mo.comprototype.activitytest.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * Interface that providers of the ActivityTest service must implement to
  * handle the operations of that service.
@@ -10,70 +15,70 @@ public interface ActivityTestHandler {
      * Implements the operation resetTest.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALException if there is an implementation exception
      */
-    void resetTest(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
+    void resetTest(MALInteraction interaction) throws MALException;
     /**
      * Implements the operation close.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALException if there is an implementation exception
      */
-    void close(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
+    void close(MALInteraction interaction) throws MALException;
     /**
      * Implements the operation send.
      * 
      * @param in1 The in1 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALException if there is an implementation exception
      */
-    void send(org.ccsds.moims.mo.mal.structures.StringList in1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
+    void send(StringList in1,
+            MALInteraction interaction) throws MALException;
     /**
      * Implements the operation testSubmit.
      * 
      * @param in1 The in1 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Fake error for testing.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Fake error for testing.
+     * @throws MALException if there is an implementation exception
      */
-    void testSubmit(org.ccsds.moims.mo.mal.structures.StringList in1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void testSubmit(StringList in1,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation request.
      * 
      * @param in1 The in1 field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException Fake error for testing.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Fake error for testing.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.StringList request(org.ccsds.moims.mo.mal.structures.StringList in1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    StringList request(StringList in1,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation invoke.
      * 
      * @param in1 The in1 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Fake error for testing.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Fake error for testing.
+     * @throws MALException if there is an implementation exception
      */
-    void invoke(org.ccsds.moims.mo.mal.structures.StringList in1,
-            org.ccsds.moims.mo.comprototype.activitytest.provider.InvokeInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void invoke(StringList in1,
+            InvokeInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation progress.
      * 
      * @param in1 The in1 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Fake error for testing.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Fake error for testing.
+     * @throws MALException if there is an implementation exception
      */
-    void progress(org.ccsds.moims.mo.mal.structures.StringList in1,
-            org.ccsds.moims.mo.comprototype.activitytest.provider.ProgressInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void progress(StringList in1,
+            ProgressInteraction interaction) throws UnknownException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestSkeleton skeleton);
+    void setSkeleton(ActivityTestSkeleton skeleton);
 }

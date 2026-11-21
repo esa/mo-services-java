@@ -1,5 +1,19 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mps.plandistribution.PlanDistributionHelper;
+import org.ccsds.moims.mo.mps.planedit.PlanEditHelper;
+import org.ccsds.moims.mo.mps.planexecutioncontrol.PlanExecutionControlHelper;
+import org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementHelper;
+import org.ccsds.moims.mo.mps.planningrequest.PlanningRequestHelper;
+
 /**
  * Helper class for MPS area.
  */
@@ -13,12 +27,12 @@ public class MPSHelper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort MPS_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MPS_AREA_NUMBER);
+    public static final UShort MPS_AREA_NUMBER = new UShort(_MPS_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier MPS_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("MPS");
+    public static final Identifier MPS_AREA_NAME = new Identifier("MPS");
 
     /**
      * Area version literal.
@@ -28,27 +42,27 @@ public class MPSHelper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet MPS_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_MPS_AREA_VERSION);
+    public static final UOctet MPS_AREA_VERSION = new UOctet(_MPS_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] MPS_AREA_ELEMENTS = {};
+    public static final Element[] MPS_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] MPS_AREA_SERVICES = {
-        org.ccsds.moims.mo.mps.planningrequest.PlanningRequestHelper.PLANNINGREQUEST_SERVICE,
-        org.ccsds.moims.mo.mps.plandistribution.PlanDistributionHelper.PLANDISTRIBUTION_SERVICE,
-        org.ccsds.moims.mo.mps.planexecutioncontrol.PlanExecutionControlHelper.PLANEXECUTIONCONTROL_SERVICE,
-        org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementHelper.PLANINFORMATIONMANAGEMENT_SERVICE,
-        org.ccsds.moims.mo.mps.planedit.PlanEditHelper.PLANEDIT_SERVICE,};
+    public static final ServiceInfo[] MPS_AREA_SERVICES = {
+        PlanningRequestHelper.PLANNINGREQUEST_SERVICE,
+        PlanDistributionHelper.PLANDISTRIBUTION_SERVICE,
+        PlanExecutionControlHelper.PLANEXECUTIONCONTROL_SERVICE,
+        PlanInformationManagementHelper.PLANINFORMATIONMANAGEMENT_SERVICE,
+        PlanEditHelper.PLANEDIT_SERVICE,};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea MPS_AREA = new org.ccsds.moims.mo.mal.MALArea(MPS_AREA_NUMBER, MPS_AREA_NAME, MPS_AREA_VERSION, MPS_AREA_ELEMENTS, MPS_AREA_SERVICES, new MPSElementFactory());
+    public static final MALArea MPS_AREA = new MALArea(MPS_AREA_NUMBER, MPS_AREA_NAME, MPS_AREA_VERSION, MPS_AREA_ELEMENTS, MPS_AREA_SERVICES, new MPSElementFactory());
 
     /**
      * Error literal for error INVALID.
@@ -58,7 +72,7 @@ public class MPSHelper {
     /**
      * Error instance for error INVALID.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger INVALID_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_INVALID_ERROR_NUMBER);
+    public static final UInteger INVALID_ERROR_NUMBER = new UInteger(_INVALID_ERROR_NUMBER);
 
     /**
      * Error literal for error CANCEL_FAILED.
@@ -68,7 +82,7 @@ public class MPSHelper {
     /**
      * Error instance for error CANCEL_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger CANCEL_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_CANCEL_FAILED_ERROR_NUMBER);
+    public static final UInteger CANCEL_FAILED_ERROR_NUMBER = new UInteger(_CANCEL_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error UPDATE_FAILED.
@@ -78,7 +92,7 @@ public class MPSHelper {
     /**
      * Error instance for error UPDATE_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UPDATE_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UPDATE_FAILED_ERROR_NUMBER);
+    public static final UInteger UPDATE_FAILED_ERROR_NUMBER = new UInteger(_UPDATE_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error REVOKE_FAILED.
@@ -88,7 +102,7 @@ public class MPSHelper {
     /**
      * Error instance for error REVOKE_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger REVOKE_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_REVOKE_FAILED_ERROR_NUMBER);
+    public static final UInteger REVOKE_FAILED_ERROR_NUMBER = new UInteger(_REVOKE_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error INSERT_FAILED.
@@ -98,7 +112,7 @@ public class MPSHelper {
     /**
      * Error instance for error INSERT_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger INSERT_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_INSERT_FAILED_ERROR_NUMBER);
+    public static final UInteger INSERT_FAILED_ERROR_NUMBER = new UInteger(_INSERT_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error DELETE_FAILED.
@@ -108,7 +122,7 @@ public class MPSHelper {
     /**
      * Error instance for error DELETE_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DELETE_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DELETE_FAILED_ERROR_NUMBER);
+    public static final UInteger DELETE_FAILED_ERROR_NUMBER = new UInteger(_DELETE_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error ACTIVATE_FAILED.
@@ -118,7 +132,7 @@ public class MPSHelper {
     /**
      * Error instance for error ACTIVATE_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger ACTIVATE_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_ACTIVATE_FAILED_ERROR_NUMBER);
+    public static final UInteger ACTIVATE_FAILED_ERROR_NUMBER = new UInteger(_ACTIVATE_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error DEACTIVATE_FAILED.
@@ -128,7 +142,7 @@ public class MPSHelper {
     /**
      * Error instance for error DEACTIVATE_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DEACTIVATE_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DEACTIVATE_FAILED_ERROR_NUMBER);
+    public static final UInteger DEACTIVATE_FAILED_ERROR_NUMBER = new UInteger(_DEACTIVATE_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error SUBMIT_FAILED.
@@ -138,7 +152,7 @@ public class MPSHelper {
     /**
      * Error instance for error SUBMIT_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger SUBMIT_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_SUBMIT_FAILED_ERROR_NUMBER);
+    public static final UInteger SUBMIT_FAILED_ERROR_NUMBER = new UInteger(_SUBMIT_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error UNSUPPORTED.
@@ -148,7 +162,7 @@ public class MPSHelper {
     /**
      * Error instance for error UNSUPPORTED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNSUPPORTED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNSUPPORTED_ERROR_NUMBER);
+    public static final UInteger UNSUPPORTED_ERROR_NUMBER = new UInteger(_UNSUPPORTED_ERROR_NUMBER);
 
     /**
      * Error literal for error ACTIVATE_SUBPLAN_FAILED.
@@ -158,7 +172,7 @@ public class MPSHelper {
     /**
      * Error instance for error ACTIVATE_SUBPLAN_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger ACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_ACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER);
+    public static final UInteger ACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER = new UInteger(_ACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error DEACTIVATE_SUBPLAN_FAILED.
@@ -168,7 +182,7 @@ public class MPSHelper {
     /**
      * Error instance for error DEACTIVATE_SUBPLAN_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER);
+    public static final UInteger DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER = new UInteger(_DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER);
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -177,33 +191,33 @@ public class MPSHelper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
             case 1:
-                return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                return new InvalidException(extraInfo);
             case 2:
-                return new org.ccsds.moims.mo.mps.CancelFailedException(extraInfo);
+                return new CancelFailedException(extraInfo);
             case 3:
-                return new org.ccsds.moims.mo.mps.UpdateFailedException(extraInfo);
+                return new UpdateFailedException(extraInfo);
             case 4:
-                return new org.ccsds.moims.mo.mps.RevokeFailedException(extraInfo);
+                return new RevokeFailedException(extraInfo);
             case 5:
-                return new org.ccsds.moims.mo.mps.InsertFailedException(extraInfo);
+                return new InsertFailedException(extraInfo);
             case 6:
-                return new org.ccsds.moims.mo.mps.DeleteFailedException(extraInfo);
+                return new DeleteFailedException(extraInfo);
             case 7:
-                return new org.ccsds.moims.mo.mps.ActivateFailedException(extraInfo);
+                return new ActivateFailedException(extraInfo);
             case 8:
-                return new org.ccsds.moims.mo.mps.DeactivateFailedException(extraInfo);
+                return new DeactivateFailedException(extraInfo);
             case 9:
-                return new org.ccsds.moims.mo.mps.SubmitFailedException(extraInfo);
+                return new SubmitFailedException(extraInfo);
             case 10:
-                return new org.ccsds.moims.mo.mps.UnsupportedException(extraInfo);
+                return new UnsupportedException(extraInfo);
             case 11:
-                return new org.ccsds.moims.mo.mps.ActivateSubplanFailedException(extraInfo);
+                return new ActivateSubplanFailedException(extraInfo);
             case 12:
-                return new org.ccsds.moims.mo.mps.DeactivateSubplanFailedException(extraInfo);
+                return new DeactivateSubplanFailedException(extraInfo);
         }
         return null;
     }

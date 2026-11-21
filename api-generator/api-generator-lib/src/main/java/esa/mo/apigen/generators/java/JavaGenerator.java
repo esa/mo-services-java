@@ -136,8 +136,8 @@ public final class JavaGenerator implements Generator {
         Path dir = outputDir.resolve(JavaNaming.directoryOf(JavaNaming.packageOf(area)));
         Files.createDirectories(dir);
         for (esa.mo.apigen.model.ErrorDefinition error : errors) {
-            Files.write(dir.resolve(ExceptionWriter.classNameOf(error.getName()) + ".java"),
-                    ExceptionWriter.write(area, error).getBytes(UTF8));
+            writeSource(dir.resolve(ExceptionWriter.classNameOf(error.getName()) + ".java"),
+                    ExceptionWriter.write(area, error));
         }
     }
 
@@ -147,13 +147,13 @@ public final class JavaGenerator implements Generator {
     private void writeHelpers(Area area, Path outputDir) throws IOException {
         Path areaDir = outputDir.resolve(JavaNaming.directoryOf(JavaNaming.packageOf(area)));
         Files.createDirectories(areaDir);
-        Files.write(areaDir.resolve(area.getName() + "Helper.java"),
-                HelperWriter.writeArea(area).getBytes(UTF8));
+        writeSource(areaDir.resolve(area.getName() + "Helper.java"),
+                HelperWriter.writeArea(area));
         for (Service service : area.getServices()) {
             Path dir = outputDir.resolve(JavaNaming.directoryOf(JavaNaming.packageOf(service)));
             Files.createDirectories(dir);
-            Files.write(dir.resolve(service.getName() + "Helper.java"),
-                    HelperWriter.writeService(service).getBytes(UTF8));
+            writeSource(dir.resolve(service.getName() + "Helper.java"),
+                    HelperWriter.writeService(service));
         }
     }
 
@@ -163,8 +163,8 @@ public final class JavaGenerator implements Generator {
     private void writeElementFactory(Area area, Path outputDir) throws IOException {
         Path dir = outputDir.resolve(JavaNaming.directoryOf(JavaNaming.packageOf(area)));
         Files.createDirectories(dir);
-        Files.write(dir.resolve(area.getName() + "ElementFactory.java"),
-                ElementFactoryWriter.write(area).getBytes(UTF8));
+        writeSource(dir.resolve(area.getName() + "ElementFactory.java"),
+                ElementFactoryWriter.write(area));
     }
 
     /**
@@ -175,8 +175,8 @@ public final class JavaGenerator implements Generator {
             throws IOException {
         Path dir = outputDir.resolve(JavaNaming.directoryOf(JavaNaming.packageOf(service)));
         Files.createDirectories(dir);
-        Files.write(dir.resolve(service.getName() + "ServiceInfo.java"),
-                ServiceInfoWriter.write(model, area, service).getBytes(UTF8));
+        writeSource(dir.resolve(service.getName() + "ServiceInfo.java"),
+                ServiceInfoWriter.write(model, area, service));
     }
 
     /**
@@ -191,8 +191,8 @@ public final class JavaGenerator implements Generator {
                 continue;
             }
             Files.createDirectories(dir);
-            Files.write(dir.resolve(SubscriptionKeysWriter.classNameOf(operation) + ".java"),
-                    SubscriptionKeysWriter.write(model, service, operation).getBytes(UTF8));
+            writeSource(dir.resolve(SubscriptionKeysWriter.classNameOf(operation) + ".java"),
+                    SubscriptionKeysWriter.write(model, service, operation));
         }
     }
 
@@ -204,10 +204,10 @@ public final class JavaGenerator implements Generator {
         Path dir = outputDir.resolve(
                 JavaNaming.directoryOf(JavaNaming.packageOf(service, JavaNaming.CONSUMER)));
         Files.createDirectories(dir);
-        Files.write(dir.resolve(service.getName() + "Stub.java"),
-                ConsumerStubWriter.write(model, service).getBytes(UTF8));
-        Files.write(dir.resolve(service.getName() + "Adapter.java"),
-                ConsumerAdapterWriter.write(model, area, service).getBytes(UTF8));
+        writeSource(dir.resolve(service.getName() + "Stub.java"),
+                ConsumerStubWriter.write(model, service));
+        writeSource(dir.resolve(service.getName() + "Adapter.java"),
+                ConsumerAdapterWriter.write(model, area, service));
     }
 
     /**
@@ -219,23 +219,23 @@ public final class JavaGenerator implements Generator {
         Path dir = outputDir.resolve(
                 JavaNaming.directoryOf(JavaNaming.packageOf(service, JavaNaming.PROVIDER)));
         Files.createDirectories(dir);
-        Files.write(dir.resolve(service.getName() + "Handler.java"),
-                ProviderHandlerWriter.write(model, service).getBytes(UTF8));
-        Files.write(dir.resolve(service.getName() + "Skeleton.java"),
-                ProviderSkeletonWriter.write(service).getBytes(UTF8));
-        Files.write(dir.resolve(service.getName() + "InheritanceSkeleton.java"),
-                ProviderInheritanceSkeletonWriter.write(model, service).getBytes(UTF8));
+        writeSource(dir.resolve(service.getName() + "Handler.java"),
+                ProviderHandlerWriter.write(model, service));
+        writeSource(dir.resolve(service.getName() + "Skeleton.java"),
+                ProviderSkeletonWriter.write(service));
+        writeSource(dir.resolve(service.getName() + "InheritanceSkeleton.java"),
+                ProviderInheritanceSkeletonWriter.write(model, service));
         // An operation that reports back over time is answered through an object of its
         // own, so that what it can send is named and typed.
         for (esa.mo.apigen.model.Operation operation : service.getOperations()) {
             if (operation.getPattern() == esa.mo.apigen.model.InteractionPattern.INVOKE
                     || operation.getPattern() == esa.mo.apigen.model.InteractionPattern.PROGRESS) {
-                Files.write(dir.resolve(ProviderInteractionWriter.classNameOf(operation) + ".java"),
-                        ProviderInteractionWriter.write(model, service, operation).getBytes(UTF8));
+                writeSource(dir.resolve(ProviderInteractionWriter.classNameOf(operation) + ".java"),
+                        ProviderInteractionWriter.write(model, service, operation));
             }
             if (operation.getPattern() == esa.mo.apigen.model.InteractionPattern.PUBSUB) {
-                Files.write(dir.resolve(ProviderPublisherWriter.classNameOf(operation) + ".java"),
-                        ProviderPublisherWriter.write(model, service, operation).getBytes(UTF8));
+                writeSource(dir.resolve(ProviderPublisherWriter.classNameOf(operation) + ".java"),
+                        ProviderPublisherWriter.write(model, service, operation));
             }
         }
     }
@@ -256,8 +256,8 @@ public final class JavaGenerator implements Generator {
         Path dir = outputDir.resolve(JavaNaming.directoryOf(pkg));
         Files.createDirectories(dir);
         for (esa.mo.apigen.model.Operation operation : operations) {
-            Files.write(dir.resolve(MultiReturnBodyWriter.classNameOf(operation) + ".java"),
-                    MultiReturnBodyWriter.write(model, service, operation).getBytes(UTF8));
+            writeSource(dir.resolve(MultiReturnBodyWriter.classNameOf(operation) + ".java"),
+                    MultiReturnBodyWriter.write(model, service, operation));
         }
     }
 
@@ -270,22 +270,27 @@ public final class JavaGenerator implements Generator {
         for (TypeDefinition type : types) {
             if (type instanceof EnumerationType) {
                 Files.createDirectories(dir);
-                Files.write(dir.resolve(type.getName() + ".java"),
-                        EnumerationWriter.write(area, service, (EnumerationType) type)
-                                .getBytes(UTF8));
+                writeSource(dir.resolve(type.getName() + ".java"),
+                        EnumerationWriter.write(area, service, (EnumerationType) type));
             }
             if (type instanceof CompositeType) {
                 Files.createDirectories(dir);
-                Files.write(dir.resolve(type.getName() + ".java"),
-                        CompositeWriter.write(model, area, service, (CompositeType) type)
-                                .getBytes(UTF8));
+                writeSource(dir.resolve(type.getName() + ".java"),
+                        CompositeWriter.write(model, area, service, (CompositeType) type));
             }
             String list = ListWriter.write(area, service, type);
             if (list != null) {
                 Files.createDirectories(dir);
-                Files.write(dir.resolve(type.getName() + "List.java"), list.getBytes(UTF8));
+                writeSource(dir.resolve(type.getName() + "List.java"), list);
             }
         }
+    }
+
+    /**
+     * Writes a generated class, with its type names shortened and imported.
+     */
+    private static void writeSource(Path file, String source) throws IOException {
+        Files.write(file, JavaImports.organise(source).getBytes(UTF8));
     }
 
     /**

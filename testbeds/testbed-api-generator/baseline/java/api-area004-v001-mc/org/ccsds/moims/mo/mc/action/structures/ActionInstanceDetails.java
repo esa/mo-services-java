@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.action.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.BooleanList;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mc.structures.AttributeValueList;
+
 /**
  * The ActionInstanceDetails structure holds the information required for
  * an instance of an Action such as the argument values to use.
  */
-public final class ActionInstanceDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActionInstanceDetails implements Composite {
 
     private static final long serialVersionUID = 1125904218587138L;
     /**
@@ -14,7 +24,7 @@ public final class ActionInstanceDetails implements org.ccsds.moims.mo.mal.struc
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the ActionDefinition to be used.
@@ -45,14 +55,14 @@ public final class ActionInstanceDetails implements org.ccsds.moims.mo.mal.struc
      * supplied, then its position is filled with a NULL value. If no arguments
      * are defined, then the complete list is replaced with a NULL.
      */
-    private org.ccsds.moims.mo.mc.structures.AttributeValueList argumentValues;
+    private AttributeValueList argumentValues;
 
     /**
      * Optional list of argument definition identifiers. Allows the provider to
      * verify that the correct arguments are being supplied. The ordering of the
      * list matches that of the argument list of the action definition.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList argumentIds;
+    private IdentifierList argumentIds;
 
     /**
      * Optional list of Booleans that determine whether the supplied argument
@@ -62,7 +72,7 @@ public final class ActionInstanceDetails implements org.ccsds.moims.mo.mal.struc
      * The ordering of the list matches that of the argument list of the action
      * definition.
      */
-    private org.ccsds.moims.mo.mal.structures.BooleanList isRawValue;
+    private BooleanList isRawValue;
 
     /**
      * Default constructor for ActionInstanceDetails.
@@ -87,9 +97,9 @@ The ordering of the list matches that of the argument list of the action definit
             Boolean stageStartedRequired,
             Boolean stageProgressRequired,
             Boolean stageCompletedRequired,
-            org.ccsds.moims.mo.mc.structures.AttributeValueList argumentValues,
-            org.ccsds.moims.mo.mal.structures.IdentifierList argumentIds,
-            org.ccsds.moims.mo.mal.structures.BooleanList isRawValue) {
+            AttributeValueList argumentValues,
+            IdentifierList argumentIds,
+            BooleanList isRawValue) {
         this.defInstId = defInstId;
         this.stageStartedRequired = stageStartedRequired;
         this.stageProgressRequired = stageProgressRequired;
@@ -121,8 +131,8 @@ The ordering of the list matches that of the argument list of the action definit
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.action.structures.ActionInstanceDetails();
+    public Element createElement() {
+        return new ActionInstanceDetails();
     }
 
     /**
@@ -166,7 +176,7 @@ The ordering of the list matches that of the argument list of the action definit
      * 
      * @return The field argumentValues
      */
-    public org.ccsds.moims.mo.mc.structures.AttributeValueList getArgumentValues() {
+    public AttributeValueList getArgumentValues() {
         return argumentValues;
     }
 
@@ -175,7 +185,7 @@ The ordering of the list matches that of the argument list of the action definit
      * 
      * @return The field argumentIds
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getArgumentIds() {
+    public IdentifierList getArgumentIds() {
         return argumentIds;
     }
 
@@ -184,7 +194,7 @@ The ordering of the list matches that of the argument list of the action definit
      * 
      * @return The field isRawValue
      */
-    public org.ccsds.moims.mo.mal.structures.BooleanList getIsRawValue() {
+    public BooleanList getIsRawValue() {
         return isRawValue;
     }
 
@@ -289,18 +299,18 @@ The ordering of the list matches that of the argument list of the action definit
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (defInstId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'defInstId' cannot be null!");
+            throw new MALException("The field 'defInstId' cannot be null!");
         }
         if (stageStartedRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageStartedRequired' cannot be null!");
+            throw new MALException("The field 'stageStartedRequired' cannot be null!");
         }
         if (stageProgressRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageProgressRequired' cannot be null!");
+            throw new MALException("The field 'stageProgressRequired' cannot be null!");
         }
         if (stageCompletedRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageCompletedRequired' cannot be null!");
+            throw new MALException("The field 'stageCompletedRequired' cannot be null!");
         }
         encoder.encodeLong(defInstId);
         encoder.encodeBoolean(stageStartedRequired);
@@ -312,19 +322,19 @@ The ordering of the list matches that of the argument list of the action definit
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         defInstId = decoder.decodeLong();
         stageStartedRequired = decoder.decodeBoolean();
         stageProgressRequired = decoder.decodeBoolean();
         stageCompletedRequired = decoder.decodeBoolean();
-        argumentValues = (org.ccsds.moims.mo.mc.structures.AttributeValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.AttributeValueList());
-        argumentIds = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        isRawValue = (org.ccsds.moims.mo.mal.structures.BooleanList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.BooleanList());
+        argumentValues = (AttributeValueList) decoder.decodeNullableElement(new AttributeValueList());
+        argumentIds = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        isRawValue = (BooleanList) decoder.decodeNullableElement(new BooleanList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

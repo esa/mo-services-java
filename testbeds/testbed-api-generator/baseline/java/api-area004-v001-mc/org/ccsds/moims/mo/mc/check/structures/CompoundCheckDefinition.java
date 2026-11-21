@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The CompoundCheckDefinition structure holds the object instance identifiers
  * of one or more check link objects to monitor for a compound check.
  */
-public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetails {
+public final class CompoundCheckDefinition extends CheckDefinitionDetails {
 
     private static final long serialVersionUID = 1125917103489036L;
     /**
@@ -14,19 +24,19 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The number of referenced checks that must be in violation for this check
      * to be considered in violation. If set to &quot;0&quot; then all referenced
      * checks must be in violation.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger minimumChecksInViolation;
+    private UInteger minimumChecksInViolation;
 
     /**
      * The set of CheckLink objects that form the compound check.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList checkLinkIds;
+    private LongList checkLinkIds;
 
     /**
      * Default constructor for CompoundCheckDefinition.
@@ -49,14 +59,14 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * @param checkLinkIds The set of CheckLink objects that form the compound check.
      */
     public CompoundCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
-            org.ccsds.moims.mo.mal.structures.UInteger minimumChecksInViolation,
-            org.ccsds.moims.mo.mal.structures.LongList checkLinkIds) {
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
+            UInteger minimumChecksInViolation,
+            LongList checkLinkIds) {
         super(description,
             checkSeverity,
             maxReportingInterval,
@@ -69,8 +79,8 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CompoundCheckDefinition();
+    public Element createElement() {
+        return new CompoundCheckDefinition();
     }
 
     /**
@@ -78,7 +88,7 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * 
      * @return The field minimumChecksInViolation
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getMinimumChecksInViolation() {
+    public UInteger getMinimumChecksInViolation() {
         return minimumChecksInViolation;
     }
 
@@ -87,7 +97,7 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * 
      * @return The field checkLinkIds
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getCheckLinkIds() {
+    public LongList getCheckLinkIds() {
         return checkLinkIds;
     }
 
@@ -141,28 +151,28 @@ public final class CompoundCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (minimumChecksInViolation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'minimumChecksInViolation' cannot be null!");
+            throw new MALException("The field 'minimumChecksInViolation' cannot be null!");
         }
         if (checkLinkIds == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkLinkIds' cannot be null!");
+            throw new MALException("The field 'checkLinkIds' cannot be null!");
         }
         encoder.encodeUInteger(minimumChecksInViolation);
         encoder.encodeElement(checkLinkIds);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         minimumChecksInViolation = decoder.decodeUInteger();
-        checkLinkIds = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
+        checkLinkIds = (LongList) decoder.decodeElement(new LongList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.comprototype.eventtest.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * Instances of this type created in event test.
 .
  */
-public final class TestObjectB implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class TestObjectB implements Composite {
 
     private static final long serialVersionUID = 56295003948843019L;
     /**
@@ -14,7 +21,7 @@ public final class TestObjectB implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description field of the created object.
@@ -40,8 +47,8 @@ public final class TestObjectB implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.comprototype.eventtest.structures.TestObjectB();
+    public Element createElement() {
+        return new TestObjectB();
     }
 
     /**
@@ -88,21 +95,21 @@ public final class TestObjectB implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         encoder.encodeString(description);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

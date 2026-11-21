@@ -1,5 +1,19 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.action.ActionHelper;
+import org.ccsds.moims.mo.mc.aggregation.AggregationHelper;
+import org.ccsds.moims.mo.mc.alert.AlertHelper;
+import org.ccsds.moims.mo.mc.packet.PacketHelper;
+import org.ccsds.moims.mo.mc.parameter.ParameterHelper;
+
 /**
  * Helper class for MC area.
  */
@@ -13,12 +27,12 @@ public class MCHelper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort MC_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MC_AREA_NUMBER);
+    public static final UShort MC_AREA_NUMBER = new UShort(_MC_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier MC_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("MC");
+    public static final Identifier MC_AREA_NAME = new Identifier("MC");
 
     /**
      * Area version literal.
@@ -28,27 +42,27 @@ public class MCHelper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet MC_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_MC_AREA_VERSION);
+    public static final UOctet MC_AREA_VERSION = new UOctet(_MC_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] MC_AREA_ELEMENTS = {};
+    public static final Element[] MC_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] MC_AREA_SERVICES = {
-        org.ccsds.moims.mo.mc.action.ActionHelper.ACTION_SERVICE,
-        org.ccsds.moims.mo.mc.parameter.ParameterHelper.PARAMETER_SERVICE,
-        org.ccsds.moims.mo.mc.alert.AlertHelper.ALERT_SERVICE,
-        org.ccsds.moims.mo.mc.aggregation.AggregationHelper.AGGREGATION_SERVICE,
-        org.ccsds.moims.mo.mc.packet.PacketHelper.PACKET_SERVICE,};
+    public static final ServiceInfo[] MC_AREA_SERVICES = {
+        ActionHelper.ACTION_SERVICE,
+        ParameterHelper.PARAMETER_SERVICE,
+        AlertHelper.ALERT_SERVICE,
+        AggregationHelper.AGGREGATION_SERVICE,
+        PacketHelper.PACKET_SERVICE,};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea MC_AREA = new org.ccsds.moims.mo.mal.MALArea(MC_AREA_NUMBER, MC_AREA_NAME, MC_AREA_VERSION, MC_AREA_ELEMENTS, MC_AREA_SERVICES, new MCElementFactory());
+    public static final MALArea MC_AREA = new MALArea(MC_AREA_NUMBER, MC_AREA_NAME, MC_AREA_VERSION, MC_AREA_ELEMENTS, MC_AREA_SERVICES, new MCElementFactory());
 
     /**
      * Error literal for error READ_ONLY.
@@ -58,7 +72,7 @@ public class MCHelper {
     /**
      * Error instance for error READ_ONLY.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger READ_ONLY_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_READ_ONLY_ERROR_NUMBER);
+    public static final UInteger READ_ONLY_ERROR_NUMBER = new UInteger(_READ_ONLY_ERROR_NUMBER);
 
     /**
      * Error literal for error DUPLICATE.
@@ -68,7 +82,7 @@ public class MCHelper {
     /**
      * Error instance for error DUPLICATE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DUPLICATE_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DUPLICATE_ERROR_NUMBER);
+    public static final UInteger DUPLICATE_ERROR_NUMBER = new UInteger(_DUPLICATE_ERROR_NUMBER);
 
     /**
      * Error literal for error INVALID.
@@ -78,7 +92,7 @@ public class MCHelper {
     /**
      * Error instance for error INVALID.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger INVALID_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_INVALID_ERROR_NUMBER);
+    public static final UInteger INVALID_ERROR_NUMBER = new UInteger(_INVALID_ERROR_NUMBER);
 
     /**
      * Error literal for error REJECTED.
@@ -88,7 +102,7 @@ public class MCHelper {
     /**
      * Error instance for error REJECTED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger REJECTED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_REJECTED_ERROR_NUMBER);
+    public static final UInteger REJECTED_ERROR_NUMBER = new UInteger(_REJECTED_ERROR_NUMBER);
 
     /**
      * Error literal for error AMBIGUOUS.
@@ -98,7 +112,7 @@ public class MCHelper {
     /**
      * Error instance for error AMBIGUOUS.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger AMBIGUOUS_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_AMBIGUOUS_ERROR_NUMBER);
+    public static final UInteger AMBIGUOUS_ERROR_NUMBER = new UInteger(_AMBIGUOUS_ERROR_NUMBER);
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -107,19 +121,19 @@ public class MCHelper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
             case 1:
-                return new org.ccsds.moims.mo.mc.ReadOnlyException(extraInfo);
+                return new ReadOnlyException(extraInfo);
             case 2:
-                return new org.ccsds.moims.mo.mc.DuplicateException(extraInfo);
+                return new DuplicateException(extraInfo);
             case 3:
-                return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                return new InvalidException(extraInfo);
             case 4:
-                return new org.ccsds.moims.mo.mc.RejectedException(extraInfo);
+                return new RejectedException(extraInfo);
             case 5:
-                return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                return new AmbiguousException(extraInfo);
         }
         return null;
     }

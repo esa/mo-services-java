@@ -1,11 +1,20 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mc.structures.ObjectInstancePair;
+
 /**
  * The CheckTypedInstance structure is used to hold the two COM object instance
  * identifiers that form the identity and the body of the check definition
  * in combination with the COM object type of the check body definition.
  */
-public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckTypedInstance implements Composite {
 
     private static final long serialVersionUID = 1125917103489037L;
     /**
@@ -15,17 +24,17 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The COM object type of the check body.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectType objDefCheckType;
+    private ObjectType objDefCheckType;
 
     /**
      * The object instance identifiers.
      */
-    private org.ccsds.moims.mo.mc.structures.ObjectInstancePair objInstIds;
+    private ObjectInstancePair objInstIds;
 
     /**
      * Default constructor for CheckTypedInstance.
@@ -40,8 +49,8 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
      * @param objDefCheckType The COM object type of the check body.
      * @param objInstIds The object instance identifiers.
      */
-    public CheckTypedInstance(org.ccsds.moims.mo.com.structures.ObjectType objDefCheckType,
-            org.ccsds.moims.mo.mc.structures.ObjectInstancePair objInstIds) {
+    public CheckTypedInstance(ObjectType objDefCheckType,
+            ObjectInstancePair objInstIds) {
         this.objDefCheckType = objDefCheckType;
         this.objInstIds = objInstIds;
     }
@@ -51,14 +60,14 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
      * 
      * @param objDefCheckType The COM object type of the check body.
      */
-    public CheckTypedInstance(org.ccsds.moims.mo.com.structures.ObjectType objDefCheckType) {
+    public CheckTypedInstance(ObjectType objDefCheckType) {
         this.objDefCheckType = objDefCheckType;
         this.objInstIds = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckTypedInstance();
+    public Element createElement() {
+        return new CheckTypedInstance();
     }
 
     /**
@@ -66,7 +75,7 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field objDefCheckType
      */
-    public org.ccsds.moims.mo.com.structures.ObjectType getObjDefCheckType() {
+    public ObjectType getObjDefCheckType() {
         return objDefCheckType;
     }
 
@@ -75,7 +84,7 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field objInstIds
      */
-    public org.ccsds.moims.mo.mc.structures.ObjectInstancePair getObjInstIds() {
+    public ObjectInstancePair getObjInstIds() {
         return objInstIds;
     }
 
@@ -125,23 +134,23 @@ public final class CheckTypedInstance implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (objDefCheckType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'objDefCheckType' cannot be null!");
+            throw new MALException("The field 'objDefCheckType' cannot be null!");
         }
         encoder.encodeElement(objDefCheckType);
         encoder.encodeNullableElement(objInstIds);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        objDefCheckType = (org.ccsds.moims.mo.com.structures.ObjectType) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectType());
-        objInstIds = (org.ccsds.moims.mo.mc.structures.ObjectInstancePair) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ObjectInstancePair());
+    public Element decode(MALDecoder decoder) throws MALException {
+        objDefCheckType = (ObjectType) decoder.decodeElement(new ObjectType());
+        objInstIds = (ObjectInstancePair) decoder.decodeNullableElement(new ObjectInstancePair());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

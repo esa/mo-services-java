@@ -1,9 +1,16 @@
 package org.ccsds.moims.mo.com.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * Simple pair of an object instance identifier and a Boolean value.
  */
-public final class InstanceBooleanPair implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class InstanceBooleanPair implements Composite {
 
     private static final long serialVersionUID = 562949970198533L;
     /**
@@ -13,7 +20,7 @@ public final class InstanceBooleanPair implements org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier.
@@ -45,8 +52,8 @@ public final class InstanceBooleanPair implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.structures.InstanceBooleanPair();
+    public Element createElement() {
+        return new InstanceBooleanPair();
     }
 
     /**
@@ -113,26 +120,26 @@ public final class InstanceBooleanPair implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (id == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'id' cannot be null!");
+            throw new MALException("The field 'id' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeLong(id);
         encoder.encodeBoolean(value);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         id = decoder.decodeLong();
         value = decoder.decodeBoolean();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

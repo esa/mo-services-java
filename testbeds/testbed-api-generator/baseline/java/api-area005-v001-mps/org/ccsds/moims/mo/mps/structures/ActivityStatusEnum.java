@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ActivityStatusEnum.
  */
-public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ActivityStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330599L;
     /**
@@ -13,7 +17,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for PLANNED.
@@ -23,7 +27,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value PLANNED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum PLANNED = new org.ccsds.moims.mo.mps.structures.ActivityStatusEnum(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.PLANNED_VALUE);
+    public static final ActivityStatusEnum PLANNED = new ActivityStatusEnum(ActivityStatusEnum.PLANNED_VALUE);
 
     /**
      * Enumeration value for ACTIVATED.
@@ -33,7 +37,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value ACTIVATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum ACTIVATED = new org.ccsds.moims.mo.mps.structures.ActivityStatusEnum(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.ACTIVATED_VALUE);
+    public static final ActivityStatusEnum ACTIVATED = new ActivityStatusEnum(ActivityStatusEnum.ACTIVATED_VALUE);
 
     /**
      * Enumeration value for EXECUTING.
@@ -43,7 +47,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value EXECUTING.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum EXECUTING = new org.ccsds.moims.mo.mps.structures.ActivityStatusEnum(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.EXECUTING_VALUE);
+    public static final ActivityStatusEnum EXECUTING = new ActivityStatusEnum(ActivityStatusEnum.EXECUTING_VALUE);
 
     /**
      * Enumeration value for SUSPENDED.
@@ -53,7 +57,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value SUSPENDED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum SUSPENDED = new org.ccsds.moims.mo.mps.structures.ActivityStatusEnum(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.SUSPENDED_VALUE);
+    public static final ActivityStatusEnum SUSPENDED = new ActivityStatusEnum(ActivityStatusEnum.SUSPENDED_VALUE);
 
     /**
      * Enumeration value for TERMINATED.
@@ -63,12 +67,12 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value TERMINATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum TERMINATED = new org.ccsds.moims.mo.mps.structures.ActivityStatusEnum(org.ccsds.moims.mo.mps.structures.ActivityStatusEnum.TERMINATED_VALUE);
+    public static final ActivityStatusEnum TERMINATED = new ActivityStatusEnum(ActivityStatusEnum.TERMINATED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.ActivityStatusEnum[] _ENUMERATIONS = {
+    private static final ActivityStatusEnum[] _ENUMERATIONS = {
         PLANNED, ACTIVATED, EXECUTING, SUSPENDED, TERMINATED};
 
     /**
@@ -113,7 +117,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.ActivityStatusEnum fromString(String s) {
+    public static ActivityStatusEnum fromString(String s) {
         switch (s) {
             case "PLANNED":
                 return ActivityStatusEnum.PLANNED;
@@ -131,7 +135,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case PLANNED_VALUE:
                 return ActivityStatusEnum.PLANNED;
@@ -149,7 +153,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -159,7 +163,7 @@ public final class ActivityStatusEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

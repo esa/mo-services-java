@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Represents a specific period relative to two events that mark the start
  * and end of the EventWindow.
  */
-public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class EventWindow implements Composite {
 
     private static final long serialVersionUID = 1407374900330502L;
     /**
@@ -14,31 +21,31 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The start of the event window is relative to the referenced startEvent.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startEvent;
+    private Element startEvent;
 
     /**
      * The start of the event window is offset by the defined time period from
      * the startEvent.  A positive offset implies a shift later in time. Default
      * is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * The end of the event window is relative to the referenced endEvent.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endEvent;
+    private Element endEvent;
 
     /**
      * The end of the event window is offset by the defined time period from the
      * endEvent.  A positive offset implies a shift later in time. Default is
      * no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * Default constructor for EventWindow.
@@ -55,10 +62,10 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * @param endEvent The end of the event window is relative to the referenced endEvent.
      * @param endOffset The end of the event window is offset by the defined time period from the endEvent.  A positive offset implies a shift later in time. Default is no offset.
      */
-    public EventWindow(org.ccsds.moims.mo.mal.structures.Element startEvent,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endEvent,
-            org.ccsds.moims.mo.mal.structures.Element endOffset) {
+    public EventWindow(Element startEvent,
+            Element startOffset,
+            Element endEvent,
+            Element endOffset) {
         this.startEvent = startEvent;
         this.startOffset = startOffset;
         this.endEvent = endEvent;
@@ -71,8 +78,8 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * @param startEvent The start of the event window is relative to the referenced startEvent.
      * @param endEvent The end of the event window is relative to the referenced endEvent.
      */
-    public EventWindow(org.ccsds.moims.mo.mal.structures.Element startEvent,
-            org.ccsds.moims.mo.mal.structures.Element endEvent) {
+    public EventWindow(Element startEvent,
+            Element endEvent) {
         this.startEvent = startEvent;
         this.startOffset = null;
         this.endEvent = endEvent;
@@ -80,8 +87,8 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventWindow();
+    public Element createElement() {
+        return new EventWindow();
     }
 
     /**
@@ -89,7 +96,7 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field startEvent
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartEvent() {
+    public Element getStartEvent() {
         return startEvent;
     }
 
@@ -98,7 +105,7 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -107,7 +114,7 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field endEvent
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndEvent() {
+    public Element getEndEvent() {
         return endEvent;
     }
 
@@ -116,7 +123,7 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -188,12 +195,12 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (startEvent == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'startEvent' cannot be null!");
+            throw new MALException("The field 'startEvent' cannot be null!");
         }
         if (endEvent == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'endEvent' cannot be null!");
+            throw new MALException("The field 'endEvent' cannot be null!");
         }
         encoder.encodeAbstractElement(startEvent);
         encoder.encodeNullableAbstractElement(startOffset);
@@ -202,16 +209,16 @@ public final class EventWindow implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        startEvent = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endEvent = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+    public Element decode(MALDecoder decoder) throws MALException {
+        startEvent = (Element) decoder.decodeAbstractElement();
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endEvent = (Element) decoder.decodeAbstractElement();
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

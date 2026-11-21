@@ -1,9 +1,18 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * The ActionDefinition structure holds the definition information of an action.
  */
-public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class ActionDefinition extends MOObject {
 
     private static final long serialVersionUID = 1125899940397067L;
     /**
@@ -13,7 +22,7 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description field.
@@ -23,17 +32,17 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
     /**
      * The category field.
      */
-    private org.ccsds.moims.mo.mc.structures.ActionCategory category;
+    private ActionCategory category;
 
     /**
      * The progressStepCount field.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort progressStepCount;
+    private UShort progressStepCount;
 
     /**
      * The arguments field.
      */
-    private org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList arguments;
+    private ArgumentDefinitionList arguments;
 
     /**
      * Default constructor for ActionDefinition.
@@ -51,11 +60,11 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
      * @param progressStepCount The progressStepCount field.
      * @param arguments The arguments field.
      */
-    public ActionDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ActionDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mc.structures.ActionCategory category,
-            org.ccsds.moims.mo.mal.structures.UShort progressStepCount,
-            org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList arguments) {
+            ActionCategory category,
+            UShort progressStepCount,
+            ArgumentDefinitionList arguments) {
         super(objectIdentity);
         this.description = description;
         this.category = category;
@@ -71,10 +80,10 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
      * @param category The category field.
      * @param progressStepCount The progressStepCount field.
      */
-    public ActionDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public ActionDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mc.structures.ActionCategory category,
-            org.ccsds.moims.mo.mal.structures.UShort progressStepCount) {
+            ActionCategory category,
+            UShort progressStepCount) {
         super(objectIdentity);
         this.description = description;
         this.category = category;
@@ -83,8 +92,8 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ActionDefinition();
+    public Element createElement() {
+        return new ActionDefinition();
     }
 
     /**
@@ -101,7 +110,7 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field category
      */
-    public org.ccsds.moims.mo.mc.structures.ActionCategory getCategory() {
+    public ActionCategory getCategory() {
         return category;
     }
 
@@ -110,7 +119,7 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field progressStepCount
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getProgressStepCount() {
+    public UShort getProgressStepCount() {
         return progressStepCount;
     }
 
@@ -119,7 +128,7 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList getArguments() {
+    public ArgumentDefinitionList getArguments() {
         return arguments;
     }
 
@@ -195,16 +204,16 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (category == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'category' cannot be null!");
+            throw new MALException("The field 'category' cannot be null!");
         }
         if (progressStepCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'progressStepCount' cannot be null!");
+            throw new MALException("The field 'progressStepCount' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(category);
@@ -213,17 +222,17 @@ public final class ActionDefinition extends org.ccsds.moims.mo.mal.structures.MO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        category = (org.ccsds.moims.mo.mc.structures.ActionCategory) decoder.decodeElement(org.ccsds.moims.mo.mc.structures.ActionCategory.DEFAULT);
+        category = (ActionCategory) decoder.decodeElement(ActionCategory.DEFAULT);
         progressStepCount = decoder.decodeUShort();
-        arguments = (org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList());
+        arguments = (ArgumentDefinitionList) decoder.decodeNullableElement(new ArgumentDefinitionList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

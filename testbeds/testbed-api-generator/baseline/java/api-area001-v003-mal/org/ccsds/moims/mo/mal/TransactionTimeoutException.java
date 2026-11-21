@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The TransactionTimeoutException exception. The interaction exceeded a certain
  * timeout duration.
  */
-public final class TransactionTimeoutException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class TransactionTimeoutException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Transaction Timeout";
 

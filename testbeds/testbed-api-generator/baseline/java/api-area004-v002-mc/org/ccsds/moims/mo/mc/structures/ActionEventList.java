@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for ActionEvent.
  */
-public final class ActionEventList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class ActionEventList extends HeterogeneousList {
 
     /**
      * Default constructor for ActionEventList.
@@ -13,7 +16,7 @@ public final class ActionEventList extends org.ccsds.moims.mo.mal.structures.Het
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof ActionEvent)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: ActionEvent");
         }

@@ -1,9 +1,25 @@
 package org.ccsds.moims.mo.mc.group;
 
+import org.ccsds.moims.mo.com.COMObject;
+import org.ccsds.moims.mo.com.COMService;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.group.structures.GroupDetails;
+
 /**
  * Helper class for Group service.
  */
-public class GroupServiceInfo extends org.ccsds.moims.mo.com.COMService {
+public class GroupServiceInfo extends COMService {
 
     /**
      * Service number literal.
@@ -13,28 +29,28 @@ public class GroupServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort GROUP_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GROUP_SERVICE_NUMBER);
+    public static final UShort GROUP_SERVICE_NUMBER = new UShort(_GROUP_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier GROUP_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("Group");
+    public static final Identifier GROUP_SERVICE_NAME = new Identifier("Group");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             4, 1, GROUP_SERVICE_NUMBER);
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] GROUP_SERVICE_ELEMENTS = {};
+    public static final Element[] GROUP_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{};
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{};
 
     /**
      * Literal for object GROUPIDENTITY.
@@ -46,25 +62,25 @@ public class GroupServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object GROUPIDENTITY.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort GROUPIDENTITY_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GROUPIDENTITY_OBJECT_NUMBER);
+    public static final UShort GROUPIDENTITY_OBJECT_NUMBER = new UShort(_GROUPIDENTITY_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier GROUPIDENTITY_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("GroupIdentity");
+    public static final Identifier GROUPIDENTITY_OBJECT_NAME = new Identifier("GroupIdentity");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType GROUPIDENTITY_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(4), GROUP_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), GROUPIDENTITY_OBJECT_NUMBER);
+    public static final ObjectType GROUPIDENTITY_OBJECT_TYPE = new ObjectType(new UShort(4), GROUP_SERVICE_NUMBER, new UOctet(1), GROUPIDENTITY_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject GROUPIDENTITY_OBJECT = new org.ccsds.moims.mo.com.COMObject(GROUPIDENTITY_OBJECT_TYPE, GROUPIDENTITY_OBJECT_NAME, org.ccsds.moims.mo.mal.structures.Attribute.IDENTIFIER_SHORT_FORM, false, null, true, null, false);
+    public static COMObject GROUPIDENTITY_OBJECT = new COMObject(GROUPIDENTITY_OBJECT_TYPE, GROUPIDENTITY_OBJECT_NAME, Attribute.IDENTIFIER_SHORT_FORM, false, null, true, null, false);
 
     /**
      * Literal for object GROUPDEFINITION.
@@ -76,30 +92,30 @@ public class GroupServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object GROUPDEFINITION.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort GROUPDEFINITION_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_GROUPDEFINITION_OBJECT_NUMBER);
+    public static final UShort GROUPDEFINITION_OBJECT_NUMBER = new UShort(_GROUPDEFINITION_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier GROUPDEFINITION_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("GroupDefinition");
+    public static final Identifier GROUPDEFINITION_OBJECT_NAME = new Identifier("GroupDefinition");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType GROUPDEFINITION_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(4), GROUP_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), GROUPDEFINITION_OBJECT_NUMBER);
+    public static final ObjectType GROUPDEFINITION_OBJECT_TYPE = new ObjectType(new UShort(4), GROUP_SERVICE_NUMBER, new UOctet(1), GROUPDEFINITION_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject GROUPDEFINITION_OBJECT = new org.ccsds.moims.mo.com.COMObject(GROUPDEFINITION_OBJECT_TYPE, GROUPDEFINITION_OBJECT_NAME, org.ccsds.moims.mo.mc.group.structures.GroupDetails.SHORT_FORM, true, org.ccsds.moims.mo.mc.group.GroupServiceInfo.GROUPIDENTITY_OBJECT_TYPE, true, null, false);
+    public static COMObject GROUPDEFINITION_OBJECT = new COMObject(GROUPDEFINITION_OBJECT_TYPE, GROUPDEFINITION_OBJECT_NAME, GroupDetails.SHORT_FORM, true, GroupServiceInfo.GROUPIDENTITY_OBJECT_TYPE, true, null, false);
 
     /**
      * Object instance.
      */
-    public static final org.ccsds.moims.mo.com.COMObject[] COM_OBJECTS = {
+    public static final COMObject[] COM_OBJECTS = {
         GROUPIDENTITY_OBJECT,
         GROUPDEFINITION_OBJECT,};
 
@@ -112,16 +128,16 @@ public class GroupServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.mc.MCHelper.MC_AREA;
+    public MALArea getArea() {
+        return MCHelper.MC_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

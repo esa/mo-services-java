@@ -1,11 +1,21 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * The ReferenceValue structure defines a value to compare against. A validCount
  * of &quot;1&quot; and deltaTime of &quot;0&quot; would compare against the
  * previous sample value.
  */
-public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ReferenceValue implements Composite {
 
     private static final long serialVersionUID = 1125917103489031L;
     /**
@@ -15,25 +25,25 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Number of valid samples that should be collected to update the reference
      * value.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort validCount;
+    private UShort validCount;
 
     /**
      * Delta time from now into the past from which the reference value should
      * be sampled.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration deltaTime;
+    private Duration deltaTime;
 
     /**
      * The ParameterIdentity object to compare against. If NULL, then checked
      * parameter should be compared against itself.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey parameterId;
+    private ObjectKey parameterId;
 
     /**
      * Default constructor for ReferenceValue.
@@ -49,9 +59,9 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
      * @param deltaTime Delta time from now into the past from which the reference value should be sampled.
      * @param parameterId The ParameterIdentity object to compare against. If NULL, then checked parameter should be compared against itself.
      */
-    public ReferenceValue(org.ccsds.moims.mo.mal.structures.UShort validCount,
-            org.ccsds.moims.mo.mal.structures.Duration deltaTime,
-            org.ccsds.moims.mo.com.structures.ObjectKey parameterId) {
+    public ReferenceValue(UShort validCount,
+            Duration deltaTime,
+            ObjectKey parameterId) {
         this.validCount = validCount;
         this.deltaTime = deltaTime;
         this.parameterId = parameterId;
@@ -63,16 +73,16 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
      * @param validCount Number of valid samples that should be collected to update the reference value.
      * @param deltaTime Delta time from now into the past from which the reference value should be sampled.
      */
-    public ReferenceValue(org.ccsds.moims.mo.mal.structures.UShort validCount,
-            org.ccsds.moims.mo.mal.structures.Duration deltaTime) {
+    public ReferenceValue(UShort validCount,
+            Duration deltaTime) {
         this.validCount = validCount;
         this.deltaTime = deltaTime;
         this.parameterId = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.ReferenceValue();
+    public Element createElement() {
+        return new ReferenceValue();
     }
 
     /**
@@ -80,7 +90,7 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field validCount
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getValidCount() {
+    public UShort getValidCount() {
         return validCount;
     }
 
@@ -89,7 +99,7 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field deltaTime
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getDeltaTime() {
+    public Duration getDeltaTime() {
         return deltaTime;
     }
 
@@ -98,7 +108,7 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field parameterId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getParameterId() {
+    public ObjectKey getParameterId() {
         return parameterId;
     }
 
@@ -159,12 +169,12 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (validCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'validCount' cannot be null!");
+            throw new MALException("The field 'validCount' cannot be null!");
         }
         if (deltaTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'deltaTime' cannot be null!");
+            throw new MALException("The field 'deltaTime' cannot be null!");
         }
         encoder.encodeUShort(validCount);
         encoder.encodeDuration(deltaTime);
@@ -172,15 +182,15 @@ public final class ReferenceValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         validCount = decoder.decodeUShort();
         deltaTime = decoder.decodeDuration();
-        parameterId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeNullableElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+        parameterId = (ObjectKey) decoder.decodeNullableElement(new ObjectKey());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

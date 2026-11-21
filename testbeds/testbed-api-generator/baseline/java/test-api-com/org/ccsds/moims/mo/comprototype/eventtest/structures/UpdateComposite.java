@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.comprototype.eventtest.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+
 /**
  * Encapsulates a set of fields that can be updated on a test object.
 .
  */
-public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class UpdateComposite implements Composite {
 
     private static final long serialVersionUID = 56295003948843020L;
     /**
@@ -14,13 +22,13 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Unsigned octet value.
 .
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet UOctetField;
+    private UOctet UOctetField;
 
     /**
      * octet value.
@@ -51,7 +59,7 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
      * @param DoubleField double value.
 
      */
-    public UpdateComposite(org.ccsds.moims.mo.mal.structures.UOctet UOctetField,
+    public UpdateComposite(UOctet UOctetField,
             Byte OctetField,
             Double DoubleField) {
         this.UOctetField = UOctetField;
@@ -60,8 +68,8 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite();
+    public Element createElement() {
+        return new UpdateComposite();
     }
 
     /**
@@ -69,7 +77,7 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field UOctetField
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getUOctetField() {
+    public UOctet getUOctetField() {
         return UOctetField;
     }
 
@@ -148,15 +156,15 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (UOctetField == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'UOctetField' cannot be null!");
+            throw new MALException("The field 'UOctetField' cannot be null!");
         }
         if (OctetField == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'OctetField' cannot be null!");
+            throw new MALException("The field 'OctetField' cannot be null!");
         }
         if (DoubleField == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'DoubleField' cannot be null!");
+            throw new MALException("The field 'DoubleField' cannot be null!");
         }
         encoder.encodeUOctet(UOctetField);
         encoder.encodeOctet(OctetField);
@@ -164,7 +172,7 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         UOctetField = decoder.decodeUOctet();
         OctetField = decoder.decodeOctet();
         DoubleField = decoder.decodeDouble();
@@ -172,7 +180,7 @@ public final class UpdateComposite implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

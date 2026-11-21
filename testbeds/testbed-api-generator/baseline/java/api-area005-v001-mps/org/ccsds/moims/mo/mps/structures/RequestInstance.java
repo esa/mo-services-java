@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: A RequestInstance is an MO object that contains the specification of
  * a planning request.  This may change over time if the request is updated
@@ -17,7 +28,7 @@ package org.ccsds.moims.mo.mps.structures;
  * and there would be no corresponding ArgDef associated with any Arguments
  * supplied.
  */
-public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class RequestInstance extends MOObject {
 
     private static final long serialVersionUID = 1407374900330898L;
     /**
@@ -27,37 +38,37 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The contents of the planning request.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanningRequestDetails requestDetails;
+    private PlanningRequestDetails requestDetails;
 
     /**
      * Creation date and time of the RequestInstance version.
      */
-    private org.ccsds.moims.mo.mal.structures.Time creationTime;
+    private Time creationTime;
 
     /**
      * Current status of the ActivityInstance (see planning request state model
      * in 4.5.5.2).
      */
-    private org.ccsds.moims.mo.mps.structures.RequestStatusEnum status;
+    private RequestStatusEnum status;
 
     /**
      * Reference to the output Plan(s) that contains the activities resulting
      * from the planning request.  Where multiple alternate plans have been generated,
      * these may be listed here.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs;
+    private ObjectRefList outputPlanRefs;
 
     /**
      * Optional return data from the planning process, provided as a list of ID-Value
      * pairs.  This can be used to provide additional information required by
      * the User to interpret the planned operations.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList returnData;
+    private NamedValueList returnData;
 
     /**
      * StatusInfo provides the reason for termination and is customizable, but
@@ -102,12 +113,12 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * @param errorCode Error Code optional in the case of a failure status for the planning request (for example Terminated state with statusInfo Failed).  The codes are implementation specific.
      * @param errorInfo Supplementary error information.
      */
-    public RequestInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mps.structures.PlanningRequestDetails requestDetails,
-            org.ccsds.moims.mo.mal.structures.Time creationTime,
-            org.ccsds.moims.mo.mps.structures.RequestStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs,
-            org.ccsds.moims.mo.mal.structures.NamedValueList returnData,
+    public RequestInstance(ObjectIdentity objectIdentity,
+            PlanningRequestDetails requestDetails,
+            Time creationTime,
+            RequestStatusEnum status,
+            ObjectRefList outputPlanRefs,
+            NamedValueList returnData,
             String statusInfo,
             Integer errorCode,
             String errorInfo) {
@@ -130,10 +141,10 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * @param creationTime Creation date and time of the RequestInstance version.
      * @param status Current status of the ActivityInstance (see planning request state model in 4.5.5.2).
      */
-    public RequestInstance(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mps.structures.PlanningRequestDetails requestDetails,
-            org.ccsds.moims.mo.mal.structures.Time creationTime,
-            org.ccsds.moims.mo.mps.structures.RequestStatusEnum status) {
+    public RequestInstance(ObjectIdentity objectIdentity,
+            PlanningRequestDetails requestDetails,
+            Time creationTime,
+            RequestStatusEnum status) {
         super(objectIdentity);
         this.requestDetails = requestDetails;
         this.creationTime = creationTime;
@@ -146,8 +157,8 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RequestInstance();
+    public Element createElement() {
+        return new RequestInstance();
     }
 
     /**
@@ -155,7 +166,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field requestDetails
      */
-    public org.ccsds.moims.mo.mps.structures.PlanningRequestDetails getRequestDetails() {
+    public PlanningRequestDetails getRequestDetails() {
         return requestDetails;
     }
 
@@ -164,7 +175,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field creationTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getCreationTime() {
+    public Time getCreationTime() {
         return creationTime;
     }
 
@@ -173,7 +184,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.RequestStatusEnum getStatus() {
+    public RequestStatusEnum getStatus() {
         return status;
     }
 
@@ -182,7 +193,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field outputPlanRefs
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutputPlanRefs() {
+    public ObjectRefList getOutputPlanRefs() {
         return outputPlanRefs;
     }
 
@@ -191,7 +202,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
      * 
      * @return The field returnData
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getReturnData() {
+    public NamedValueList getReturnData() {
         return returnData;
     }
 
@@ -338,16 +349,16 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (requestDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'requestDetails' cannot be null!");
+            throw new MALException("The field 'requestDetails' cannot be null!");
         }
         if (creationTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'creationTime' cannot be null!");
+            throw new MALException("The field 'creationTime' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(requestDetails);
         encoder.encodeTime(creationTime);
@@ -360,13 +371,13 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        requestDetails = (org.ccsds.moims.mo.mps.structures.PlanningRequestDetails) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.PlanningRequestDetails());
+        requestDetails = (PlanningRequestDetails) decoder.decodeElement(new PlanningRequestDetails());
         creationTime = decoder.decodeTime();
-        status = (org.ccsds.moims.mo.mps.structures.RequestStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.REQUESTED);
-        outputPlanRefs = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        returnData = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+        status = (RequestStatusEnum) decoder.decodeElement(RequestStatusEnum.REQUESTED);
+        outputPlanRefs = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        returnData = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
         statusInfo = decoder.decodeNullableString();
         errorCode = decoder.decodeNullableInteger();
         errorInfo = decoder.decodeNullableString();
@@ -374,7 +385,7 @@ public final class RequestInstance extends org.ccsds.moims.mo.mal.structures.MOO
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

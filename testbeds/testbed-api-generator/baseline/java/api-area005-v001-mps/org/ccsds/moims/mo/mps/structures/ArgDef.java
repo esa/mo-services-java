@@ -1,5 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E1: The definition of an argument is an ArgDef, a set of which may be contained
  * within the definition MO object of a planning event, planning activity,
@@ -8,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * fields to support data validation.  Subtypes are identified for Numeric,
  * String, and Status arguments.
  */
-public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ArgDef implements Composite {
 
     private static final long serialVersionUID = 1407374900330519L;
     /**
@@ -18,12 +26,12 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of the argument.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier argName;
+    private Identifier argName;
 
     /**
      * Extended description of the argument.
@@ -33,7 +41,7 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
     /**
      * Enumeration specifying the data type of the argument.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgTypeEnum argType;
+    private ArgTypeEnum argType;
 
     /**
      * The units of a single quantity, in which the argument value is expressed
@@ -50,7 +58,7 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * Optional.  Specifies the allowed range of values for the Argument, with
      * concrete subtypes specific to the data type of the Argument.
      */
-    private org.ccsds.moims.mo.mps.structures.ValidationDetails validationData;
+    private ValidationDetails validationData;
 
     /**
      * Default constructor for ArgDef.
@@ -69,12 +77,12 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * @param isArray If True, indicates that the argument is an array of values of type ArgTypeEnum.
      * @param validationData Optional.  Specifies the allowed range of values for the Argument, with concrete subtypes specific to the data type of the Argument.
      */
-    public ArgDef(org.ccsds.moims.mo.mal.structures.Identifier argName,
+    public ArgDef(Identifier argName,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgTypeEnum argType,
+            ArgTypeEnum argType,
             String argUnits,
             Boolean isArray,
-            org.ccsds.moims.mo.mps.structures.ValidationDetails validationData) {
+            ValidationDetails validationData) {
         this.argName = argName;
         this.description = description;
         this.argType = argType;
@@ -91,9 +99,9 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * @param argType Enumeration specifying the data type of the argument.
      * @param isArray If True, indicates that the argument is an array of values of type ArgTypeEnum.
      */
-    public ArgDef(org.ccsds.moims.mo.mal.structures.Identifier argName,
+    public ArgDef(Identifier argName,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgTypeEnum argType,
+            ArgTypeEnum argType,
             Boolean isArray) {
         this.argName = argName;
         this.description = description;
@@ -104,8 +112,8 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ArgDef();
+    public Element createElement() {
+        return new ArgDef();
     }
 
     /**
@@ -113,7 +121,7 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * 
      * @return The field argName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getArgName() {
+    public Identifier getArgName() {
         return argName;
     }
 
@@ -131,7 +139,7 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * 
      * @return The field argType
      */
-    public org.ccsds.moims.mo.mps.structures.ArgTypeEnum getArgType() {
+    public ArgTypeEnum getArgType() {
         return argType;
     }
 
@@ -158,7 +166,7 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
      * 
      * @return The field validationData
      */
-    public org.ccsds.moims.mo.mps.structures.ValidationDetails getValidationData() {
+    public ValidationDetails getValidationData() {
         return validationData;
     }
 
@@ -252,18 +260,18 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (argName == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argName' cannot be null!");
+            throw new MALException("The field 'argName' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (argType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argType' cannot be null!");
+            throw new MALException("The field 'argType' cannot be null!");
         }
         if (isArray == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'isArray' cannot be null!");
+            throw new MALException("The field 'isArray' cannot be null!");
         }
         encoder.encodeIdentifier(argName);
         encoder.encodeString(description);
@@ -274,18 +282,18 @@ public final class ArgDef implements org.ccsds.moims.mo.mal.structures.Composite
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         argName = decoder.decodeIdentifier();
         description = decoder.decodeString();
-        argType = (org.ccsds.moims.mo.mps.structures.ArgTypeEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.BLOB);
+        argType = (ArgTypeEnum) decoder.decodeElement(ArgTypeEnum.BLOB);
         argUnits = decoder.decodeNullableString();
         isArray = decoder.decodeBoolean();
-        validationData = (org.ccsds.moims.mo.mps.structures.ValidationDetails) decoder.decodeNullableAbstractElement();
+        validationData = (ValidationDetails) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 
