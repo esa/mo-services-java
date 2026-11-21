@@ -4,7 +4,8 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 15.1 (in development)
+### Version 15.1 (21 November 2026)
+* Constrains the Java deserialization performed by the RMI transport's client-side Naming.lookup() with a process-wide allow-list serial filter, closing a CWE-502 vector where an attacker-controlled From URI could steer the lookup at a rogue RMI endpoint (installed only when the application has not configured its own filter; disable with org.ccsds.moims.mo.mal.transport.rmi.installSerialFilter=false)
 * Removes the unsafe object serialization helpers from HelperAttributes (serialObject2blobAttribute and blobAttribute2serialObject) and the SerializedObject pseudo-type they used, which passed untrusted bytes to Java deserialization
 
 ### Version 15.0 (27 September 2026)
