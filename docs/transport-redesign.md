@@ -90,8 +90,10 @@ provided by the transport.
 ### Stage SPI (shape, not final signatures)
 
 * A transport is no longer a subclass; it is a small set of composed
-  interfaces. At minimum: a **bearer** (`read`/`write` bytes, plus connection
-  management) and a **capability descriptor**.
+  interfaces. At minimum: a **`LinkDriver`** (the per-protocol provider that
+  declares capabilities and opens links) producing **`Link`s** (one ordered byte
+  pipe to a peer), plus the stages composed above them. Concrete signatures are
+  in the SPI section below.
 * A **stage** transforms a message on the way down and reverses it on the way
   up. Downward and upward are explicit (two methods, or two paired interfaces)
   so the code reads in both directions.
@@ -148,6 +150,94 @@ required**, not by serialising the pipeline:
 
 This keeps parallelism everywhere except the single boundary that the ordering
 guarantee actually constrains.
+
+### SPI (concrete interfaces)
+
+The interfaces live in **api-mal** (new sub-package
+`org.ccsds.moims.mo.mal.transport.chain`). The chain builder, the thread pool and
+ordered egress live in **mal-impl** and are not part of the SPI. The MAL-facing
+boundary (`MALEndpoint` / `MALMessage`) is unchanged: mal-impl presents a
+`MALEndpoint` facade on top of a chain, so the wire and the conformance contract
+stay intact.
+
+Three core interfaces — `LinkDriver` (bottom, per protocol), `Link` (one ordered
+byte pipe to a peer) and `Stage` (a composable transform) — plus the `Exchange`
+carrier and the capability/concurrency value types.
+
+```java
+// ── The in-flight unit. One per message; flows DOWN on send, UP on receive. ──
+public interface Exchange {
+    MALMessageHeader header();          // frozen MAL header; only supplements are mutable
+    Object          body();             // decoded body; null once encoded
+    ByteBuffer      bytes();            // encoded/framed bytes; null before encoding
+    void            setBody(Object b);
+    void            setBytes(ByteBuffer b);
+
+    QoSLevel        qos();              // from the header
+    UOctet          priority();         // resolved; implicit NORMAL if absent on the wire
+    NamedValueList  supplements();      // extensibility channel (priority lives here)
+
+    CapabilitySet   channelCapabilities();    // what the Link below actually offers
+    <T> T    attr(Attr<T> key);         // per-exchange scratch passed between stages
+    <T> void setAttr(Attr<T> key, T v);
+}
+
+// ── A composable transform. The chain is an ordered list of these. ──
+public interface Stage {
+    ConcurrencyClass concurrency();     // STATELESS | SHARED_READ_ONLY | CHANNEL_SERIAL
+    CapabilitySet    requires();        // capabilities it needs from below (build-time check)
+    CapabilitySet    provides();        // capabilities it adds, visible upward
+
+    void down(Exchange x, Downlink next) throws MALException;  // outbound: transform, pass on
+    void up  (Exchange x, Uplink   next) throws MALException;  // inbound:  transform, pass on
+}
+
+// next-in-chain handles — let a stage short-circuit, split (segmentation,
+// media) or reorder, instead of a plain return value:
+public interface Downlink { void forward(Exchange x) throws MALException; }
+public interface Uplink   { void deliver(Exchange x) throws MALException; }
+
+// ── Bottom of the chain: the per-protocol provider. Static capabilities. ──
+public interface LinkDriver {
+    String        protocol();                 // "tcpip", "rmi", "malspp", ...
+    CapabilitySet capabilities();             // STATIC per transport type
+
+    Link connect(URI remote, Map<String, ?> props) throws MALException;  // outgoing
+    void listen(InboundSink sink)            throws MALException;          // incoming
+    void close()                             throws MALException;
+}
+
+// ── One ordered byte pipe to one peer. ──
+public interface Link {
+    void send(ByteBuffer frame) throws MALException;
+    URI  remote();
+    void close();
+}
+public interface InboundSink { void onFrame(Link link, ByteBuffer frame); }
+
+// ── Value types ──
+public enum ConcurrencyClass { STATELESS, SHARED_READ_ONLY, CHANNEL_SERIAL }
+public enum Capability { ORDERED, RELIABLE, STREAMING, FRAMED, DUPLEX /* ... */ }
+public interface CapabilitySet { boolean has(Capability c); /* set algebra */ }
+public final class Attr<T> { /* typed per-exchange key */ }
+```
+
+Three design choices embedded in these signatures:
+
+1. **Mutable `Exchange` + an explicit `next` handle**, rather than an immutable
+   value returned from each stage. This lets a stage split, merge, drop or
+   short-circuit (needed for segmentation and media), which a plain
+   `Exchange transform(Exchange)` cannot express. The cost is that stages must
+   honour their declared concurrency class.
+2. **One `Stage` with both `down` and `up`**, rather than two one-directional
+   interfaces. It keeps a paired concern (encode/decode, compress/decompress) in
+   one class so the halves cannot drift; a one-directional stage no-ops the other
+   side.
+3. **Encoding is just a `Stage`** — its `down` encodes body→bytes and its `up`
+   decodes bytes→body, wrapping the retained byte-level encoding SPI
+   (`MALElementStreamFactory` → `MALElementInputStream`/`OutputStream`). The
+   "smart encoding" strategy then becomes a policy in front of that stage, not a
+   special case in the chain.
 
 Feature mapping
 ---------------
@@ -244,7 +334,7 @@ pointless, because the first one's output is already high-entropy.**
   where the bulk gain from repeated messages comes from. It is CHANNEL-SERIAL
   and requires an **ordered + reliable** stream, provided either by the transport
   (TCP) or by the MAL ordering + guaranteed-delivery stages layered on an
-  otherwise unreliable bearer (SPP). A transport that compresses its own stream
+  otherwise unreliable link (SPP). A transport that compresses its own stream
   advertises the capability, and the MAL adds nothing.
 
 This mirrors established practice: **intra-frame vs inter-frame** video coding
@@ -290,20 +380,21 @@ Forward-looking hooks (enabled, not built)
 * **Live audio/video** — treated as **continuous media**, distinct from
   discrete request/response messages and from large-file transfer. The adaptive
   behaviour (reduce quality on a poor link) may be driven only by delivery acks;
-  whether a media stage needs link statistics from the bearer is an open
-  question. The design reserves a streaming/continuous channel concept so this
+  whether a media stage needs link statistics from the `Link` below it is an
+  open question. The design reserves a streaming/continuous channel concept so this
   can be added.
 * **Large-file transfer** — distinct from live streaming; segmented and given
   **lower priority**. Builds on the existing segmentation pattern.
 * **DTN** — a future DTN transport/convergence layer must be able to slot in as
-  a bearer with store-and-forward and custody semantics. Priority and
+  a link with store-and-forward and custody semantics. Priority and
   guaranteed-delivery stages are designed so DTN can reuse or defer to them.
 
 Module layout
 -------------
 
-* **api-mal** — the new transport and stage **interfaces** (bearer, stage,
-  capability descriptor, encoding-selection strategy, tap/observer).
+* **api-mal** — the new transport and stage **interfaces** (`LinkDriver`,
+  `Link`, `Stage`, `Exchange`, capability descriptor, encoding-selection
+  strategy, tap/observer).
 * **mal-impl** — the **framework implementation** (chain builder, channel
   management, addressing, the default stages, the thread pool and ordered
   egress).
@@ -339,7 +430,7 @@ only self-consistent. `testbed-encoders` covers encoding round-trips;
    egress under concurrency** (the race-prone part); static capability
    resolution at chain-build time; per-service feature-policy binding; and
    **priority** round-trip (canonical write / tolerant read / implicit-NORMAL
-   never written). A **loopback bearer** test double runs the chain end-to-end
+   never written). A **loopback link** test double runs the chain end-to-end
    deterministically.
 2. **Wire golden-bytes tests** (new, small). Capture frames emitted by *today's*
    transport for representative messages and interaction patterns; assert the
@@ -382,11 +473,11 @@ Priority and Future ideas sections.)
    separate channels per profile? Start with separate channels; add multiplexing
    later.
 3. **[detail] Audio/video mechanics.** Whether a media stage needs link
-   statistics from the bearer, or delivery acks suffice. Forward-looking; not in
+   statistics from the link, or delivery acks suffice. Forward-looking; not in
    the core refactor.
-4. **[detail] Compression defaults per bearer.** Channel (streaming) compression
-   on ordered reliable bearers (TCP, or SPP + reliability) vs message encoding
-   (self-contained) on one-way/lossy bearers — and whether both layers run
+4. **[detail] Compression defaults per link.** Channel (streaming) compression
+   on ordered reliable links (TCP, or SPP + reliability) vs message encoding
+   (self-contained) on one-way/lossy links — and whether both layers run
    together on a given link.
 5. **[detail] Dictionary management.** How a message-encoding dictionary is
    trained, versioned and distributed to peers, and how the per-message
@@ -416,7 +507,7 @@ Appendix: survey findings that ground this design
 * `Supplements` is an existing per-message `NamedValueList` on the header, used
   already in mal-impl — a valid home for priority with no wire change.
 * SPP already segments (`SPPSegmentsAssembler`, sequence counters) but never
-  retransmits; guaranteed delivery is a genuine gap for any SPP bearer.
+  retransmits; guaranteed delivery is a genuine gap for any SPP link.
 * NMF wires transports by global properties (TCP + RMI; SPP kept out precisely
   because of the reliability gap). There is no per-service transport hook today.
 * A `transport.gen.debug` property already exists — a precedent for formal taps,
