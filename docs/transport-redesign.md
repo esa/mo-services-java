@@ -312,6 +312,61 @@ Module layout
   api-mal/mal-impl instead of the deleted `transport-generic`.
 * **`transport-generic`** — deleted.
 
+Testing and validation
+----------------------
+
+The refactor changes the transport's internal structure while keeping the wire
+bytes frozen, so the strategy is a pyramid that locks the wire invariant with
+existing conformance assets and adds fast unit coverage for the new chain, which
+has none today.
+
+**What exists.** `testbeds/testbed-mal` is the CCSDS MAL conformance suite and is
+**transport-agnostic**: the transport is chosen by Maven profile (`ESA` = RMI,
+`ESA_TCPIP`, `ESA_ZMTP`, `ESA_HTTP`). Cross-vendor interop profiles
+(`ESA_to_CNES_RMI`, `CNES_to_ESA_RMI`, `ESA_to_CNES_AMQP`, `ESA_to_JPL_HTTP`)
+run ESA's stack against **independent** CNES/JPL implementations over the wire —
+the authoritative proof that a change is wire-compatible with a third party, not
+only self-consistent. `testbed-encoders` covers encoding round-trips;
+`testbed-malspp` covers the SPP binding. The concrete transports have essentially
+**no unit tests of their own internals** today — the testbed exercises behaviour
+*through* a transport, never *inside* one.
+
+**Layers.**
+
+1. **New transport-chain unit testbed** (new module). Fast, in-process, no
+   sockets. Covers what only the new design has: chain assembly and stage
+   ordering (downward/upward); the three concurrency classes and **ordered
+   egress under concurrency** (the race-prone part); static capability
+   resolution at chain-build time; per-service feature-policy binding; and
+   **priority** round-trip (canonical write / tolerant read / implicit-NORMAL
+   never written). A **loopback bearer** test double runs the chain end-to-end
+   deterministically.
+2. **Wire golden-bytes tests** (new, small). Capture frames emitted by *today's*
+   transport for representative messages and interaction patterns; assert the
+   new chain emits **byte-identical** output. This is the regression lock on the
+   frozen-wire constraint; the implicit-NORMAL priority default is designed so
+   these bytes do not move.
+3. **MAL conformance testbed = integration gate.** Each ported transport must
+   pass its profile with **zero diff** against the current result
+   (`ESA_TCPIP` first, then `ESA` / `ESA_ZMTP` / `ESA_HTTP`), and the **interop
+   profiles** must still pass — the external wire proof.
+4. **`testbed-encoders` stays green.** The byte-level encoding SPI is retained,
+   so this suite guards that invariant unchanged.
+5. **NMF end-to-end** before release. NMF is the real downstream consumer (it
+   tracks mo-services via the parent version); its build and tests run against
+   the new transport as final acceptance.
+
+**Per-increment gate.** An increment is done only when: new chain unit tests
+green **and** golden-bytes identical **and** the relevant conformance profile
+passes unchanged. The walking skeleton (TCP/IP on the new chain) is gated on the
+`ESA_TCPIP` profile.
+
+**Note.** `transport-generic` is deleted, but it is referenced in testbed
+classpaths — e.g. the CNES interop profile hard-codes
+`int.esa.ccsds.mo:transport-generic` in its Maven classpath
+(`testbed-mal/pom.xml`). Those profile classpaths must be updated as part of the
+refactor, or the interop tests will not resolve.
+
 Open questions
 --------------
 
